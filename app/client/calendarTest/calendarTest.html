@@ -1,0 +1,37 @@
+
+<template name="calendarTest">
+
+{{#if currentUser}}
+<div class="container">
+
+{{>calendarTestList}}
+{{#if currentCalendar}}
+{{currentCalendar}}
+{{>calendarTestEventList calendarId=currentCalendar}}
+{{/if}}
+</div>
+
+{{/if}}
+
+</template>
+
+
+<template name="calendarTestList">
+<ul>
+{{#each calendars}}
+	<li>{{id}}</li>
+{{/each}}
+</ul>
+
+</template>
+
+<template name="calendarTestEventList">
+<input name="calendarId" type="text" />
+<a class="btn btn-primary btn-update">update</a>
+
+{{#each events}}
+	<li>{{start.dateTime}} - {{end.dateTime}}: {{summary}}</li>
+{{/each}}
+
+
+</template>
