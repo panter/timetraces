@@ -13,18 +13,25 @@ Template.projectsSelect.events
 			values.push parseInt $(input).val(),10
 		Session.set "selectedProjectStates", values
 
+getFilteredProjects = ->
+	projectStates = Session.get "selectedProjectStates"
+	if not projectStates? or projectStates.length == 0
+		selector = {}
+	else
+		selector = project_state_id: $in: projectStates
+	Projects.find(selector, sort: shortname: 1)
+
+
 Template.projectsSelect.helpers
 	project_states: -> ProjectStates.find()
-	customers: ->
-		projectStates = Session.get "selectedProjectStates"
-		if not projectStates? or projectStates.length == 0
-			selector = {}
-		else
-			selector = project_state_id: $in: projectStates
-		console.log selector
-		_.uniq Projects.find(selector).map (project) ->
-			project.shortname.split("-")[0]
+	
+	projects: getFilteredProjects
 
+###
+	customers: ->
+		_.uniq getFilteredProjects().map (project) ->
+			project.shortname.split("-")[0]
+###
 
 Template.postForm.helpers
 
@@ -50,4 +57,7 @@ Template.postForm.helpers
 		day:
 			type: Date
 			label: "Date"
+		billable:
+			type: Boolean
+			label: "Billable"
 

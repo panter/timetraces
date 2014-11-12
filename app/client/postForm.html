@@ -2,7 +2,7 @@
 
 {{>projectsSelect}}
 
- {{#autoForm schema=schema type="method"}}
+ {{#autoForm schema=schema type="method" meteormethod="create.entry"}}
     <fieldset>
       <legend>Add an Entry</legend>
       {{> afQuickField name='user_id'}}
@@ -10,6 +10,7 @@
       {{> afQuickField name='description' rows=6}}
       {{> afQuickField name='day'}}
       {{> afQuickField name='duration_hours'}}
+      {{> afQuickField name='billable'}}
     </fieldset>
     <button type="submit" class="btn btn-primary">Insert</button>
   {{/autoForm}}
@@ -23,13 +24,13 @@
 <template name="projectsSelect">
 
 
-{{#each project_states}}
-<input type="checkbox" class="project-state" value="{{_id}}" />{{name}}
-{{/each}}
-<select class="selectProject">
-{{#each customers}}
-<option value="{{this}}">{{this}}</option>
-{{/each}}
-</select>
+	{{#each project_states}}
+		<input type="checkbox" class="project-state" value="{{_id}}" />{{name}}
+	{{/each}}
+	<select class="selectProject">
+		{{#each projects}}
+			<option value="{{_id}}">{{shortname}}</option>
+		{{/each}}
+	</select>
 </template>
 
