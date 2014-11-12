@@ -7,45 +7,43 @@ Meteor.methods
 
 Meteor.startup ->
 
-	apis = [{
-				name: "projects"
-				collection: Projects
-				url: "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
-				publish: ->
-					
-					Projects.find {}, fields: _id: 1, description:1, shortname: 1, project_state_id: 1
-			}
-			
-			{
-				name: "tasks"
-				collection: Tasks
-				url: "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
-				publish: (projectId) ->
-					
-					
-					Tasks.find {project_id: parseInt(projectId,10)}
-			}
+	handleIds = (data) ->
+		_.map data, (item) ->
+			item._id = item.id.toString()
+			delete item.id
+			item
 
-			{
-				name: "project_states"
-				collection: ProjectStates
-				url: "http://controllr.panter.biz/api/project_states.json?user_token=#{userToken}"
-				publish: () ->
-					ProjectStates.find()
-			}
-		]
-	
-	refreshData = (api) ->
+	Meteor.publishRestApi 
+		name: "calendarList"
+		collection: "Calendars"
+		apiCall: (params)->
+			user =  Meteor.users.findOne _id: @userId
+			if user?
+				result = GoogleApi.get 'calendar/v3/users/me/calendarList', user: user
+				handleIds result.items
 		
-		result= HTTP.get api.url
-		for entry in result.data
-			_id = entry.id.toString()
-			delete entry.id
-			api.collection.update {_id: _id}, {$set: entry}, upsert: true
+	Meteor.publishRestApi 
+		name: "projects"
+		collection: "Projects"
+		refreshTime: 10000
+		apiCall: (params)->
+			result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
+			if result.data?
+				handleIds result.data
 
-	for api in apis
-		do (api) ->
-			Meteor.publish api.name, (data) ->
-				console.log this
-				Meteor.defer -> refreshData api
-				api.publish.apply this, arguments
+
+	Meteor.publishRestApi 
+		name: "project_states"
+		collection: "ProjectStates"
+		apiCall: (params)->
+			result = HTTP.get "http://controllr.panter.biz/api/project_states.json?user_token=#{userToken}"
+			if result.data?
+				handleIds result.data
+	Meteor.publishRestApi 
+		name: "allTasks"
+		collection: "Tasks"
+		apiCall: (params)->
+			result = HTTP.get "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
+			if result.data?
+				handleIds result.data
+

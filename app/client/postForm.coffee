@@ -3,7 +3,6 @@
 Template.postForm.events
 	'change .selectProject': (event) ->
 		projectId = parseInt($(event.currentTarget).val(), 10)
-		Meteor.subscribe "tasks", projectId
 		Session.set "currentProject", projectId
 
 Template.projectsSelect.events

@@ -1,0 +1,12 @@
+
+
+<template name="calendarList">
+
+<ul>
+{{#each calendars}}
+<li><label>
+<input type="checkbox" value="{{_id}}" checked="{{isUsed _id}}"/> {{summary}}</label>
+</li>
+{{/each}}
+</ul>
+</template>
