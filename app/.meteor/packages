@@ -4,7 +4,6 @@
 # but you can also edit it by hand.
 
 meteor-platform
-insecure
 coffeescript
 accounts-google
 ian:accounts-ui-bootstrap-3
@@ -14,3 +13,6 @@ reywood:bootstrap3-sass
 underscore
 aldeed:autoform
 http
+mrt:moment
+insecure
+

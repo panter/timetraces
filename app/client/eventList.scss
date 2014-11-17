@@ -1,0 +1,30 @@
+.eventList
+{
+	
+	.day
+	{
+		 background: linear-gradient(to bottom, #154277 0%,#576e71 20%,#e1c45e 50%,#b26339 100%);
+	}
+	.event
+	{
+		.content
+		{
+			padding: 8px;
+		
+		background-color: rgba(128,128,128,0.5);
+		margin-bottom: 20px;
+		border-radius: 8px;
+		}
+
+		&.acknowledged .content
+		{
+			background-color: rgba(128,255,128,0.5);
+		}
+
+		&.declined .content
+		{
+			background-color: rgba(255,128,128,0.5);
+		}
+
+	}
+}

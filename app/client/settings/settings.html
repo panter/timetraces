@@ -1,0 +1,45 @@
+<template name="settings">
+
+<h1>Settings</h1>
+
+{{>settings_general}}
+
+{{>settings_calendarList}}
+{{>settings_redmine}}
+
+</template>
+
+
+
+<template name="settings_general">
+<label>Start of day: <input type="time" value="{{startOfDay}}" class="start-of-day" /></label>
+</template>
+
+
+<template name="settings_calendarList">
+<h2>Calendars</h2>
+<ul>
+{{#each calendars}}
+<li><label>
+<input type="checkbox" value="{{_id}}" checked="{{isUsed _id}}"/> {{summary}}</label>
+</li>
+{{/each}}
+</ul>
+
+</template>
+
+
+
+<template name="settings_redmine">
+<h2>Redmine</h2>
+<p>api key: <input class="apiKey" type="text" value="{{apiKey}}"/></p>
+<ul>
+{{#each projects}}
+<li><label>
+<input type="checkbox" name="redmine" value="{{_id}}" checked="{{isUsed _id}}"/> {{name}}</label>
+</li>
+{{/each}}
+</ul>
+
+</template>
+
