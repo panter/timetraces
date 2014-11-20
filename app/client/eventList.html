@@ -1,7 +1,7 @@
 
 
 <template name="eventList">
-<div class="eventList">
+<div class="eventList {{viewMode}}">
 
 {{#each days}}
 
@@ -14,19 +14,29 @@
 </template>
 
 <template name="eventList_oneDay">
-	<div class="day" style="height: {{height}}px">
 	<h2>{{calendar}}</h2>
+	<div class="day" style="height: {{height}}px">
+	
 
 	{{#each events}}
 		{{>eventList_oneEvent}}
+	{{else}}
+		<p> no events on this day</p>
 	{{/each}}
-</div>
+	</div>
 </template>
 
 <template name="eventList_oneEvent">
-	<div class="event col-xs-12 {{#if acknowledged}}acknowledged{{/if}} {{#if declined}}declined{{/if}}">
-		<div class="content"  style="position: absolute; top: {{top}}px; height: {{height}}px">
-		<strong>{{source}}:</strong> {{calendarFormat start end}} - {{title}}
+	<div class="event col-xs-12 {{#if acknowledged}}acknowledged{{/if}} {{#if declined}}declined{{/if}}" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
+		<div class="content">
+		{{index}}
+		{{#if source}}<strong>{{source}}: </strong>{{/if}}
+		<span class="duration">{{duration start end}}</span> {{calendarFormat start end}}
+		<ul>
+		{{#each bulletPoints}}
+		<li>{{this}}</li>
+		{{/each}}
+		</ul>
 		</div>
 	</div>
 

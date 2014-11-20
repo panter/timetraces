@@ -13,6 +13,12 @@
 
 <template name="settings_general">
 <label>Start of day: <input type="time" value="{{startOfDay}}" class="start-of-day" /></label>
+<label>Minimum Duration: <input type="number" value="{{minimumMergeTime}}" class="minimum-merge-time" /></label>
+<label>View: <select class="view-mode">
+	<option value="calendar">Calendar</option>
+	<option value="list">List</option>
+</select>
+</label>
 </template>
 
 
@@ -27,6 +33,7 @@
 </ul>
 
 </template>
+
 
 
 

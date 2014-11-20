@@ -32,13 +32,17 @@ Template.projectsSelect.helpers
 			project.shortname.split("-")[0]
 ###
 
+
+
 Template.postForm.helpers
 
 	projects: -> Projects.find()
 	tasks: -> Tasks.find 
 	taskIdOptions: -> 
+
 		Tasks.find project_id: Session.get "currentProject"
 		.map (task) ->
+			
 			label: task.name, value: task._id
 	schema: -> new SimpleSchema
 		user_id:

@@ -1,19 +1,37 @@
+store = new Meteor.Collection "userPreferences"
+
+if Meteor.isClient
+	Meteor.subscribe "userPreferences"
+if Meteor.isServer
+	Meteor.publish "userPreferences", ->
+		store.find @userId
+
 @UserSettings = 
 	PROPERTY_CALENDARS: "calendars"
 	PROPERTY_REDMINE_PROJECTS: "redmineProjects"
 	PROPERTY_REDMINE_API_KEY: "redmineApiKey"
 	PROPERTY_START_OF_DAY: "startOfDay"
-	getListSetting: (property, user=null)-> 
-		 @get property, [], user
-	get: (property, defaultVal = null, user = null) ->
-		user = Meteor.user() unless user? # serverside you cant use Meteor.user() if not in Meteor.method
-		user?.profile?[property] || defaultVal
+	PROPERTY_EVENT_VIEW_MODE: "eventListViewMode"
+	PROPERTY_MINIMUM_MERGE_TIME: "minimumMergeTime"
+	getListSetting: (property, userId=null)-> 
+		 @get property, [], userId
+	get: (property, defaultVal = null, userId = null) ->
+		fullProperty = "#{property}"
+		fields = {}
+		fields[fullProperty] = 1
+
+		unless userId?
+			userId = Meteor.userId() # on server Metoer.userId() does not work here
+		user = store.findOne(userId, fields: fields) 
+		user?[property] || defaultVal
+		#user?.profile?[property] || defaultVal
 
 
-	hasListSetting: (property, id, user=null) ->
-		@getListSetting(property, user)?.indexOf(id) >=0
+	hasListSetting: (property, id, userId=null) ->
+		@getListSetting(property, userId)?.indexOf(id) >=0
 	set: (property, value) ->
-		fullProperty = "profile.#{property}"
+		fullProperty = "#{property}"
 		$set = {}
 		$set[fullProperty] = value
-		Meteor.users.update {_id: Meteor.userId()}, $set: $set
+	
+		store.update Meteor.userId(), {$set: $set}, upsert: true

@@ -17,10 +17,12 @@ Meteor.startup ->
 
 	transformCalendarEvents = (data) ->
 		_.map data, (item) ->
+			start = new Date item.start.dateTime || item.start.date
+			end = new Date item.end.dateTime || item.end.date
 			_id: item.id.toString()
-			start: new Date item.start.dateTime
-			end: new Date item.end.dateTime
-			title: item.summary
+			start: start
+			end: end
+			bulletPoints: [item.summary]
 			source: "Calendar"
 
 	transformRedmineIssues = (data) ->
@@ -31,7 +33,7 @@ Meteor.startup ->
 			
 			_id: item.id.toString()
 			end: end
-			title: item.subject
+			bulletPoints: [item.subject]
 			source: "Redmine"
 		
 
@@ -58,9 +60,9 @@ Meteor.startup ->
 		collection: "RedmineProjects"
 		refreshTime: 10000
 		apiCall: (params)->
-			user =  Meteor.users.findOne _id: @userId
-			return [] unless user?
-			apiKey = UserSettings.get UserSettings.PROPERTY_REDMINE_API_KEY, null, user
+		
+			return [] unless @userId?
+			apiKey = UserSettings.get UserSettings.PROPERTY_REDMINE_API_KEY, null, @userId
 			return [] unless apiKey?
 			url = "http://pm.panter.ch/projects.json?key=#{apiKey}"
 
@@ -74,9 +76,9 @@ Meteor.startup ->
 		collection: "Events"
 		refreshTime: 10000
 		apiCall: (params)->
-			user =  Meteor.users.findOne _id: @userId
-			return [] unless user?
-			apiKey = UserSettings.get UserSettings.PROPERTY_REDMINE_API_KEY, null, user
+	
+			return [] unless @userId?
+			apiKey = UserSettings.get UserSettings.PROPERTY_REDMINE_API_KEY, null, @userId
 			return [] unless apiKey?
 				
 			url = "http://pm.panter.ch/issues.json?key=#{apiKey}&project_id=#{params.project_id}&limit=200&assigned_to_id=me&updated_on=#{params.updated_on}"

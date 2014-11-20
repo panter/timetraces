@@ -3,28 +3,54 @@
 	
 	.day
 	{
-		 background: linear-gradient(to bottom, #154277 0%,#576e71 20%,#e1c45e 50%,#b26339 100%);
-	}
-	.event
-	{
-		.content
-		{
-			padding: 8px;
-		
-		background-color: rgba(128,128,128,0.5);
-		margin-bottom: 20px;
-		border-radius: 8px;
-		}
+		transition: 0.6s;
+		position: relative;
+		background: linear-gradient(to bottom, #154277 0%,#576e71 20%,#e1c45e 50%,#b26339 100%);
 
-		&.acknowledged .content
+		.event
 		{
-			background-color: rgba(128,255,128,0.5);
-		}
 
-		&.declined .content
-		{
-			background-color: rgba(255,128,128,0.5);
-		}
+			transition: 0.6s;
+			padding-top: 6px;
+			padding-bottom: 6px;
+			overflow: hidden;
 
+				
+				&:hover
+				{
+					overflow: visible;
+					z-index: 100;
+					.content
+					{
+						box-shadow: -1px 1px 10px #333;
+					}
+				}
+			.content
+			{
+
+				min-height: 100%;
+				box-sizing: border-box;
+				padding: 8px;
+
+				background-color: rgba(192,192,192,0.9);
+
+				border-radius: 8px;
+				z-index: 50;
+				position: relative;
+			}
+
+			&.acknowledged .content
+			{
+				z-index: 40;
+				background-color: rgba(192,255,192,0.9);
+			}
+
+			&.declined .content
+			{
+				z-index: 30;
+				background-color: rgba(255,192,192,0.9);
+			}
+
+		}
 	}
 }

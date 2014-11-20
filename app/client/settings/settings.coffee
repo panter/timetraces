@@ -12,10 +12,16 @@ checkboxSaveEvent = (property) ->
 
 Template.settings_general.helpers
 	startOfDay: -> UserSettings.get UserSettings.PROPERTY_START_OF_DAY
+	minimumMergeTime:  -> UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
+	viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 Template.settings_general.events
 	'change .start-of-day': (event) ->
 		UserSettings.set UserSettings.PROPERTY_START_OF_DAY, $(event.currentTarget).val()
-
+	'change .minimum-merge-time': (event) ->
+		UserSettings.set UserSettings.PROPERTY_MINIMUM_MERGE_TIME, $(event.currentTarget).val()
+	'change .view-mode': (event) ->
+		UserSettings.set UserSettings.PROPERTY_EVENT_VIEW_MODE, $(event.currentTarget).val()
+	
 Template.settings_calendarList.helpers
 	calendars: ->
 		Calendars.find()

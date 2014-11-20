@@ -1,4 +1,7 @@
+NUMBER_OF_WEEKS = 2
 Accounts.ui.config
+	requestOfflineToken: google: true
+  
 	requestPermissions: 
 		google: ['https://www.googleapis.com/auth/calendar']
 
@@ -23,12 +26,12 @@ defaultSubscriptions = ->
 			calendarId: calendar._id
 			singleEvents: true
 			timeMax: moment().format()
-			timeMin: moment().subtract(3, "weeks").format()
+			timeMin: moment().subtract(NUMBER_OF_WEEKS, "weeks").format()
 			orderBy: "startTime"
 	for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_REDMINE_PROJECTS)).fetch()
 		subscriptions.push Meteor.subscribe "redmineIssues", 
 			project_id: project._id
-			updated_on: encodeURIComponent(">=")+moment().subtract(3, "weeks").format("YYYY-MM-DD")
+			updated_on: encodeURIComponent(">=")+moment().subtract(NUMBER_OF_WEEKS, "weeks").format("YYYY-MM-DD")
 	subscriptions
 
 Router.map ->
@@ -36,9 +39,7 @@ Router.map ->
 	@route 'settings', 
 		subscriptions: defaultSubscriptions
 	@route 'eventList', 
-		subscriptions: defaultSubscriptions
-	
-			
+		subscriptions: defaultSubscriptions	
 
 	@route 'home', path: "/"
 	@route 'postForm',
@@ -49,8 +50,13 @@ Router.map ->
 		]
 	
 
-
+Template.registerHelper "equals", (a, b) ->
+	a == b
+Template.registerHelper "duration", (date1, date2, value="minutes") ->
+	value = "minutes"
+	moment(date1).twix(date2).humanizeLength()
 Template.registerHelper "calendarFormat", (date, date2) -> 
+	console.log date, date2
 	if date2?
 		moment(date).twix(date2).format()
 	else
