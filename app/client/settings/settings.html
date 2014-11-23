@@ -1,36 +1,74 @@
 <template name="settings">
 
-<h1>Settings</h1>
+	<h1>Settings</h1>
 
-{{>settings_general}}
+	{{#autoForm collection="UserSettingsStore" doc=settings id="insertBookForm" type="update" autosave=true}}
+	<div class="row">
+	<fieldset class="col-sm-6">
+		<legend>General Settings</legend>
+		{{> afQuickField name='startOfDay' type="time"}}
+		{{> afQuickField name='minimumMergeTime'}}
+		{{> afQuickField name='eventListViewMode'}}
+	</fieldset>
+	<fieldset class="col-sm-6">
+		<legend>Controllr Settings</legend>
+		{{> afQuickField name='controllrApiKey'}}
+		{{> afQuickField name='controllrUsername'}}
 
-{{>settings_calendarList}}
-{{>settings_redmine}}
+
+	</fieldset>
+	</div>
+		<div class="row">
+	<fieldset class="col-sm-6">
+		<legend>Redmine Settings</legend>
+		{{#if redmineProjects}}
+			{{> afQuickField name='redmineProjects' options=redmineProjects noselect=true}}
+		{{/if}}
+		{{> afQuickField name='redmineUrl'}}
+		{{> afQuickField name='redmineApiKey'}}
+
+
+
+	</fieldset>
+
+	<fieldset class="col-sm-6">
+		<legend>Calendar Settings</legend>
+
+		{{> afQuickField name='calendars' options=calendars noselect=true}}
+
+	</fieldset>
+	</div>
+
+
+	{{/autoForm}}
+
 
 </template>
 
 
 
-<template name="settings_general">
-<label>Start of day: <input type="time" value="{{startOfDay}}" class="start-of-day" /></label>
-<label>Minimum Duration: <input type="number" value="{{minimumMergeTime}}" class="minimum-merge-time" /></label>
-<label>View: <select class="view-mode">
-	<option value="calendar">Calendar</option>
-	<option value="list">List</option>
-</select>
-</label>
-</template>
+<template name="settings_controllr">
+	<h2>Controllr</h2>
+	<p>Controllr key: <input class="apiKey" type="text" value="{{apiKey}}"/></p>
+	<ul>
+		{{#each projects}}
+		<li><label>
+			<input type="checkbox" name="redmine" value="{{_id}}" checked="{{isUsed _id}}"/> {{name}}</label>
+		</li>
+		{{/each}}
+	</ul>
 
+</template>
 
 <template name="settings_calendarList">
-<h2>Calendars</h2>
-<ul>
-{{#each calendars}}
-<li><label>
-<input type="checkbox" value="{{_id}}" checked="{{isUsed _id}}"/> {{summary}}</label>
-</li>
-{{/each}}
-</ul>
+	<h2>Calendars</h2>
+	<ul>
+		{{#each calendars}}
+		<li><label>
+			<input type="checkbox" value="{{_id}}" checked="{{isUsed _id}}"/> {{summary}}</label>
+		</li>
+		{{/each}}
+	</ul>
 
 </template>
 
@@ -38,15 +76,15 @@
 
 
 <template name="settings_redmine">
-<h2>Redmine</h2>
-<p>api key: <input class="apiKey" type="text" value="{{apiKey}}"/></p>
-<ul>
-{{#each projects}}
-<li><label>
-<input type="checkbox" name="redmine" value="{{_id}}" checked="{{isUsed _id}}"/> {{name}}</label>
-</li>
-{{/each}}
-</ul>
+	<h2>Redmine</h2>
+	<p>api key: <input class="apiKey" type="text" value="{{apiKey}}"/></p>
+	<ul>
+		{{#each projects}}
+		<li><label>
+			<input type="checkbox" name="redmine" value="{{_id}}" checked="{{isUsed _id}}"/> {{name}}</label>
+		</li>
+		{{/each}}
+	</ul>
 
 </template>
 

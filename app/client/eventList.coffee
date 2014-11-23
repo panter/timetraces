@@ -4,16 +4,41 @@ dayHeight = 1440 * pixelPerMinute
 
 listHeight = 120
 
+NUMBER_OF_WEEKS = 2
+
+Router.route 'eventList', 
+	subscriptions: ->
+		subscriptions = [] 
+		subscriptions.push Meteor.subscribe "savedEvents"
+		subscriptions.push Meteor.subscribe "calendarList"
+		subscriptions.push Meteor.subscribe "redmineProjects"
+		subscriptions.push Meteor.subscribe "time_entries",
+			employee_usernames: UserSettings.get "controllrUsername"
+			date_from: moment().subtract(NUMBER_OF_WEEKS, "weeks").format()
+		for calendar in Calendars.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)).fetch()
+			subscriptions.push Meteor.subscribe "latestCalendarEvents", 
+				calendarId: calendar._id
+				singleEvents: true
+				timeMax: moment().format()
+				timeMin: moment().subtract(NUMBER_OF_WEEKS, "weeks").format()
+				orderBy: "startTime"
+		
+		for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
+			console.log project
+			subscriptions.push Meteor.subscribe "redmineIssues", 
+				project_id: project._id
+				updated_on: encodeURIComponent(">=")+moment().subtract(NUMBER_OF_WEEKS, "weeks").format("YYYY-MM-DD")
+		subscriptions	
+
 Template.eventList.helpers
 	viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 
 	days: ->
-		oldest = Events.findOne {}, sort: end: 1
-		newest =  Events.findOne {}, sort: end: -1
+		
 
-		newestMoment = moment(newest?.end).endOf("day")
-		oldestMoment = moment(oldest?.end).startOf("day")
-
+		newestMoment = moment().endOf("day")
+		oldestMoment = moment().subtract(NUMBER_OF_WEEKS, "weeks").startOf("day")
+		console.log newestMoment.format(), oldestMoment.format()
 		days = []
 		while(oldestMoment.valueOf()< newestMoment.valueOf())
 			days.push moment(newestMoment)
@@ -71,19 +96,17 @@ mergeEvents = (event, toMerge) ->
 getSanitizedEvents = ->
 	end = @toDate()
 	start = moment(@).startOf("day").toDate()
-	
-
 	preferedStartTime = getPreferedStartOfDay(@).toDate()
 	
 	events = []
-	#merge = []
+	
 	lastEvent = null
 	Events.find({end: {$gte: start, $lt: end}}, sort: "end": 1).forEach (doc) =>
 		start = getStartOfEvent doc
 		doc.start = start
 		
 		minMinutes = UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
-		mergeOverlapping = false
+		mergeOverlapping = true
 		
 		if minMinutes > 0 and lastEvent? and ((moment(doc.end).diff(doc.start, "minutes") < minMinutes))
 			mergeEvents lastEvent, doc
@@ -110,6 +133,17 @@ getSanitizedEvents = ->
 	
 	events.reverse()
 
+getSanitizedTimeEntries = ->
+	
+	entries = []
+	
+	
+	TimeEntries.find({day: moment(@).format("YYYY-MM-DD")}, sort: "start": 1).forEach (doc) ->
+		doc.index = entries.length
+		entries.push doc
+	entries
+	
+
 Template.eventList_oneDay.helpers
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
@@ -118,6 +152,7 @@ Template.eventList_oneDay.helpers
 		else
 			dayHeight
 	events: getSanitizedEvents
+	timeEntries: getSanitizedTimeEntries
 
 	
 
@@ -126,6 +161,22 @@ Template.eventList_oneDay.helpers
 getSavedEvent = (id) ->
 	SavedEvents.findOne userId: Meteor.userId(), eventId: id
 
+
+bottomHelper = ->
+	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
+		listHeight * @index
+	else
+		mnt = moment getStartOfEvent @
+
+		midnight = moment(mnt).startOf "day"
+		mnt.diff(midnight, "minutes") * pixelPerMinute
+
+heightHelper = ->
+	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
+		listHeight
+	else
+		duration = (new Date @end).getTime() - (new Date getStartOfEvent @).getTime()
+		duration/60000 * pixelPerMinute
 Template.eventList_oneEvent.helpers
 	
 	start: ->
@@ -137,22 +188,14 @@ Template.eventList_oneEvent.helpers
 	acknowledged: ->
 		savedEvent = getSavedEvent @_id
 		savedEvent?.state is "acknowledged"
-	bottom: ->
-		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-			listHeight * @index
-		else
-			mnt = moment getStartOfEvent @
-
-			midnight = moment(mnt).startOf "day"
-			mnt.diff(midnight, "minutes") * pixelPerMinute
+	bottom: bottomHelper
 		
+	height: heightHelper
 
-	height: ->
-		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-			listHeight
-		else
-			duration = (new Date @end).getTime() - (new Date getStartOfEvent @).getTime()
-			duration/60000 * pixelPerMinute
+Template.eventList_oneTimeEntry.helpers 
+	bottom: bottomHelper
+		
+	height: heightHelper
 
 Template.eventList_oneEvent.rendered = ->
 	addDrag @firstNode
