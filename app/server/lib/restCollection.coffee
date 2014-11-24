@@ -25,6 +25,7 @@ Meteor.publishRestApi = (options) ->
 						pub.changed collection, id, result
 				for id of ids
 					unless currentIds[id]?
+						
 						pub.removed collection, id
 						delete ids[id]
 			pub.ready()
@@ -32,6 +33,6 @@ Meteor.publishRestApi = (options) ->
 		Meteor.defer refresh
 		refreshHandle = Meteor.setInterval refresh, refreshTime || 5000
 		
-		@onStop ->
-			console.log "on stop"
+		@onStop =>
+			console.log "on stop", name
 			Meteor.clearInterval refreshHandle

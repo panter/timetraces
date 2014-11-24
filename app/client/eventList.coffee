@@ -4,7 +4,7 @@ dayHeight = 1440 * pixelPerMinute
 
 listHeight = 120
 
-NUMBER_OF_WEEKS = 2
+
 
 Router.route 'eventList', 
 	subscriptions: ->
@@ -12,22 +12,25 @@ Router.route 'eventList',
 		subscriptions.push Meteor.subscribe "savedEvents"
 		subscriptions.push Meteor.subscribe "calendarList"
 		subscriptions.push Meteor.subscribe "redmineProjects"
+		subscriptions.push Meteor.subscribe "projects"
+		subscriptions.push Meteor.subscribe "project_states"
+		subscriptions.push Meteor.subscribe "allTasks"
+		subscriptions.push Meteor.subscribe "githubEvents"
 		subscriptions.push Meteor.subscribe "time_entries",
 			employee_usernames: UserSettings.get "controllrUsername"
-			date_from: moment().subtract(NUMBER_OF_WEEKS, "weeks").format()
+			date_from: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
 		for calendar in Calendars.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)).fetch()
 			subscriptions.push Meteor.subscribe "latestCalendarEvents", 
 				calendarId: calendar._id
 				singleEvents: true
 				timeMax: moment().format()
-				timeMin: moment().subtract(NUMBER_OF_WEEKS, "weeks").format()
+				timeMin: moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
 				orderBy: "startTime"
 		
 		for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
-			console.log project
 			subscriptions.push Meteor.subscribe "redmineIssues", 
 				project_id: project._id
-				updated_on: encodeURIComponent(">=")+moment().subtract(NUMBER_OF_WEEKS, "weeks").format("YYYY-MM-DD")
+				updated_on: encodeURIComponent(">=")+moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
 		subscriptions	
 
 Template.eventList.helpers
@@ -37,8 +40,8 @@ Template.eventList.helpers
 		
 
 		newestMoment = moment().endOf("day")
-		oldestMoment = moment().subtract(NUMBER_OF_WEEKS, "weeks").startOf("day")
-		console.log newestMoment.format(), oldestMoment.format()
+		oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
+		
 		days = []
 		while(oldestMoment.valueOf()< newestMoment.valueOf())
 			days.push moment(newestMoment)
@@ -56,6 +59,25 @@ getPreferedStartOfDay = (dayMoment) ->
 			return newMoment.set("hour", hour).set("minute", minute)
 	return newMoment.startOf "day"
 
+
+getLastEventDate = (eventDate) ->
+	previousEvent = Events.findOne {end: $lt: eventDate}, sort: "end": -1
+	previousTimeEntry = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), end: $lt: eventDate}, sort: "end": -1
+
+	
+	if previousTimeEntry? and previousEvent?
+		# get closer one
+		if previousTimeEntry.end.getTime() > previousEvent.end.getTime()
+			lastEventDate = previousTimeEntry.end
+		else
+			lastEventDate = previousEvent.end
+	else if previousTimeEntry?
+		lastEventDate = previousTimeEntry.end
+	else if previousEvent?
+		lastEventDate = previousEvent.end
+	else 
+		return 
+
 getStartOfEvent = (event) ->
 
 	eventDate = event.end
@@ -63,10 +85,10 @@ getStartOfEvent = (event) ->
 	if event.start?
 		event.start
 	else
-		previousEvent = Events.findOne {end: $lt: eventDate}, sort: "end": -1
-		unless previousEvent?
-			return
-		lastEventDate = previousEvent.end
+		lastEventDate = getLastEventDate eventDate
+		lastTimeEntryByStart = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), start: $lt: eventDate}, sort: "start": -1
+		if lastTimeEntryByStart? and lastTimeEntryByStart.start.getTime() > lastEventDate.getTime()
+			lastEventDate = lastTimeEntryByStart.start
 		lastEventMoment = moment lastEventDate
 		# do not go befor start of the day
 		if moment(lastEventMoment).startOf("day").isSame(moment(eventMoment).startOf("day"))
@@ -106,25 +128,29 @@ getSanitizedEvents = ->
 		doc.start = start
 		
 		minMinutes = UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
-		mergeOverlapping = true
 		
-		if minMinutes > 0 and lastEvent? and ((moment(doc.end).diff(doc.start, "minutes") < minMinutes))
+
+		
+		if minMinutes > 0 and lastEvent? and lastEvent.source is doc.source and((moment(doc.end).diff(doc.start, "minutes") < minMinutes))
 			mergeEvents lastEvent, doc
 		
-		else if mergeOverlapping and lastEvent? and lastEvent.end.getTime() > start.getTime()
+		else if lastEvent? and lastEvent.source is doc.source and lastEvent.end.getTime() > start.getTime()
 			
 			mergeEvents lastEvent, doc
 
-			console.log moment(start).diff(lastEvent?.start, "minutes")
 		else 
-			if start? and lastEvent? and start.getTime() > lastEvent.end.getTime() and start.getTime() > preferedStartTime.getTime()
+			
+			lastEventDate = getLastEventDate doc.end
+
+
+			if start? events.length > 0 and lastEventDate? and start.getTime() > lastEventDate.getTime() and start.getTime() > preferedStartTime.getTime()
 				# gap, add a fake doc
 				
 				events.push 
 					_id: "before_#{doc._id}"
 					isGap: true
 					bulletPoints: ["gap"]
-					start: lastEvent.end
+					start: lastEventDate
 					end: start
 					index: events.length
 			lastEvent = doc
@@ -136,20 +162,44 @@ getSanitizedEvents = ->
 getSanitizedTimeEntries = ->
 	
 	entries = []
-	
-	
+
 	TimeEntries.find({day: moment(@).format("YYYY-MM-DD")}, sort: "start": 1).forEach (doc) ->
 		doc.index = entries.length
 		entries.push doc
 	entries
-	
+###
+getFirstEventMoment = ->
+	firstEvent = _.first getSanitizedEvents.apply @
+	firstTimeEntry = _.first getSanitizedTimeEntries.apply @
+	if(firstEvent.start.getTime() < firstTimeEntry.start.getTime())
+		moment firstEvent.start
+	else
+		moment firstTimeEntry.start
 
+getLastEventMoment = ->
+	lastEvent = _.last getSanitizedEvents.apply @
+	lastTimeEntry = _.last getSanitizedTimeEntries.apply @ 
+	if(lastEvent.end.getTime() > lastTimeEntry.end.getTime())
+		moment lastEvent.end
+	else
+		moment lastTimeEntry.end
+	
+####
+
+Template.eventList_oneDay.rendered = ->
+	@$(".fixedsticky").fixedsticky()
 Template.eventList_oneDay.helpers
+
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 			count = getSanitizedEvents.apply(@).length
 			if count > 0 then count * listHeight else "auto" 
 		else
+			#first = getFirstEventMoment.apply @
+			#last = getLastEventMoment.apply @
+			#duration = last.toDate().getTime() - first.toDate().getTime()
+			#console.log duration
+			#duration/60000 * pixelPerMinute
 			dayHeight
 	events: getSanitizedEvents
 	timeEntries: getSanitizedTimeEntries
@@ -157,9 +207,6 @@ Template.eventList_oneDay.helpers
 	
 
 
-# sanitize event startDate
-getSavedEvent = (id) ->
-	SavedEvents.findOne userId: Meteor.userId(), eventId: id
 
 
 bottomHelper = ->
@@ -167,7 +214,8 @@ bottomHelper = ->
 		listHeight * @index
 	else
 		mnt = moment getStartOfEvent @
-
+	
+		#first = getFirstEventMoment.apply Template.parentData 1
 		midnight = moment(mnt).startOf "day"
 		mnt.diff(midnight, "minutes") * pixelPerMinute
 
@@ -177,47 +225,40 @@ heightHelper = ->
 	else
 		duration = (new Date @end).getTime() - (new Date getStartOfEvent @).getTime()
 		duration/60000 * pixelPerMinute
-Template.eventList_oneEvent.helpers
-	
+
+Template.eventList_oneEvent.helpers	
 	start: ->
 		getStartOfEvent @
-
-	declined: ->
-		savedEvent = getSavedEvent @_id
-		savedEvent?.state is "declined"
-	acknowledged: ->
-		savedEvent = getSavedEvent @_id
-		savedEvent?.state is "acknowledged"
 	bottom: bottomHelper
-		
 	height: heightHelper
 
 Template.eventList_oneTimeEntry.helpers 
 	bottom: bottomHelper
-		
 	height: heightHelper
 
-Template.eventList_oneEvent.rendered = ->
-	addDrag @firstNode
 
 
 Template.eventList_oneEvent.events
-	'click': ->
-		#disabled
-		return true
-		savedEvent = getSavedEvent @_id
-		unless savedEvent?
-			newEvent = _.clone @
-			newEvent.userId =  Meteor.userId()
-			newEvent.eventId = @_id
-			newEvent.state =  "acknowledged"
-			delete newEvent._id
+	'click': (event, template)->
 
-			SavedEvents.insert newEvent
-		else
-			# toggle state
-			if savedEvent.state == "acknowledged"
-				newState = "declined"
-			else
-				newState = "acknowledged"
-			SavedEvents.update {_id: savedEvent._id}, $set: state: newState
+		Session.set "currentEvent", template.data
+		Router.go "newTimeEntry"
+
+
+Template.eventList_oneTimeEntry.events
+	'click': ->
+		Router.go "editTimeEntry", timeEntryId: @_id
+
+
+
+
+
+
+
+
+
+
+
+
+
+

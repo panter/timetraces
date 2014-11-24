@@ -1,10 +1,14 @@
 
 Meteor.methods
-	"create.entry": (data)->
-		userToken = UserSettings.get "controllrApiKey", null, userId
-			
-		HTTP.call "POST", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
-			data: data
+	"createOrUpdateEntry": (data)->
+		userToken = UserSettings.get "controllrApiKey", null, @userId
+		console.log data
+		if data._id?
+			HTTP.call "PUT", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
+				data: data
+		else
+			HTTP.call "POST", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
+				data: data
 
 
 
@@ -18,7 +22,9 @@ Meteor.startup ->
 			item
 
 	transformCalendarEvents = (data) ->
+
 		_.map data, (item) ->
+			
 			start = new Date item.start.dateTime || item.start.date
 			end = new Date item.end.dateTime || item.end.date
 			_id: item.id.toString()
@@ -30,13 +36,12 @@ Meteor.startup ->
 	transformRedmineIssues = (data) ->
 	
 		_.map data, (item) ->
-
 			end = new Date item.updated_on
 			
 			_id: item.id.toString()
 			end: end
 			bulletPoints: [item.subject]
-			source: "Redmine"
+			source: "Redmine #{item.project.name}"
 		
 
 	Meteor.publishRestApi 
@@ -94,6 +99,43 @@ Meteor.startup ->
 			return [] unless result?.data?.issues?
 			
 			transformRedmineIssues result.data.issues
+
+	Meteor.publishRestApi 
+		name: "githubEvents"
+		collection: "Events"
+		refreshTime: 10000
+		apiCall: (params)->
+	
+			return [] unless @userId?
+			githubAccessToken = UserSettings.get "githubAccessToken", null, @userId
+			githubUsername = UserSettings.get "githubUsername", null, @userId
+
+			return [] unless githubAccessToken? and githubUsername?
+				
+			url = "https://api.github.com/users/#{githubUsername}/events?access_token=#{githubAccessToken}"
+
+			
+			result = HTTP.get url, headers: "User-Agent": "timetracking-app"
+
+			return [] unless result?.data?
+
+			events = []
+			for item in result.data
+				switch item.type
+					when "PushEvent"
+						bulletPoints = _(item?.payload?.commits).map (commit) -> "#{commit.message}"
+						
+						events.push 
+							_id: item.id.toString()
+							end: new Date item.created_at
+							bulletPoints: bulletPoints
+							source: "Github #{item.repo.name}"
+			console.log events
+			events
+			
+					
+				
+			
 				
 
 	Meteor.publishRestApi 
@@ -124,12 +166,40 @@ Meteor.startup ->
 				else 
 					url += "&#{param}="+params[param] if params[param]?
 			
-				
+
 			
-			console.log url
 			result = HTTP.get url
 			if result.data?
-				handleIds result.data
+				_(result.data).map (entry) ->
+					dayMoment = moment entry.day
+
+					# start and end are wrong in the controllr
+					# they have only the time and not the right day
+					# also, they have a wrong timezone suffix
+					fixDay = (aMoment) ->
+
+						aMoment.year dayMoment.year()
+						aMoment.month dayMoment.month()
+						aMoment.date dayMoment.date()
+						# currently, time zone is one hour shifted
+						aMoment.subtract 1, "hours"
+						aMoment
+					if entry.start?
+						startMoment = fixDay moment entry.start
+					else 
+						startMoment = dayMoment
+					if entry.end?
+						endMoment = fixDay moment entry.end
+					else
+						endMoment = moment(dayMoment).add entry.duration, "minutes"
+					
+
+					entry._id = entry.id.toString()
+					entry.start = startMoment.toDate()
+					entry.end = endMoment.toDate()
+					
+
+					entry
 
 	Meteor.publishRestApi 
 		name: "project_states"

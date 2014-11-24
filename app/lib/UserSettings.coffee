@@ -21,12 +21,15 @@ store.attachSchema new SimpleSchema
 		optional: true
 	redmineApiKey: 
 		type: String
-
 		label: "redmineApiKey"
 		optional: true
 	redmineUrl: 
 		type: String
 		label: "redmine URL"
+		optional: true
+	redmineUserId: 
+		type: Number
+		label: "redmine User ID"
 		optional: true
 	eventListViewMode:
 		type: String
@@ -47,6 +50,15 @@ store.attachSchema new SimpleSchema
 	controllrApiKey:
 		type: String
 		label: "Controllr Api Key"
+		optional: true
+
+	githubAccessToken:
+		type: String
+		label: "Github Access Token"
+		optional: true
+	githubUsername:
+		type: String
+		label: "Github Username"
 		optional: true
 
 if Meteor.isClient

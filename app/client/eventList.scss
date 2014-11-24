@@ -4,35 +4,31 @@
 	.day
 	{
 		transition: 0.6s;
-		position: relative;
-		background: linear-gradient(to bottom, #154277 0%,#576e71 20%,#e1c45e 50%,#b26339 100%);
 
-		.event
-		{
-			left: 0px
-		}
-		.timeEntry
-		{
-			right: 0px;
-		}
+		
+
+		position: relative;
+		background: linear-gradient(to top, rgba(#154277, 0.5) 0%,rgba(#576e71,0.5) 20%,rgba(#e1c45e,0.5) 50%,rgba(#b26339,0.5) 100%);
+
+
 		.event, .timeEntry
 		{
-			width: 50%;
+			width: 80%;
 			transition: 0.6s;
 			padding-top: 6px;
-			padding-bottom: 6px;
+			
 			overflow: hidden;
-
-				
-				&:hover
+			box-sizing: border-box;
+			z-index: 50;
+			&:hover
+			{
+				overflow: visible;
+				z-index: 100;
+				.content
 				{
-					overflow: visible;
-					z-index: 100;
-					.content
-					{
-						box-shadow: -1px 1px 10px #333;
-					}
+					box-shadow: -1px 1px 10px #333;
 				}
+			}
 			.content
 			{
 
@@ -42,21 +38,28 @@
 
 				background-color: rgba(192,192,192,0.9);
 
-				border-radius: 8px;
-				z-index: 50;
+				border-radius: 4px;
+				border: 2px solid rgba(144,144,144,0.9);
 				position: relative;
 			}
 
-			&.acknowledged .content
-			{
-				z-index: 40;
-				background-color: rgba(192,255,192,0.9);
-			}
+			
 
-			&.declined .content
+		}
+
+		.event
+		{
+
+			left: 0%;
+			
+		}
+		.timeEntry
+		{
+			z-index: 60;
+			right: 0px;
+			.content
 			{
-				z-index: 30;
-				background-color: rgba(255,192,192,0.9);
+				background-color: rgba(192,255,192,0.9);
 			}
 
 		}

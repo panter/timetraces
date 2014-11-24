@@ -5,10 +5,7 @@ Accounts.ui.config
 	requestPermissions: 
 		google: ['https://www.googleapis.com/auth/calendar']
 
-Router.configure 
 
-	layoutTemplate: 'layout'
-	loadingTemplate: 'loading'
 
 @Calendars = new Meteor.Collection "Calendars"
 @Projects = new Meteor.Collection "Projects"
@@ -16,25 +13,23 @@ Router.configure
 @ProjectStates = new Meteor.Collection "ProjectStates"
 @Events = new Meteor.Collection "Events"
 @RedmineProjects = new Meteor.Collection "RedmineProjects"
-@RedmineIssues = new Meteor.Collection "RedmineIssues"
+@RedmineIssues = new Meteor.Collection "RedmineIssues" # remove?
 @TimeEntries = new Meteor.Collection "TimeEntries"
 
 
 
-Router.map ->
-	@route 'calendarTest'
+Router.configure 
 
+	layoutTemplate: 'layout'
+	loadingTemplate: 'loading'
+
+
+Router.map ->
 	
 	
 
 	@route 'home', path: "/"
-	@route 'postForm',
-		subscriptions: -> [
-			Meteor.subscribe "projects"
-			Meteor.subscribe "project_states"
-			Meteor.subscribe "allTasks"
-		]
-		
+	
 
 Template.registerHelper "equals", (a, b) ->
 	a == b

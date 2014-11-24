@@ -14,14 +14,13 @@
 </template>
 
 <template name="eventList_oneDay">
-	<h2>{{calendar}}</h2>
+	
 	<div class="day" style="height: {{height}}px">
+	<h2 class="fixedsticky">{{calendar}}</h2>
 	
 
 	{{#each events}}
 		{{>eventList_oneEvent}}
-	{{else}}
-		<p> no events on this day</p>
 	{{/each}}
 
 	{{#each timeEntries}}

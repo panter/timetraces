@@ -4,39 +4,52 @@
 
 	{{#autoForm collection="UserSettingsStore" doc=settings id="insertBookForm" type="update" autosave=true}}
 	<div class="row">
-	<fieldset class="col-sm-6">
-		<legend>General Settings</legend>
-		{{> afQuickField name='startOfDay' type="time"}}
-		{{> afQuickField name='minimumMergeTime'}}
-		{{> afQuickField name='eventListViewMode'}}
-	</fieldset>
-	<fieldset class="col-sm-6">
-		<legend>Controllr Settings</legend>
-		{{> afQuickField name='controllrApiKey'}}
-		{{> afQuickField name='controllrUsername'}}
+		<fieldset class="col-sm-6">
+			<legend>General Settings</legend>
+			{{> afQuickField name='startOfDay' type="time"}}
+			{{> afQuickField name='minimumMergeTime'}}
+			{{> afQuickField name='eventListViewMode'}}
+		</fieldset>
+		<fieldset class="col-sm-6">
+			<legend>Controllr Settings</legend>
+			{{> afQuickField name='controllrApiKey'}}
+			{{> afQuickField name='controllrUsername'}}
 
 
-	</fieldset>
+		</fieldset>
 	</div>
-		<div class="row">
-	<fieldset class="col-sm-6">
-		<legend>Redmine Settings</legend>
-		{{#if redmineProjects}}
+	<div class="row">
+		<fieldset class="col-sm-6">
+			<legend>Redmine Settings</legend>
+			{{#if redmineProjects}}
 			{{> afQuickField name='redmineProjects' options=redmineProjects noselect=true}}
-		{{/if}}
-		{{> afQuickField name='redmineUrl'}}
-		{{> afQuickField name='redmineApiKey'}}
+			{{/if}}
+			{{> afQuickField name='redmineUrl'}}
+			{{> afQuickField name='redmineApiKey'}}
+			{{> afQuickField name='redmineUserId'}}
 
 
 
-	</fieldset>
+		</fieldset>
+		<fieldset class="col-sm-6">
+			<legend>Github Settings</legend>
 
-	<fieldset class="col-sm-6">
-		<legend>Calendar Settings</legend>
+			{{> afQuickField name='githubAccessToken'}}
+			{{> afQuickField name='githubUsername'}}
 
-		{{> afQuickField name='calendars' options=calendars noselect=true}}
+		</fieldset>
+	</div>
+	<div class="row">
 
-	</fieldset>
+
+
+		<fieldset class="col-sm-6">
+			<legend>Calendar Settings</legend>
+
+			{{> afQuickField name='calendars' options=calendars noselect=true}}
+
+
+		</fieldset>
 	</div>
 
 
