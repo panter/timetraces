@@ -2,7 +2,7 @@
 Meteor.methods
 	"createOrUpdateEntry": (data)->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
-		console.log data
+
 		if data._id?
 			HTTP.call "PUT", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
 				data: data
@@ -130,7 +130,6 @@ Meteor.startup ->
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
 							source: "Github #{item.repo.name}"
-			console.log events
 			events
 			
 					
@@ -144,7 +143,7 @@ Meteor.startup ->
 		refreshTime: 10000
 		apiCall: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
-			console.log userToken
+			
 			if userToken?
 				result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
 				if result.data?

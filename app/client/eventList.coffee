@@ -1,5 +1,5 @@
 
-pixelPerMinute = 1
+pixelPerMinute = 1.5
 dayHeight = 1440 * pixelPerMinute
 
 listHeight = 120
@@ -31,22 +31,31 @@ Router.route 'eventList',
 			subscriptions.push Meteor.subscribe "redmineIssues", 
 				project_id: project._id
 				updated_on: encodeURIComponent(">=")+moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
-		subscriptions	
+		subscriptions
 
-Template.eventList.helpers
-	viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-
-	days: ->
+	data: ->
+		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
+		days: ->
+			newestMoment = moment().endOf("day")
+			oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
+			
+			days = []
+			while(oldestMoment.valueOf()< newestMoment.valueOf())
+				dayMoment = moment newestMoment
+				events = getSanitizedEvents dayMoment
+				timeEntries = getSanitizedTimeEntries dayMoment
+				both = events.concat timeEntries
+				first = _.min both, (entry) -> entry.start.getTime()
+				last = _.max both, (entry) -> entry.end.getTime()
 		
-
-		newestMoment = moment().endOf("day")
-		oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
-		
-		days = []
-		while(oldestMoment.valueOf()< newestMoment.valueOf())
-			days.push moment(newestMoment)
-			newestMoment.subtract 1, "d"
-		days
+				days.push 
+					dayMoment: dayMoment
+					dayEvents: events
+					timeEntries: timeEntries
+					firstMoment: moment first.start
+					lastMoment: moment last.end
+				newestMoment.subtract 1, "d"
+			days
 
 
 
@@ -115,10 +124,10 @@ mergeEvents = (event, toMerge) ->
 	if toMerge.end.getTime() > event.end.getTime()
 		event.end = toMerge.end
 	
-getSanitizedEvents = ->
-	end = @toDate()
-	start = moment(@).startOf("day").toDate()
-	preferedStartTime = getPreferedStartOfDay(@).toDate()
+getSanitizedEvents = (dayMoment)->
+	end = dayMoment.toDate()
+	start = moment(dayMoment).startOf("day").toDate()
+	preferedStartTime = getPreferedStartOfDay(dayMoment).toDate()
 	
 	events = []
 	
@@ -159,50 +168,36 @@ getSanitizedEvents = ->
 	
 	events.reverse()
 
-getSanitizedTimeEntries = ->
+getSanitizedTimeEntries = (dayMoment)->
 	
 	entries = []
 
-	TimeEntries.find({day: moment(@).format("YYYY-MM-DD")}, sort: "start": 1).forEach (doc) ->
+	TimeEntries.find({day: moment(dayMoment).format("YYYY-MM-DD")}, sort: "start": 1).forEach (doc) ->
 		doc.index = entries.length
 		entries.push doc
 	entries
-###
-getFirstEventMoment = ->
-	firstEvent = _.first getSanitizedEvents.apply @
-	firstTimeEntry = _.first getSanitizedTimeEntries.apply @
-	if(firstEvent.start.getTime() < firstTimeEntry.start.getTime())
-		moment firstEvent.start
-	else
-		moment firstTimeEntry.start
 
-getLastEventMoment = ->
-	lastEvent = _.last getSanitizedEvents.apply @
-	lastTimeEntry = _.last getSanitizedTimeEntries.apply @ 
-	if(lastEvent.end.getTime() > lastTimeEntry.end.getTime())
-		moment lastEvent.end
-	else
-		moment lastTimeEntry.end
-	
-####
 
-Template.eventList_oneDay.rendered = ->
-	@$(".fixedsticky").fixedsticky()
+
+
+#Template.eventList_oneDay.rendered = ->
+#	@$(".fixedsticky").fixedsticky()
+
 Template.eventList_oneDay.helpers
-
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-			count = getSanitizedEvents.apply(@).length
+			count = Math.max @dayEvents.length, @timeEntries.length
+		
+
 			if count > 0 then count * listHeight else "auto" 
 		else
-			#first = getFirstEventMoment.apply @
-			#last = getLastEventMoment.apply @
-			#duration = last.toDate().getTime() - first.toDate().getTime()
-			#console.log duration
-			#duration/60000 * pixelPerMinute
-			dayHeight
-	events: getSanitizedEvents
-	timeEntries: getSanitizedTimeEntries
+			
+			
+			if @firstMoment? and @lastMoment?
+				duration = @lastMoment.toDate().getTime() - @firstMoment.toDate().getTime()
+				duration/60000 * pixelPerMinute
+			else
+				0
 
 	
 
@@ -213,12 +208,11 @@ bottomHelper = ->
 	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		listHeight * @index
 	else
+		
+		dayData = Template.parentData(1)
 		mnt = moment getStartOfEvent @
+		mnt.diff(dayData.firstMoment, "minutes") * pixelPerMinute
 	
-		#first = getFirstEventMoment.apply Template.parentData 1
-		midnight = moment(mnt).startOf "day"
-		mnt.diff(midnight, "minutes") * pixelPerMinute
-
 heightHelper = ->
 	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		listHeight
@@ -227,8 +221,6 @@ heightHelper = ->
 		duration/60000 * pixelPerMinute
 
 Template.eventList_oneEvent.helpers	
-	start: ->
-		getStartOfEvent @
 	bottom: bottomHelper
 	height: heightHelper
 
@@ -237,10 +229,8 @@ Template.eventList_oneTimeEntry.helpers
 	height: heightHelper
 
 
-
 Template.eventList_oneEvent.events
 	'click': (event, template)->
-
 		Session.set "currentEvent", template.data
 		Router.go "newTimeEntry"
 

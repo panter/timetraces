@@ -15,11 +15,12 @@
 
 <template name="eventList_oneDay">
 	
-	<div class="day" style="height: {{height}}px">
-	<h2 class="fixedsticky">{{calendar}}</h2>
+	<div class="day" >
+	<h2 class="fixedsticky">{{dayMoment.calendar}}</h2>
+	<div class="timeline" style="height: {{height}}px">
 	
 
-	{{#each events}}
+	{{#each dayEvents}}
 		{{>eventList_oneEvent}}
 	{{/each}}
 
@@ -27,6 +28,7 @@
 		{{>eventList_oneTimeEntry}}
 	
 	{{/each}}
+	</div>
 	</div>
 </template>
 
