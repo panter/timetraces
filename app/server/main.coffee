@@ -2,7 +2,7 @@
 Meteor.methods
 	"createOrUpdateEntry": (data)->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
-
+		console.log data
 		if data._id?
 			HTTP.call "PUT", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
 				data: data
@@ -116,7 +116,6 @@ Meteor.startup ->
 
 			
 			result = HTTP.get url, headers: "User-Agent": "timetracking-app"
-
 			return [] unless result?.data?
 
 			events = []

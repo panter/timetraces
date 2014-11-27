@@ -23,39 +23,40 @@ Router.route 'eventList',
 			subscriptions.push Meteor.subscribe "latestCalendarEvents", 
 				calendarId: calendar._id
 				singleEvents: true
-				timeMax: moment().format()
-				timeMin: moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
+				timeMax: moment().endOf("day").format()
+				timeMin: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
 				orderBy: "startTime"
 		
 		for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
 			subscriptions.push Meteor.subscribe "redmineIssues", 
 				project_id: project._id
-				updated_on: encodeURIComponent(">=")+moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
+				updated_on: encodeURIComponent(">=")+moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
 		subscriptions
 
 	data: ->
-		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-		days: ->
-			newestMoment = moment().endOf("day")
-			oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
+		if @ready()
+			viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
+			days: ->
+				newestMoment = moment().endOf("day")
+				oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
+				
+				days = []
+				while(oldestMoment.valueOf()< newestMoment.valueOf())
+					dayMoment = moment newestMoment
+					events = getSanitizedEvents dayMoment
+					timeEntries = getSanitizedTimeEntries dayMoment
+					both = events.concat timeEntries
+					first = _.min both, (entry) -> entry.start.getTime()
+					last = _.max both, (entry) -> entry.end.getTime()
 			
-			days = []
-			while(oldestMoment.valueOf()< newestMoment.valueOf())
-				dayMoment = moment newestMoment
-				events = getSanitizedEvents dayMoment
-				timeEntries = getSanitizedTimeEntries dayMoment
-				both = events.concat timeEntries
-				first = _.min both, (entry) -> entry.start.getTime()
-				last = _.max both, (entry) -> entry.end.getTime()
-		
-				days.push 
-					dayMoment: dayMoment
-					dayEvents: events
-					timeEntries: timeEntries
-					firstMoment: moment first.start
-					lastMoment: moment last.end
-				newestMoment.subtract 1, "d"
-			days
+					days.push 
+						dayMoment: dayMoment
+						dayEvents: events
+						timeEntries: timeEntries
+						firstMoment: moment first.start
+						lastMoment: moment last.end
+					newestMoment.subtract 1, "d"
+				days
 
 
 

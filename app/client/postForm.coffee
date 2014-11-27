@@ -1,13 +1,31 @@
-subscriptions = -> [
-			Meteor.subscribe "projects"
-			Meteor.subscribe "project_states"
-			Meteor.subscribe "allTasks"
-			Meteor.subscribe "time_entries",
-				employee_usernames: UserSettings.get "controllrUsername"
-				date_from: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
-		
-		]
+subscriptions = -> 
+	subscriptions = [] 
+	subscriptions.push Meteor.subscribe "savedEvents"
+	subscriptions.push Meteor.subscribe "calendarList"
+	subscriptions.push Meteor.subscribe "redmineProjects"
+	subscriptions.push Meteor.subscribe "projects"
+	subscriptions.push Meteor.subscribe "project_states"
+	subscriptions.push Meteor.subscribe "allTasks"
+	subscriptions.push Meteor.subscribe "githubEvents"
+	subscriptions.push Meteor.subscribe "time_entries",
+		employee_usernames: UserSettings.get "controllrUsername"
+		date_from: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
+	for calendar in Calendars.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)).fetch()
+		subscriptions.push Meteor.subscribe "latestCalendarEvents", 
+			calendarId: calendar._id
+			singleEvents: true
+			timeMax: moment().endOf("day").format()
+			timeMin: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
+			orderBy: "startTime"
+	
+	for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
+		subscriptions.push Meteor.subscribe "redmineIssues", 
+			project_id: project._id
+			updated_on: encodeURIComponent(">=")+moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
+	subscriptions
 
+
+	
 sanitizeTime = (date) ->
 	moment(date).format "HH:mm"
 
