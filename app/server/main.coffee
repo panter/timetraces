@@ -31,7 +31,7 @@ Meteor.startup ->
 			start: start
 			end: end
 			bulletPoints: [item.summary]
-			source: "Calendar"
+			sources: ["Calendar"]
 
 	transformRedmineIssues = (data) ->
 	
@@ -41,7 +41,7 @@ Meteor.startup ->
 			_id: item.id.toString()
 			end: end
 			bulletPoints: [item.subject]
-			source: "Redmine #{item.project.name}"
+			sources: ["Redmine #{item.project.name}"]
 		
 
 	Meteor.publishRestApi 
@@ -128,7 +128,7 @@ Meteor.startup ->
 							_id: item.id.toString()
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
-							source: "Github #{item.repo.name}"
+							sources: ["Github #{item.repo.name}"]
 			events
 			
 					

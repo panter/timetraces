@@ -97,7 +97,8 @@ getStartOfEvent = (event) ->
 	else
 		lastEventDate = getLastEventDate eventDate
 		lastTimeEntryByStart = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), start: $lt: eventDate}, sort: "start": -1
-		if lastTimeEntryByStart? and lastTimeEntryByStart.start.getTime() > lastEventDate.getTime()
+
+		if lastTimeEntryByStart? and (not lastEventDate? or lastTimeEntryByStart.start.getTime() > lastEventDate.getTime())
 			lastEventDate = lastTimeEntryByStart.start
 		lastEventMoment = moment lastEventDate
 		# do not go befor start of the day
@@ -118,13 +119,23 @@ getStartOfEvent = (event) ->
 
 
 mergeEvents = (event, toMerge) ->
-	
-	event.bulletPoints = event.bulletPoints.concat toMerge.bulletPoints
+	event.sources = _.unique event.sources.concat toMerge.sources
+	event.bulletPoints = _.unique event.bulletPoints.concat toMerge.bulletPoints
 	if toMerge.start.getTime() < event.start.getTime()
 		event.start = toMerge.start
 	if toMerge.end.getTime() > event.end.getTime()
 		event.end = toMerge.end
+
+findProject = (event) ->
+	traces = event?.sources
+	traces = traces.concat event?.bulletPoints
 	
+	for trace in traces
+		for word in trace.split /[\s/]+/
+			project = Projects.findOne shortname: word
+			return project if project?
+	
+
 getSanitizedEvents = (dayMoment)->
 	end = dayMoment.toDate()
 	start = moment(dayMoment).startOf("day").toDate()
@@ -136,24 +147,25 @@ getSanitizedEvents = (dayMoment)->
 	Events.find({end: {$gte: start, $lt: end}}, sort: "end": 1).forEach (doc) =>
 		start = getStartOfEvent doc
 		doc.start = start
-		
+		doc.project = findProject doc
 		minMinutes = UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
 		
 
+		shouldMerge = ->
+			return no unless lastEvent?
+			return no unless lastEvent.project?._id is doc.project?._id
+			return yes if minMinutes? and moment(doc.end).diff(doc.start, "minutes") < minMinutes
+			return yes if lastEvent.end.getTime() > start.getTime() # overlapping
+			return no # everything else
 		
-		if minMinutes > 0 and lastEvent? and lastEvent.source is doc.source and((moment(doc.end).diff(doc.start, "minutes") < minMinutes))
+		if shouldMerge()
 			mergeEvents lastEvent, doc
-		
-		else if lastEvent? and lastEvent.source is doc.source and lastEvent.end.getTime() > start.getTime()
-			
-			mergeEvents lastEvent, doc
-
 		else 
 			
 			lastEventDate = getLastEventDate doc.end
 
 
-			if start? events.length > 0 and lastEventDate? and start.getTime() > lastEventDate.getTime() and start.getTime() > preferedStartTime.getTime()
+			if start? and events.length > 0 and lastEventDate? and start.getTime() > lastEventDate.getTime() and start.getTime() > preferedStartTime.getTime()
 				# gap, add a fake doc
 				
 				events.push 

@@ -42,14 +42,7 @@ Router.route 'editTimeEntry',
 			timeEntry: timeEntry
 			new: false
 
-findProject = (event) ->
-	traces = [event?.source]
-	traces = traces.concat event?.bulletPoints
-	console.log traces
-	for trace in traces
-		for word in trace.split /[\s/]+/
-			project = Projects.findOne shortname: word
-			return project if project?
+
 findTaskID = (event) ->
 
 	sourceTaskMap = 
@@ -59,7 +52,7 @@ findTaskID = (event) ->
 
 
 	for keyword, taskName of sourceTaskMap
-		if event?.source?.toLowerCase().indexOf(keyword) >= 0
+		if event?.sources?.join(" ").toLowerCase().indexOf(keyword) >= 0
 			task = Tasks.findOne project_id: Session.get("currentProjectId"), name: taskName
 			return parseInt task._id, 10 if task?
 
@@ -72,9 +65,9 @@ Router.route 'newTimeEntry',
 		currentEvent = Session.get "currentEvent"
 		# find possible project
 		if currentEvent?
-			project = findProject currentEvent
-			if project?
-				Session.set "currentProjectId", parseInt project._id, 10
+
+			if currentEvent.project?._id?
+				Session.set "currentProjectId", parseInt currentEvent.project._id, 10
 			taskId = findTaskID currentEvent
 
 
@@ -97,6 +90,7 @@ Template.postForm.rendered = ->
 
 Template.postForm.events
 	'change .projectId': (event, template) ->
+		projectId =  parseInt $(event.currentTarget).val(),10
 		Session.set "currentProjectId", projectId
 
 Template.projectsSelect.events
@@ -131,7 +125,7 @@ Template.projectsSelect.helpers
 Template.postForm.helpers
 	
 
-	projects: -> Projects.find().map (project) ->
+	projects: -> Projects.find({}, sort: shortname: 1).map (project) ->
 		value: parseInt project._id, 10
 		label: project.shortname
 	
