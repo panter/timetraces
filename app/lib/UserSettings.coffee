@@ -109,3 +109,10 @@ if Meteor.isServer
 		$set[fullProperty] = value
 	
 		store.update Meteor.userId(), {$set: $set}, upsert: true
+
+
+
+
+
+
+		

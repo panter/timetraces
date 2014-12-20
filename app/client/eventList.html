@@ -36,6 +36,7 @@
 	<div class="event col-xs-12 {{#if acknowledged}}acknowledged{{/if}} {{#if declined}}declined{{/if}}" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
 		{{index}}
+		{{#each sources}}{{this}} {{/each}}
 		{{#if project.shortname}}<strong>{{project.shortname}}: </strong>{{/if}}
 		<span class="duration">{{duration start end}}</span> {{calendarFormat start end}}
 		<ul>

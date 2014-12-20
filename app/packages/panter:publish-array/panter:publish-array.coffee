@@ -1,7 +1,7 @@
 
 
-Meteor.publishRestApi = (options) ->
-	{name, collection, apiCall, refreshTime} = options
+Meteor.publishArray = (options) ->
+	{name, collection, data, refreshTime} = options
 
 	Meteor.publish name, (params) ->
 		pub = @
@@ -10,7 +10,7 @@ Meteor.publishRestApi = (options) ->
 			console.log "refreshing #{name}"
 			currentIds = {}
 			try
-				results = apiCall.call pub, params
+				results = data.call pub, params
 			catch error
 				results = []
 			
@@ -31,8 +31,10 @@ Meteor.publishRestApi = (options) ->
 			pub.ready()
 			
 		Meteor.defer refresh
-		refreshHandle = Meteor.setInterval refresh, refreshTime || 5000
+		if refreshTime?
+			refreshHandle = Meteor.setInterval refresh, refreshTime
 		
 		@onStop =>
 			console.log "on stop", name
-			Meteor.clearInterval refreshHandle
+			if refreshHandle?
+				Meteor.clearInterval refreshHandle

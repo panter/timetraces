@@ -44,29 +44,29 @@ Meteor.startup ->
 			sources: ["Redmine #{item.project.name}"]
 		
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "calendarList"
 		collection: "Calendars"
-		apiCall: (params)->
+		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
 				result = GoogleApi.get "calendar/v3/users/me/calendarList", user: user
 				handleIds result.items
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "latestCalendarEvents"
 		collection: "Events"
-		apiCall: (params)->
+		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
 				result = GoogleApi.get "calendar/v3/calendars/#{params.calendarId}/events", user: user, params: params
 				transformCalendarEvents result.items
 	
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "redmineProjects"
 		collection: "RedmineProjects"
-		refreshTime: 10000
-		apiCall: (params)->
+		refresh: 10000
+		data: (params)->
 		
 			return [] unless @userId?
 			apiKey = UserSettings.get "redmineApiKey", null, @userId
@@ -80,11 +80,11 @@ Meteor.startup ->
 		
 			handleIds result.data.projects
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "redmineIssues"
 		collection: "Events"
-		refreshTime: 10000
-		apiCall: (params)->
+		refresh: 10000
+		data: (params)->
 	
 			return [] unless @userId?
 			apiKey = UserSettings.get "redmineApiKey", null, @userId
@@ -100,11 +100,11 @@ Meteor.startup ->
 			
 			transformRedmineIssues result.data.issues
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "githubEvents"
 		collection: "Events"
-		refreshTime: 10000
-		apiCall: (params)->
+		refresh: 10000
+		data: (params)->
 	
 			return [] unless @userId?
 			githubAccessToken = UserSettings.get "githubAccessToken", null, @userId
@@ -136,11 +136,11 @@ Meteor.startup ->
 			
 				
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "projects"
 		collection: "Projects"
-		refreshTime: 10000
-		apiCall: (params)->
+		refresh: 10000
+		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
 			if userToken?
@@ -148,10 +148,10 @@ Meteor.startup ->
 				if result.data?
 					handleIds result.data
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "time_entries"
 		collection: "TimeEntries"
-		apiCall: (params)->
+		data: (params)->
 			shortnameQueryParam = ""
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
@@ -199,19 +199,19 @@ Meteor.startup ->
 
 					entry
 
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "project_states"
 		collection: "ProjectStates"
-		apiCall: (params)->
+		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
 			result = HTTP.get "http://controllr.panter.biz/api/project_states.json?user_token=#{userToken}"
 			if result.data?
 				handleIds result.data
-	Meteor.publishRestApi 
+	Meteor.publishArray 
 		name: "allTasks"
 		collection: "Tasks"
-		apiCall: (params)->
+		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
 			result = HTTP.get "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
