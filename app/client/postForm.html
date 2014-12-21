@@ -1,5 +1,5 @@
 <template name="postForm">
-
+<div class="container">
 
 
  {{#autoForm schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry"}}
@@ -9,12 +9,12 @@
       {{else}}
         <legend>Edit Entry</legend>
         {{/if}}
-      
-      {{> afQuickField class="projectId" name='project_id' options=projects}}
-      {{> afQuickField name='task_id' options=taskIdOptions}}
+       {{> afQuickField name='day'}}
+      {{> afQuickField class="projectId col-xs-6" name='project_id' options=projects}}
+      {{> afQuickField name='task_id' options=taskIdOptions class="col-xs-6"}}
       {{> afQuickField name='description' rows=6}}
-      {{> afQuickField name='day'}}
-      {{> afQuickField name='duration_hours'}}
+     
+     
       {{> afQuickField name='start' type="time"}}
       {{> afQuickField name='end' type="time"}}
       {{> afQuickField name='billable'}}
@@ -25,7 +25,7 @@
 
 
 
-
+</div>
 
 </template>
 

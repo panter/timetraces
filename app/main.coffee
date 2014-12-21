@@ -1,3 +1,3 @@
 
 
-@SavedEvents = new Meteor.Collection "SavedEvents"
+@EventsModified = new Meteor.Collection "EventsModified"

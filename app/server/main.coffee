@@ -39,6 +39,7 @@ Meteor.startup ->
 			end = new Date item.updated_on
 			
 			_id: item.id.toString()
+			billable: yes
 			end: end
 			bulletPoints: [item.subject]
 			sources: ["Redmine #{item.project.name}"]
@@ -47,6 +48,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "calendarList"
 		collection: "Calendars"
+		refresh: 10000
 		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
@@ -56,6 +58,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "latestCalendarEvents"
 		collection: "Events"
+		refresh: 10000
 		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
@@ -123,11 +126,12 @@ Meteor.startup ->
 				switch item.type
 					when "PushEvent"
 						bulletPoints = _(item?.payload?.commits).map (commit) -> "#{commit.message}"
-						
+					
 						events.push 
 							_id: item.id.toString()
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
+							billable: yes
 							sources: ["Github #{item.repo.name}"]
 			events
 			
@@ -151,6 +155,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "time_entries"
 		collection: "TimeEntries"
+		refresh: 10000
 		data: (params)->
 			shortnameQueryParam = ""
 			userToken = UserSettings.get "controllrApiKey", null, @userId
@@ -202,6 +207,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "project_states"
 		collection: "ProjectStates"
+		refresh: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
@@ -211,6 +217,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "allTasks"
 		collection: "Tasks"
+		refresh: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
@@ -218,6 +225,7 @@ Meteor.startup ->
 			if result.data?
 				handleIds result.data
 
-	Meteor.publish "savedEvents", ->
-		SavedEvents.find userId: @userId
+	Meteor.publish "modifiedEvents", ({timeMin, timeMax})->
+		
+		EventsModified.find userId: @userId
 

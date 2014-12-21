@@ -15,29 +15,42 @@
 
 <template name="eventList_oneDay">
 	
-	<div class="day" >
+	<div class="day col-xs-12 col-sm-6 col-md-4" >
 	<h2 class="fixedsticky">{{dayMoment.calendar}}</h2>
 	<div class="timeline" style="height: {{height}}px">
-	
+	{{>eventList_oneDay_timeGrid}}
 
 	{{#each dayEvents}}
 		{{>eventList_oneEvent}}
+	{{else}}
+	<p class="no-events">No events... No events... No events... </p>
 	{{/each}}
 
 	{{#each timeEntries}}
 		{{>eventList_oneTimeEntry}}
 	
+	{{else}}
+		<p class="no-time-entries">No time Entries... No time Entries... No time Entries...</p>
 	{{/each}}
 	</div>
 	</div>
 </template>
 
+<template name="eventList_oneDay_timeGrid">
+<div class="timeGrid" style="bottom:{{offset}}px">
+{{#each entries}}
+	<div class="line" style="bottom:{{bottom}}px"><div class="label">{{label}}</div></div>
+{{/each}}
+</div>
+</template>
+
 <template name="eventList_oneEvent">
-	<div class="event col-xs-12 {{#if acknowledged}}acknowledged{{/if}} {{#if declined}}declined{{/if}}" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
+	<div class="event" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
-		{{index}}
-		{{#each sources}}{{this}} {{/each}}
 		{{#if project.shortname}}<strong>{{project.shortname}}: </strong>{{/if}}
+	
+		{{#each sources}}{{this}} {{/each}}
+		<br />
 		<span class="duration">{{duration start end}}</span> {{calendarFormat start end}}
 		<ul>
 		{{#each bulletPoints}}

@@ -15,10 +15,17 @@
 	{{>header}}
 
 	<div id="main-container">
-
+		 {{#if currentUser}}
 		{{>yield}}
+		{{else}}
+			{{>login}}
+		{{/if}}
 	</div>
 
+</template>
+
+<template name="login">
+<p>Please login</p>
 </template>
 
 
@@ -46,6 +53,16 @@
 			</div>
 		</div>
 	</div>
+</template>
+
+<template name="defaultHeaderNavigation">
+
+
+	<li>{{#linkTo route="settings"}}Settings{{/linkTo}}</li>
+	
+
+
+
 </template>
 
 <template name="loading">

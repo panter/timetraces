@@ -1,28 +1,3 @@
-subscriptions = -> 
-	subscriptions = [] 
-	subscriptions.push Meteor.subscribe "savedEvents"
-	subscriptions.push Meteor.subscribe "calendarList"
-	subscriptions.push Meteor.subscribe "redmineProjects"
-	subscriptions.push Meteor.subscribe "projects"
-	subscriptions.push Meteor.subscribe "project_states"
-	subscriptions.push Meteor.subscribe "allTasks"
-	subscriptions.push Meteor.subscribe "githubEvents"
-	subscriptions.push Meteor.subscribe "time_entries",
-		employee_usernames: UserSettings.get "controllrUsername"
-		date_from: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
-	for calendar in Calendars.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)).fetch()
-		subscriptions.push Meteor.subscribe "latestCalendarEvents", 
-			calendarId: calendar._id
-			singleEvents: true
-			timeMax: moment().endOf("day").format()
-			timeMin: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
-			orderBy: "startTime"
-	
-	for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
-		subscriptions.push Meteor.subscribe "redmineIssues", 
-			project_id: project._id
-			updated_on: encodeURIComponent(">=")+moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
-	subscriptions
 
 
 	
@@ -32,15 +7,15 @@ sanitizeTime = (date) ->
 Router.route 'editTimeEntry',
 	path: "timeEntry/:timeEntryId"
 	template: "postForm"
-	subscriptions: subscriptions
+	waitOn: share.defaultSubscriptions
 	data: ->
-		if @ready()
-			timeEntry = TimeEntries.findOne @params.timeEntryId
-			timeEntry.start = sanitizeTime timeEntry.start
-			timeEntry.end = sanitizeTime timeEntry.end
-			Session.set "currentProjectId", timeEntry.project_id
-			timeEntry: timeEntry
-			new: false
+
+		timeEntry = TimeEntries.findOne @params.timeEntryId
+		timeEntry.start = sanitizeTime timeEntry.start
+		timeEntry.end = sanitizeTime timeEntry.end
+		Session.set "currentProjectId", timeEntry.project_id
+		timeEntry: timeEntry
+		new: false
 
 
 findTaskID = (event) ->
@@ -60,7 +35,7 @@ findTaskID = (event) ->
 Router.route 'newTimeEntry',
 	path: "timeEntry"
 	template: "postForm"
-	subscriptions: subscriptions
+	waitOn: share.defaultSubscriptions
 	data: ->
 		currentEvent = Session.get "currentEvent"
 		# find possible project
@@ -75,6 +50,7 @@ Router.route 'newTimeEntry',
 			description: currentEvent?.bulletPoints?.map((point) -> "- #{point}").join "\n"
 			project_id: Session.get "currentProjectId"
 			task_id: taskId
+			billable: currentEvent.billable
 			user_id: UserSettings.get "redmineUserId"
 			start: sanitizeTime currentEvent?.start
 			end: sanitizeTime currentEvent?.end

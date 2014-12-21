@@ -5,7 +5,14 @@ Accounts.ui.config
 	requestPermissions: 
 		google: ['https://www.googleapis.com/auth/calendar']
 
-
+moment.locale "en", 
+	calendar:
+		sameDay: "[Today], L"
+		lastDay: "[Yesterday], L"
+		nextDay: "[Tomorrow], L"
+		lastWeek: "[Last] dddd, L"
+		nextWeek: "[Next], dddd, L"
+		sameElse: "dddd, L"
 
 @Calendars = new Meteor.Collection "Calendars"
 @Projects = new Meteor.Collection "Projects"
@@ -23,12 +30,9 @@ Router.configure
 	layoutTemplate: 'layout'
 	loadingTemplate: 'loading'
 
-
-Router.map ->
-	
-	
-
-	@route 'home', path: "/"
+	yieldTemplates: 
+			defaultHeaderNavigation: to: "headerNavigation"
+			#experimentHeaderNavigationRight: to: "headerNavigationRight"
 	
 
 Template.registerHelper "equals", (a, b) ->

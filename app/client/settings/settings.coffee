@@ -1,6 +1,6 @@
 
 Router.route 'settings', 
-	subscriptions: ->[Meteor.subscribe "calendarList", Meteor.subscribe "redmineProjects"]
+	waitOn: share.defaultSubscriptions
 	data: ->
 		redmineProjects: ->RedmineProjects.find().map (project) ->
 			label: project.name

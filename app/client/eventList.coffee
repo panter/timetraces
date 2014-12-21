@@ -6,57 +6,34 @@ listHeight = 120
 
 
 
-Router.route 'eventList', 
-	subscriptions: ->
-		subscriptions = [] 
-		subscriptions.push Meteor.subscribe "savedEvents"
-		subscriptions.push Meteor.subscribe "calendarList"
-		subscriptions.push Meteor.subscribe "redmineProjects"
-		subscriptions.push Meteor.subscribe "projects"
-		subscriptions.push Meteor.subscribe "project_states"
-		subscriptions.push Meteor.subscribe "allTasks"
-		subscriptions.push Meteor.subscribe "githubEvents"
-		subscriptions.push Meteor.subscribe "time_entries",
-			employee_usernames: UserSettings.get "controllrUsername"
-			date_from: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
-		for calendar in Calendars.find(_id: $in: UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)).fetch()
-			subscriptions.push Meteor.subscribe "latestCalendarEvents", 
-				calendarId: calendar._id
-				singleEvents: true
-				timeMax: moment().endOf("day").format()
-				timeMin: moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format()
-				orderBy: "startTime"
-		
-		for project in RedmineProjects.find(_id: $in: UserSettings.getListSetting("redmineProjects")).fetch()
-			subscriptions.push Meteor.subscribe "redmineIssues", 
-				project_id: project._id
-				updated_on: encodeURIComponent(">=")+moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks").format("YYYY-MM-DD")
-		subscriptions
-
+Router.route 'eventList',
+	path: "/" 
+	waitOn: share.defaultSubscriptions
 	data: ->
-		if @ready()
-			viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
-			days: ->
-				newestMoment = moment().endOf("day")
-				oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
-				
-				days = []
-				while(oldestMoment.valueOf()< newestMoment.valueOf())
-					dayMoment = moment newestMoment
-					events = getSanitizedEvents dayMoment
-					timeEntries = getSanitizedTimeEntries dayMoment
-					both = events.concat timeEntries
-					first = _.min both, (entry) -> entry.start.getTime()
-					last = _.max both, (entry) -> entry.end.getTime()
+		
+		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
+		days: ->
+			newestMoment = moment().endOf("day")
+			oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
 			
-					days.push 
-						dayMoment: dayMoment
-						dayEvents: events
-						timeEntries: timeEntries
-						firstMoment: moment first.start
-						lastMoment: moment last.end
-					newestMoment.subtract 1, "d"
-				days
+			days = []
+			while(oldestMoment.valueOf()< newestMoment.valueOf())
+				dayMoment = moment newestMoment
+				events = getSanitizedEvents dayMoment
+				timeEntries = getSanitizedTimeEntries dayMoment
+				both = events.concat timeEntries
+				first = _.min both, (entry) -> entry.start.getTime()
+				last = _.max both, (entry) -> entry.end.getTime()
+				shortestEvent = _.min both, (entry) -> entry.end?.getTime() - entry.start?.getTime()
+				days.push 
+					dayMoment: dayMoment
+					dayEvents: events
+					timeEntries: timeEntries
+					firstMoment: moment first.start
+					lastMoment: moment last.end
+					shortestEvent: shortestEvent
+				newestMoment.subtract 1, "d"
+			days
 
 
 
@@ -204,8 +181,10 @@ Template.eventList_oneDay.helpers
 
 			if count > 0 then count * listHeight else "auto" 
 		else
-			
-			
+			if @shortestEvent?
+				
+				shortestDuration = @shortestEvent.end?.getTime() - @shortestEvent.start?.getTime()
+				console.log shortestDuration/60000
 			if @firstMoment? and @lastMoment?
 				duration = @lastMoment.toDate().getTime() - @firstMoment.toDate().getTime()
 				duration/60000 * pixelPerMinute
@@ -214,7 +193,20 @@ Template.eventList_oneDay.helpers
 
 	
 
-
+Template.eventList_oneDay_timeGrid.helpers
+	
+	offset: ->
+		dayMoment = moment(@dayMoment).startOf "day"
+		duration = @firstMoment?.toDate().getTime() - dayMoment?.toDate().getTime()
+		return -duration/60000 * pixelPerMinute
+	entries: ->
+		gridMoment = moment(@dayMoment).startOf "day"
+		intervalInHours = 6
+		entries =  for i in [1..(24/intervalInHours)-1]
+			aMoment = gridMoment.add intervalInHours, "hours"
+			label: aMoment.format "HH:mm"
+			bottom: pixelPerMinute*intervalInHours*60*i
+		return entries
 
 
 bottomHelper = ->
@@ -232,6 +224,7 @@ heightHelper = ->
 	else
 		duration = (new Date @end).getTime() - (new Date getStartOfEvent @).getTime()
 		duration/60000 * pixelPerMinute
+
 
 Template.eventList_oneEvent.helpers	
 	bottom: bottomHelper
