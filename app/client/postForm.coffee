@@ -11,8 +11,8 @@ Router.route 'editTimeEntry',
 	data: ->
 
 		timeEntry = TimeEntries.findOne @params.timeEntryId
-		timeEntry.start = sanitizeTime timeEntry.start
-		timeEntry.end = sanitizeTime timeEntry.end
+		timeEntry.start = sanitizeTime timeEntry?.start
+		timeEntry.end = sanitizeTime timeEntry?.end
 		Session.set "currentProjectId", timeEntry.project_id
 		timeEntry: timeEntry
 		new: false
@@ -57,12 +57,7 @@ Router.route 'newTimeEntry',
 			day: moment(currentEvent?.start).toDate()
 		new: true
 
-Template.postForm.rendered = ->
-	AutoForm.hooks
-		onError: (operation, error) ->
-			console.log operation, error
 
-		
 
 Template.postForm.events
 	'change .projectId': (event, template) ->

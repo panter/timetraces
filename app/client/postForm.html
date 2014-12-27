@@ -1,26 +1,26 @@
 <template name="postForm">
-<div class="container">
+  <div class="container">
 
 
- {{#autoForm schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry"}}
-    <fieldset>
+   {{#autoForm schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry"}}
+   <fieldset>
     {{#if new}}
-      <legend>Add Entry</legend>
-      {{else}}
-        <legend>Edit Entry</legend>
-        {{/if}}
-       {{> afQuickField name='day'}}
-      {{> afQuickField class="projectId col-xs-6" name='project_id' options=projects}}
-      {{> afQuickField name='task_id' options=taskIdOptions class="col-xs-6"}}
-      {{> afQuickField name='description' rows=6}}
-     
-     
-      {{> afQuickField name='start' type="time"}}
-      {{> afQuickField name='end' type="time"}}
-      {{> afQuickField name='billable'}}
-      {{> afQuickField name='user_id'}}
-    </fieldset>
-    <button type="submit" class="btn btn-primary">Insert</button>
+    <legend>Add Entry</legend>
+    {{else}}
+    <legend>Edit Entry</legend>
+    {{/if}}
+    {{> afQuickField name='day'}}
+    {{> afQuickField class="projectId col-xs-6" name='project_id' options=projects}}
+    {{> afQuickField name='task_id' options=taskIdOptions class="col-xs-6"}}
+    {{> afQuickField name='description' rows=6}}
+    
+    
+    {{> afQuickField name='start' type="time"}}
+    {{> afQuickField name='end' type="time"}}
+    {{> afQuickField name='billable'}}
+    {{> afQuickField name='user_id'}}
+  </fieldset>
+  <button type="submit" class="btn btn-primary">Insert</button>
   {{/autoForm}}
 
 
@@ -33,12 +33,12 @@
 
 
 	{{#each project_states}}
-		<input type="checkbox" class="project-state" value="{{_id}}" />{{name}}
-	{{/each}}
-	<select class="selectProject">
-		{{#each projects}}
-			<option value="{{_id}}">{{shortname}}</option>
-		{{/each}}
-	</select>
+  <input type="checkbox" class="project-state" value="{{_id}}" />{{name}}
+  {{/each}}
+  <select class="selectProject">
+    {{#each projects}}
+    <option value="{{_id}}">{{shortname}}</option>
+    {{/each}}
+  </select>
 </template>
 
