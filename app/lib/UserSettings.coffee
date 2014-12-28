@@ -47,6 +47,10 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Controllr User ID"
 		optional: true
+	controllrUsername: 
+		type: String
+		label: "Controllr User Name"
+		optional: true
 	controllrApiKey:
 		type: String
 		label: "Controllr Api Key"
