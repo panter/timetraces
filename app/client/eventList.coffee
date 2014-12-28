@@ -1,5 +1,5 @@
 
-pixelPerMinute = 1.5
+pixelPerMinute = 1.2
 dayHeight = 1440 * pixelPerMinute
 
 listHeight = 120
@@ -174,6 +174,13 @@ getSanitizedTimeEntries = (dayMoment)->
 #	@$(".fixedsticky").fixedsticky()
 
 Template.eventList_oneDay.helpers
+	totalHoursTracked: ->
+		minutes = _.reduce @timeEntries, (sum, entry) ->
+			return sum + new Date(entry.end).getTime()/60000 - new Date(entry.start).getTime()/60000
+		, 0
+		trackedMoment = moment.duration minutes, "minutes"
+		"#{trackedMoment.hours()}:#{trackedMoment.minutes()}"
+
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 			count = Math.max @dayEvents.length, @timeEntries.length
@@ -184,7 +191,6 @@ Template.eventList_oneDay.helpers
 			if @shortestEvent?
 				
 				shortestDuration = @shortestEvent.end?.getTime() - @shortestEvent.start?.getTime()
-				console.log shortestDuration/60000
 			if @firstMoment? and @lastMoment?
 				duration = @lastMoment.toDate().getTime() - @firstMoment.toDate().getTime()
 				duration/60000 * pixelPerMinute
@@ -194,7 +200,6 @@ Template.eventList_oneDay.helpers
 	
 
 Template.eventList_oneDay_timeGrid.helpers
-	
 	offset: ->
 		dayMoment = moment(@dayMoment).startOf "day"
 		duration = @firstMoment?.toDate().getTime() - dayMoment?.toDate().getTime()
@@ -206,6 +211,13 @@ Template.eventList_oneDay_timeGrid.helpers
 			aMoment = gridMoment.add intervalInHours, "hours"
 			label: aMoment.format "HH:mm"
 			bottom: pixelPerMinute*intervalInHours*60*i
+
+		# add entry for the prefered start of day
+		#startOfDay = getPreferedStartOfDay()
+		#entries.push 
+		#	aMoment: startOfDay
+		#	label: "Start of Day"
+		#	bottom: pixelPerMinute*(@dayMoment.toDate().getTime() - startOfDay.toDate().getTime())/60000
 		return entries
 
 

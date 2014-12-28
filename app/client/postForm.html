@@ -1,29 +1,48 @@
 <template name="postForm">
   <div class="container">
 
+  {{#if controllrIsSetUp}}
 
-   {{#autoForm schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry"}}
+   {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
    <fieldset>
     {{#if new}}
     <legend>Add Entry</legend>
     {{else}}
-    <legend>Edit Entry</legend>
+    <legend>Edit Entry #{{timeEntry._id}}</legend>
+
+ 
     {{/if}}
-    {{> afQuickField name='day'}}
-    {{> afQuickField class="projectId col-xs-6" name='project_id' options=projects}}
-    {{> afQuickField name='task_id' options=taskIdOptions class="col-xs-6"}}
-    {{> afQuickField name='description' rows=6}}
-    
-    
-    {{> afQuickField name='start' type="time"}}
+   
+    <div class="row">
+    <div class="col-xs-6">
+    {{> afQuickField class="projectId" name='project_id' options=projects}}
+    </div>
+     <div class="col-xs-6">
+    {{> afQuickField name='task_id' options=taskIdOptions}}
+    </div>
+
+    </div>
+     {{> afQuickField name='billable'}}
+    {{> afQuickField name='description' rows=8}}
+     {{> afQuickField name='day'}}
+    <div class="row">
+    <div class="col-xs-6">{{> afQuickField name='start' type="time"}}</div>
+      <div class="col-xs-6">
     {{> afQuickField name='end' type="time"}}
-    {{> afQuickField name='billable'}}
-    {{> afQuickField name='user_id'}}
+    </div>
+    </div>
+   
+    
   </fieldset>
   <button type="submit" class="btn btn-primary">Insert</button>
+   {{#unless new}}
+  <button class="btn btn-delete btn-danger">Delete Entry</button>
+  {{/unless}}
   {{/autoForm}}
 
-
+  {{else}}
+  <p>Please provide a Controllr api-ey and username: <a href="{{pathFor 'settings'}}">Settings</a></p>
+  {{/if}}
 
 </div>
 

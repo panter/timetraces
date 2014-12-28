@@ -11,11 +11,12 @@ Router.route 'editTimeEntry',
 	data: ->
 
 		timeEntry = TimeEntries.findOne @params.timeEntryId
-		timeEntry.start = sanitizeTime timeEntry?.start
-		timeEntry.end = sanitizeTime timeEntry?.end
-		Session.set "currentProjectId", timeEntry.project_id
-		timeEntry: timeEntry
-		new: false
+		if timeEntry?
+			timeEntry.start = sanitizeTime timeEntry.start
+			timeEntry.end = sanitizeTime timeEntry.end
+			Session.set "currentProjectId", timeEntry.project_id
+			timeEntry: timeEntry
+			new: false
 
 
 findTaskID = (event) ->
@@ -46,23 +47,29 @@ Router.route 'newTimeEntry',
 			taskId = findTaskID currentEvent
 
 
-		timeEntry: 
-			description: currentEvent?.bulletPoints?.map((point) -> "- #{point}").join "\n"
-			project_id: Session.get "currentProjectId"
-			task_id: taskId
-			billable: currentEvent.billable
-			user_id: UserSettings.get "redmineUserId"
-			start: sanitizeTime currentEvent?.start
-			end: sanitizeTime currentEvent?.end
-			day: moment(currentEvent?.start).toDate()
-		new: true
+			timeEntry: 
+				description: currentEvent?.bulletPoints?.map((point) -> "- #{point}").join "\n"
+				project_id: Session.get "currentProjectId"
+				task_id: taskId
+				billable: currentEvent.billable
+				user_id: UserSettings.get "controllrUserId"
+				start: sanitizeTime currentEvent?.start
+				end: sanitizeTime currentEvent?.end
+				day: moment(currentEvent?.start).toDate()
+			new: true
 
 
+AutoForm.hooks
+	createOrUpdateTimeEntryForm: 
+		after: createOrUpdateEntry: ->
+			window.history.back()
 
 Template.postForm.events
 	'change .projectId': (event, template) ->
 		projectId =  parseInt $(event.currentTarget).val(),10
 		Session.set "currentProjectId", projectId
+	'click .btn-delete': (event, template) ->
+		Meteor.call "deleteTimeEntry", template.data.timeEntry
 
 Template.projectsSelect.events
 	'click .project-state': (event, template)->
@@ -70,6 +77,7 @@ Template.projectsSelect.events
 		template.$(".project-state:checked").each (index, input) ->
 			values.push parseInt $(input).val(),10
 		Session.set "selectedProjectStates", values
+
 
 ###
 getFilteredProjects = ->
@@ -93,9 +101,13 @@ Template.projectsSelect.helpers
 ###
 
 
+
 Template.postForm.helpers
 	
-
+	controllrIsSetUp: ->
+		key = UserSettings.get "controllrApiKey"
+		userID = UserSettings.get "controllrUserId"
+		return userID? and key?
 	projects: -> Projects.find({}, sort: shortname: 1).map (project) ->
 		value: parseInt project._id, 10
 		label: project.shortname
@@ -111,6 +123,10 @@ Template.postForm.helpers
 		
 		
 		new SimpleSchema
+			_id: 
+				type: String
+				label: "ID"
+				optional: yes
 			user_id:
 				type: Number
 				label: "User ID"
@@ -128,7 +144,7 @@ Template.postForm.helpers
 			duration_hours:
 				type: String
 				label: "Duration"
-				optional: true
+				optional: yes
 			start: 
 				type: String
 				label: "Start"

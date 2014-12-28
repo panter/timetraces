@@ -16,7 +16,8 @@
 <template name="eventList_oneDay">
 	
 	<div class="day col-xs-12 col-sm-6 col-md-4" >
-	<h2 class="fixedsticky">{{dayMoment.calendar}}</h2>
+	<h2 class="date">{{dayMoment.calendar}}</h2>
+	<p class="stats">{{totalHoursTracked}}h tracked</p>
 	<div class="timeline" style="height: {{height}}px">
 	{{>eventList_oneDay_timeGrid}}
 
@@ -47,11 +48,13 @@
 <template name="eventList_oneEvent">
 	<div class="event" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
-		{{#if project.shortname}}<strong>{{project.shortname}}: </strong>{{/if}}
+		<div class="meta">
+		<span class="project">{{#if project.shortname}}{{project.shortname}}{{else}}?{{/if}}: </span>
 	
-		{{#each sources}}{{this}} {{/each}}
+		<span class="sources">{{#each sources}}{{this}} {{/each}}</span>
 		<br />
-		<span class="duration">{{duration start end}}</span> {{calendarFormat start end}}
+		<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
+		</div>
 		<ul>
 		{{#each bulletPoints}}
 		<li>{{this}}</li>
@@ -65,11 +68,12 @@
 <template name="eventList_oneTimeEntry">
 	<div class="timeEntry col-xs-12 {{#if acknowledged}}acknowledged{{/if}} {{#if declined}}declined{{/if}}" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
-		{{index}}
+		<div class="meta">
+		<span class="project">{{project_shortname}}</span> - {{task_name}}<br />
 		
-		<span class="duration">{{duration start end}}</span> {{calendarFormat start end}}
-		<p>{{task_name}}</p>
-		<p>{{description}}</p>
+		<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
+		</div>
+		<p>{{#markdown}}{{description}}{{/markdown}}</p>
 		</div>
 	</div>
 

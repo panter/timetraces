@@ -1,18 +1,30 @@
 
 
 Meteor.publishArray = (options) ->
-	{name, collection, data, refreshTime} = options
+	{name, collection, data, refreshTime, refreshHandle} = options
+	subscriptions = {}
+	
+	if refreshHandle?
+		refreshHandle.refresh = ->
+			for id, subscription of subscriptions
+				subscription.refresh()
 
 	Meteor.publish name, (params) ->
 		pub = @
 		ids = {}
+
 		refresh = ->
 			console.log "refreshing #{name}"
 			currentIds = {}
 			try
+				
 				results = data.call pub, params
+				
 			catch error
+				console.log error
 				results = []
+
+
 			
 			if results?
 				for result in results
@@ -32,9 +44,16 @@ Meteor.publishArray = (options) ->
 			
 		Meteor.defer refresh
 		if refreshTime?
-			refreshHandle = Meteor.setInterval refresh, refreshTime
+			refreshIntervalHandle = Meteor.setInterval refresh, refreshTime
 		
+		# attach a handle
+		subscriptions[pub._subscriptionId] = 
+			refresh: refresh
+
 		@onStop =>
-			console.log "on stop", name
-			if refreshHandle?
-				Meteor.clearInterval refreshHandle
+			console.log "stopping #{name}"
+			
+			if refreshIntervalHandle?
+				Meteor.clearInterval refreshIntervalHandle
+			delete subscriptions[pub._subscriptionId]
+

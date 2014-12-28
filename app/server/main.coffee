@@ -1,16 +1,25 @@
 
+timeEntriesHandle = {}
+
 Meteor.methods
-	"createOrUpdateEntry": (data)->
+	createOrUpdateEntry: (data, modifier, _id) ->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
-		console.log data
-		if data._id?
-			HTTP.call "PUT", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
+		if _id?
+			_id= parseInt _id, 10
+			
+			url = "http://controllr.panter.biz/api/entries/#{_id}.json?user_token=#{userToken}"
+			HTTP.call "PUT", url,
 				data: data
 		else
 			HTTP.call "POST", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
 				data: data
+		timeEntriesHandle?.refresh()
 
 
+	deleteTimeEntry: (data) ->
+		userToken = UserSettings.get "controllrApiKey", null, @userId
+		url = "http://controllr.panter.biz/api/entries/#{data._id}.json?user_token=#{userToken}"
+		HTTP.call "DELETE", url
 
 
 Meteor.startup ->
@@ -48,7 +57,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "calendarList"
 		collection: "Calendars"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
@@ -58,7 +67,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "latestCalendarEvents"
 		collection: "Events"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
@@ -68,7 +77,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "redmineProjects"
 		collection: "RedmineProjects"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 		
 			return [] unless @userId?
@@ -86,7 +95,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "redmineIssues"
 		collection: "Events"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 	
 			return [] unless @userId?
@@ -106,7 +115,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "githubEvents"
 		collection: "Events"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 	
 			return [] unless @userId?
@@ -143,7 +152,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "projects"
 		collection: "Projects"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
@@ -153,14 +162,14 @@ Meteor.startup ->
 					handleIds result.data
 
 	Meteor.publishArray 
+		refreshHandle: timeEntriesHandle
 		name: "time_entries"
 		collection: "TimeEntries"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			shortnameQueryParam = ""
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
-
 
 			for param in ["date_from", "date_to", "project_shortnames", "employee_usernames"]
 				if _(params[param]).isArray()
@@ -171,7 +180,9 @@ Meteor.startup ->
 			
 
 			
+
 			result = HTTP.get url
+			
 			if result.data?
 				_(result.data).map (entry) ->
 					dayMoment = moment entry.day
@@ -198,6 +209,7 @@ Meteor.startup ->
 					
 
 					entry._id = entry.id.toString()
+					delete entry.id
 					entry.start = startMoment.toDate()
 					entry.end = endMoment.toDate()
 					
@@ -207,7 +219,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "project_states"
 		collection: "ProjectStates"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			
@@ -217,7 +229,7 @@ Meteor.startup ->
 	Meteor.publishArray 
 		name: "allTasks"
 		collection: "Tasks"
-		refresh: 10000
+		refreshTime: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 			

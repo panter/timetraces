@@ -31,10 +31,6 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "redmine URL"
 		optional: true
-	redmineUserId: 
-		type: Number
-		label: "redmine User ID"
-		optional: true
 	eventListViewMode:
 		type: String
 		label: "Event List Mode"
@@ -47,9 +43,9 @@ store.attachSchema new SimpleSchema
 				{label: "Calendar", value: "calendar"}
 				]
 
-	controllrUsername: 
+	controllrUserId: 
 		type: String
-		label: "Controllr Username"
+		label: "Controllr User ID"
 		optional: true
 	controllrApiKey:
 		type: String
