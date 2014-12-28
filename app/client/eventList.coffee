@@ -1,5 +1,5 @@
 
-pixelPerMinute = 1.2
+pixelPerMinute = 1.5
 dayHeight = 1440 * pixelPerMinute
 
 listHeight = 120

@@ -3,15 +3,19 @@ timeEntriesHandle = {}
 
 Meteor.methods
 	createOrUpdateEntry: (data, modifier, _id) ->
+		console.log data
 		userToken = UserSettings.get "controllrApiKey", null, @userId
+		
 		if _id?
 			_id= parseInt _id, 10
 			
 			url = "http://controllr.panter.biz/api/entries/#{_id}.json?user_token=#{userToken}"
 			HTTP.call "PUT", url,
 				data: data
-		else
-			HTTP.call "POST", "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}",
+		else 
+			url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
+			console.log url
+			HTTP.call "POST", url,
 				data: data
 		timeEntriesHandle?.refresh()
 

@@ -2,7 +2,7 @@
 
 @import '.meteor/local/build/programs/server/assets/packages/reywood_bootstrap3-sass/bootstrap';
 
-body { padding-top: 70px; }
+body { padding-top: 70px; background-color:transparent !important;}
 
 
 .fixedsticky
@@ -18,4 +18,9 @@ body { padding-top: 70px; }
 	img {
 		width: 275px
 	}
+}
+
+html
+{
+	background-image: url(/background.jpg);
 }

@@ -1,50 +1,51 @@
 <template name="postForm">
   <div class="container">
 
-  {{#if controllrIsSetUp}}
+    {{#if controllrIsSetUp}}
 
-   {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
-   <fieldset>
-    {{#if new}}
-    <legend>Add Entry</legend>
+    {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
+    <fieldset>
+      {{#if new}}
+      <legend>Add Entry</legend>
+      {{else}}
+      <legend>Edit Entry #{{timeEntry._id}}</legend>
+
+
+      {{/if}}
+
+      <div class="row">
+        <div class="col-xs-6">
+          {{> afQuickField class="projectId" name='project_id' options=projects}}
+        </div>
+        <div class="col-xs-6">
+          {{> afQuickField name='task_id' options=taskIdOptions}}
+        </div>
+
+      </div>
+      {{> afQuickField name='billable'}}
+      {{> afQuickField name='description' rows=8}}
+      {{> afQuickField name='day'}}
+
+      <div class="row">
+        <div class="col-xs-6">{{> afQuickField name='start' type="time"}}</div>
+        <div class="col-xs-6">
+          {{> afQuickField name='end' type="time"}}
+        </div>
+      </div>
+    {{> afQuickField name='user_id' readonly=true}}
+
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Insert</button>
+    {{#unless new}}
+    <button class="btn btn-delete btn-danger">Delete Entry</button>
+    {{/unless}}
+    {{/autoForm}}
+
     {{else}}
-    <legend>Edit Entry #{{timeEntry._id}}</legend>
-
- 
+    <p>Please provide a Controllr api-ey and username: <a href="{{pathFor 'settings'}}">Settings</a></p>
     {{/if}}
-   
-    <div class="row">
-    <div class="col-xs-6">
-    {{> afQuickField class="projectId" name='project_id' options=projects}}
-    </div>
-     <div class="col-xs-6">
-    {{> afQuickField name='task_id' options=taskIdOptions}}
-    </div>
 
-    </div>
-     {{> afQuickField name='billable'}}
-    {{> afQuickField name='description' rows=8}}
-     {{> afQuickField name='day'}}
-    <div class="row">
-    <div class="col-xs-6">{{> afQuickField name='start' type="time"}}</div>
-      <div class="col-xs-6">
-    {{> afQuickField name='end' type="time"}}
-    </div>
-    </div>
-   
-    
-  </fieldset>
-  <button type="submit" class="btn btn-primary">Insert</button>
-   {{#unless new}}
-  <button class="btn btn-delete btn-danger">Delete Entry</button>
-  {{/unless}}
-  {{/autoForm}}
-
-  {{else}}
-  <p>Please provide a Controllr api-ey and username: <a href="{{pathFor 'settings'}}">Settings</a></p>
-  {{/if}}
-
-</div>
+  </div>
 
 </template>
 
