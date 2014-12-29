@@ -1,3 +1,5 @@
+
+
 share.defaultSubscriptions = ->
 	subscriptions = [] 
 	firstMoment = moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks")

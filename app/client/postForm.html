@@ -1,3 +1,6 @@
+
+
+
 <template name="postForm">
   <div class="container">
 
@@ -5,7 +8,7 @@
 
     {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
     <fieldset>
-      {{#if new}}
+      {{#if timeEntry.new}}
       <legend>Add Entry</legend>
       {{else}}
       <legend>Edit Entry #{{timeEntry._id}}</legend>
@@ -35,9 +38,12 @@
     {{> afQuickField name='user_id' readonly=true}}
 
     </fieldset>
-    <button type="submit" class="btn btn-primary">Insert</button>
-    {{#unless new}}
+  
+    {{#unless timeEntry.new}}
     <button class="btn btn-delete btn-danger">Delete Entry</button>
+      <button type="submit" class="btn btn-primary">Update</button>
+    {{else}}
+      <button type="submit" class="btn btn-primary">Insert</button>
     {{/unless}}
     {{/autoForm}}
 

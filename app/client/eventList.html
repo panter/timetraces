@@ -1,67 +1,92 @@
 
 
 <template name="eventList">
-<div class="eventList {{viewMode}}">
+	<div class="eventList {{viewMode}}">
 
-{{#each days}}
+		{{#each days}}
 
-	{{>eventList_oneDay}}
+		{{>eventList_oneDay}}
+
+		{{/each}}
+	</div>
+
+	{{#if timeEntryToEdit}}
+		{{>eventList_editDialog}}
+	{{else}}
+		{{#if timeEntryToCreate}}
+			{{>eventList_createDialog}}
+		{{/if}}
+	{{/if}}
+
+
+
+
+</template>
+
+<template name="eventList_editDialog">
+{{#modal title="Edit"}}
+	{{>postForm timeEntry=timeEntryToEdit}}
+{{/modal}}
+
 	
-{{/each}}
-</div>
+</template>
+<template name="eventList_createDialog">
+{{#modal title="Edit"}}
+	{{>postForm timeEntry=timeEntryToCreate}}
+{{/modal}}
 
-
+	
 </template>
 
 <template name="eventList_oneDay">
 	
 	<div class="day col-xs-12 col-sm-6 col-md-4">
-	<div class="content">
-	<h2 class="date"><i class="fa fa-calendar"></i> {{dayMoment.calendar}}</h2>
-	<h3 class="stats"><i class="fa fa-clock-o"></i> {{totalHoursTracked}}h tracked</h3>
-	<div class="timeline" style="height: {{height}}px">
-	{{>eventList_oneDay_timeGrid}}
+		<div class="content">
+			<h2 class="date"><i class="fa fa-calendar"></i> {{dayMoment.calendar}}</h2>
+			<h3 class="stats"><i class="fa fa-clock-o"></i> {{totalHoursTracked}}h tracked</h3>
+			<div class="timeline" style="height: {{height}}px">
+				{{>eventList_oneDay_timeGrid}}
 
-	{{#each dayEvents}}
-		{{>eventList_oneEvent}}
-	{{else}}
-	<p class="no-events">No events... No events... No events... </p>
-	{{/each}}
+				{{#each dayEvents}}
+				{{>eventList_oneEvent}}
+				{{else}}
+				<p class="no-events">No events... No events... No events... </p>
+				{{/each}}
 
-	{{#each timeEntries}}
-		{{>eventList_oneTimeEntry}}
-	
-	{{else}}
-		<p class="no-time-entries">No time Entries... No time Entries... No time Entries...</p>
-	{{/each}}
-	</div>
-	</div>
+				{{#each timeEntries}}
+				{{>eventList_oneTimeEntry}}
+
+				{{else}}
+				<p class="no-time-entries">No time Entries... No time Entries... No time Entries...</p>
+				{{/each}}
+			</div>
+		</div>
 	</div>
 </template>
 
 <template name="eventList_oneDay_timeGrid">
-<div class="timeGrid" style="bottom:{{offset}}px">
-{{#each entries}}
-	<div class="line" style="bottom:{{bottom}}px"><div class="label">{{label}}</div></div>
-{{/each}}
-</div>
+	<div class="timeGrid" style="bottom:{{offset}}px">
+		{{#each entries}}
+		<div class="line" style="bottom:{{bottom}}px"><div class="label">{{label}}</div></div>
+		{{/each}}
+	</div>
 </template>
 
 <template name="eventList_oneEvent">
 	<div class="event" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
-		<div class="meta">
-		<span class="project">{{#if project.shortname}}{{project.shortname}}{{else}}?{{/if}}: </span>
-	
-		<span class="sources">{{#each sources}}{{this}} {{/each}}</span>
-		<br />
-		<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
-		</div>
-		<ul>
-		{{#each bulletPoints}}
-		<li>{{this}}</li>
-		{{/each}}
-		</ul>
+			<div class="meta">
+				<span class="project">{{#if project.shortname}}{{project.shortname}}{{else}}?{{/if}}: </span>
+
+				<span class="sources">{{#each sources}}{{this}} {{/each}}</span>
+				<br />
+				<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
+			</div>
+			<ul>
+				{{#each bulletPoints}}
+				<li>{{this}}</li>
+				{{/each}}
+			</ul>
 		</div>
 	</div>
 
@@ -70,12 +95,12 @@
 <template name="eventList_oneTimeEntry">
 	<div class="timeEntry" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
-		<div class="meta">
-		<span class="project">{{project_shortname}}</span> - {{task_name}}<br />
-		
-		<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
-		</div>
-		<p>{{#markdown}}{{description}}{{/markdown}}</p>
+			<div class="meta">
+				<span class="project">{{project_shortname}}</span> - {{task_name}}<br />
+
+				<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
+			</div>
+			<p>{{#markdown}}{{description}}{{/markdown}}</p>
 		</div>
 	</div>
 

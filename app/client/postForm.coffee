@@ -1,68 +1,32 @@
 
 
-	
-sanitizeTime = (date) ->
-	moment(date).format "HH:mm"
-
-Router.route 'editTimeEntry',
-	path: "timeEntry/:timeEntryId"
-	template: "postForm"
-	waitOn: share.defaultSubscriptions
-	data: ->
-
-		timeEntry = TimeEntries.findOne @params.timeEntryId
-		if timeEntry?
-			timeEntry.start = sanitizeTime timeEntry.start
-			timeEntry.end = sanitizeTime timeEntry.end
-			Session.set "currentProjectId", timeEntry.project_id
-			timeEntry: timeEntry
-			new: false
-
-
-findTaskID = (event) ->
-
-	sourceTaskMap = 
-		redmine: "Development"
-		github: "Development"
-		calendar: "Customer Meeting"
-
-
-	for keyword, taskName of sourceTaskMap
-		if event?.sources?.join(" ").toLowerCase().indexOf(keyword) >= 0
-			task = Tasks.findOne project_id: Session.get("currentProjectId"), name: taskName
-			return parseInt task._id, 10 if task?
-
-
-Router.route 'newTimeEntry',
-	path: "timeEntry"
-	template: "postForm"
-	waitOn: share.defaultSubscriptions
-	data: ->
-		currentEvent = Session.get "currentEvent"
-		# find possible project
-		if currentEvent?
-
-			if currentEvent.project?._id?
-				Session.set "currentProjectId", parseInt currentEvent.project._id, 10
-			taskId = findTaskID currentEvent
-
-
-			timeEntry: 
-				description: currentEvent?.bulletPoints?.map((point) -> "- #{point}").join "\n"
-				project_id: Session.get "currentProjectId"
-				task_id: taskId
-				billable: currentEvent.billable
-				user_id: UserSettings.get "controllrUserId"
-				start: sanitizeTime currentEvent?.start
-				end: sanitizeTime currentEvent?.end
-				day: moment(currentEvent?.start).toDate()
-			new: true
-
-
 AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
 		after: createOrUpdateEntry: ->
-			window.history.back()
+
+			$("##{@formId}").closest ".modal"
+			.modal "hide"
+			
+
+	
+sanitizeTime = (date) ->
+	moment(date).format "HH:mm"
+			
+sanitizeStartEndTime = (timeEntry) ->
+	timeEntry.start = sanitizeTime timeEntry.start
+	timeEntry.end = sanitizeTime timeEntry.end
+	timeEntry
+	
+
+
+Template.postForm.helpers
+	timeEntry: ->
+		Session.set "currentProjectId", @timeEntry.project_id
+		sanitizeStartEndTime @timeEntry
+
+
+
+
 
 Template.postForm.events
 	'change .projectId': (event, template) ->

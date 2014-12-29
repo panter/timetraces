@@ -25,6 +25,7 @@ Router.route 'eventList',
 				first = _.min both, (entry) -> entry.start.getTime()
 				last = _.max both, (entry) -> entry.end.getTime()
 				shortestEvent = _.min both, (entry) -> entry.end?.getTime() - entry.start?.getTime()
+				
 				days.push 
 					dayMoment: dayMoment
 					dayEvents: events
@@ -34,7 +35,46 @@ Router.route 'eventList',
 					shortestEvent: shortestEvent
 				newestMoment.subtract 1, "d"
 			days
+		timeEntryToEdit: ->
+			TimeEntries.findOne Session.get "timeEntryIdToEdit"
+		timeEntryToCreate: ->
+			Session.get "timeEntryToCreate"
+			 
 
+
+findTaskID = (event) ->
+
+	sourceTaskMap = 
+		redmine: "Development"
+		github: "Development"
+		calendar: "Customer Meeting"
+
+
+	for keyword, taskName of sourceTaskMap
+		if event?.sources?.join(" ").toLowerCase().indexOf(keyword) >= 0
+			task = Tasks.findOne project_id: Session.get("currentProjectId"), name: taskName
+			return parseInt task._id, 10 if task?
+
+
+
+transformEventToTimeEntry = (event)->
+	
+
+	if event.project?._id?
+		Session.set "currentProjectId", parseInt event.project._id, 10
+	taskId = findTaskID event
+
+
+	
+	description: event.bulletPoints?.map((point) -> "- #{point}").join "\n"
+	project_id: Session.get "currentProjectId"
+	task_id: taskId
+	billable: event.billable
+	user_id: UserSettings.get "controllrUserId"
+	start: event.start
+	end: event.end
+	day: moment(event.start).toDate()
+	new: true
 
 
 getPreferedStartOfDay = (dayMoment) ->
@@ -247,17 +287,29 @@ Template.eventList_oneTimeEntry.helpers
 	height: heightHelper
 
 
+
+
 Template.eventList_oneEvent.events
 	'click': (event, template)->
-		Session.set "currentEvent", template.data
-		Router.go "newTimeEntry"
+		Session.set "timeEntryToCreate", transformEventToTimeEntry template.data
 
 
 Template.eventList_oneTimeEntry.events
 	'click': ->
-		Router.go "editTimeEntry", timeEntryId: @_id
+		#Router.go "editTimeEntry", timeEntryId: @_id
+		Session.set "timeEntryIdToEdit", @_id
 
 
+
+Template.eventList_editDialog.rendered = ->
+	@$(".modal").on "hidden.bs.modal", ->
+		Meteor.defer ->
+			Session.set "timeEntryIdToEdit", null
+
+Template.eventList_createDialog.rendered = ->
+	@$(".modal").on "hidden.bs.modal", ->
+		Meteor.defer ->
+			Session.set "timeEntryToCreate", null
 
 
 
