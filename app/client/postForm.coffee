@@ -20,6 +20,7 @@ sanitizeStartEndTime = (timeEntry) ->
 Template.postForm.helpers
 	timeEntry: ->
 		Session.set "currentProjectId", @timeEntry.project_id
+		Session.set "currentTaskId", @timeEntry.task_id
 		sanitizeStartEndTime @timeEntry
 	billable: ->
 
