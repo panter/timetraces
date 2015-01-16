@@ -17,6 +17,7 @@ Meteor.methods
 
 			HTTP.call "POST", url,
 				data: data
+		
 		timeEntriesHandle?.refresh()
 
 
@@ -110,13 +111,13 @@ Meteor.startup ->
 			redmineUrl = UserSettings.get "redmineUrl", null, @userId
 
 			return [] unless apiKey? and redmineUrl?
-				
+
 			url = "#{redmineUrl}/issues.json?key=#{apiKey}&project_id=#{params.project_id}&limit=200&assigned_to_id=me&updated_on=#{params.updated_on}"
 
 			result = HTTP.get url
 
 			return [] unless result?.data?.issues?
-			
+
 			transformRedmineIssues result.data.issues
 
 	Meteor.publishArray 
@@ -124,16 +125,16 @@ Meteor.startup ->
 		collection: "Events"
 		refreshTime: 10000
 		data: (params)->
-	
+
 			return [] unless @userId?
 			githubAccessToken = UserSettings.get "githubAccessToken", null, @userId
 			githubUsername = UserSettings.get "githubUsername", null, @userId
 
 			return [] unless githubAccessToken? and githubUsername?
-				
+
 			url = "https://api.github.com/users/#{githubUsername}/events?access_token=#{githubAccessToken}"
 
-			
+
 			result = HTTP.get url, headers: "User-Agent": "timetracking-app"
 			return [] unless result?.data?
 
@@ -142,18 +143,14 @@ Meteor.startup ->
 				switch item.type
 					when "PushEvent"
 						bulletPoints = _(item?.payload?.commits).map (commit) -> "#{commit.message}"
-					
+
 						events.push 
 							_id: item.id.toString()
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
 							sources: ["Github #{item.repo.name}"]
 			events
-			
-					
-				
-			
-				
+
 
 	Meteor.publishArray 
 		name: "projects"
@@ -161,7 +158,7 @@ Meteor.startup ->
 		refreshTime: 10000
 		data: (params)->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
-			
+
 			if userToken?
 				result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
 				if result.data?
@@ -185,12 +182,8 @@ Meteor.startup ->
 						url += "&#{param}[]=#{value}"
 				else 
 					url += "&#{param}="+params[param] if params[param]?
-			
-
-			
 
 			result = HTTP.get url
-			
 			if result.data?
 				_(result.data).map (entry) ->
 					dayMoment = moment entry.day
@@ -214,7 +207,7 @@ Meteor.startup ->
 						endMoment = fixDay moment entry.end
 					else
 						endMoment = moment(dayMoment).add entry.duration, "minutes"
-					
+
 
 					entry._id = entry.id.toString()
 					delete entry.id

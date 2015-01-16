@@ -3,7 +3,6 @@
 AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
 		after: createOrUpdateEntry: ->
-
 			$("##{@formId}").closest ".modal"
 			.modal "hide"
 
