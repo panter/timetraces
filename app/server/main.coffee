@@ -3,7 +3,7 @@ timeEntriesHandle = {}
 
 Meteor.methods
 	createOrUpdateEntry: (data, modifier, _id) ->
-		console.log data
+	
 		userToken = UserSettings.get "controllrApiKey", null, @userId
 		
 		if _id?
@@ -14,7 +14,7 @@ Meteor.methods
 				data: data
 		else 
 			url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
-			console.log url
+
 			HTTP.call "POST", url,
 				data: data
 		timeEntriesHandle?.refresh()
@@ -37,7 +37,7 @@ Meteor.startup ->
 	transformCalendarEvents = (data) ->
 
 		_.map data, (item) ->
-			
+
 			start = new Date item.start.dateTime || item.start.date
 			end = new Date item.end.dateTime || item.end.date
 			_id: item.id.toString()
@@ -52,7 +52,6 @@ Meteor.startup ->
 			end = new Date item.updated_on
 			
 			_id: item.id.toString()
-			billable: yes
 			end: end
 			bulletPoints: [item.subject]
 			sources: ["Redmine #{item.project.name}"]
@@ -76,24 +75,28 @@ Meteor.startup ->
 			user =  Meteor.users.findOne _id: @userId
 			if user?
 				result = GoogleApi.get "calendar/v3/calendars/#{params.calendarId}/events", user: user, params: params
-				transformCalendarEvents result.items
+				filtered = _(result.items).filter (item) ->
+					#check if its not a daily event
+					# means: it has a datetime for start and end
+					item.start.dateTime? and item.end.dateTime
+				transformCalendarEvents filtered
 	
 	Meteor.publishArray 
 		name: "redmineProjects"
 		collection: "RedmineProjects"
 		refreshTime: 10000
 		data: (params)->
-		
+
 			return [] unless @userId?
 			apiKey = UserSettings.get "redmineApiKey", null, @userId
 			redmineUrl = UserSettings.get "redmineUrl", null, @userId
 
 			return [] unless apiKey? and redmineUrl?
-			url = "#{redmineUrl}/projects.json?key=#{apiKey}"
-			console.log url
+			url = "#{redmineUrl}/projects.json?key=#{apiKey}&limit=100"
+
 			result = HTTP.get url
 			return [] unless result?.data?.projects?
-		
+
 			handleIds result.data.projects
 
 	Meteor.publishArray 
@@ -144,7 +147,6 @@ Meteor.startup ->
 							_id: item.id.toString()
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
-							billable: yes
 							sources: ["Github #{item.repo.name}"]
 			events
 			
@@ -163,7 +165,9 @@ Meteor.startup ->
 			if userToken?
 				result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
 				if result.data?
-					handleIds result.data
+					filtered = _(result.data).filter (project) ->
+						project.active
+					handleIds filtered
 
 	Meteor.publishArray 
 		refreshHandle: timeEntriesHandle

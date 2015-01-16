@@ -2,7 +2,7 @@
 
 
 <template name="postForm">
-  <div class="container">
+  <div>
 
     {{#if controllrIsSetUp}}
 
@@ -18,14 +18,14 @@
 
       <div class="row">
         <div class="col-xs-6">
-          {{> afQuickField class="projectId" name='project_id' options=projects}}
+          {{> afQuickField type="select2" class="projectId" name='project_id' options=projects }}
         </div>
         <div class="col-xs-6">
-          {{> afQuickField name='task_id' options=taskIdOptions}}
+          {{> afQuickField name='task_id' options=taskIdOptions type="select2"}}
         </div>
 
       </div>
-      {{> afQuickField name='billable'}}
+      {{> afQuickField name='billable' value=billable}}
       {{> afQuickField name='description' rows=8}}
       {{> afQuickField name='day'}}
 
@@ -38,7 +38,7 @@
     {{> afQuickField name='user_id' readonly=true}}
 
     </fieldset>
-  
+
     {{#unless timeEntry.new}}
     <button class="btn btn-delete btn-danger">Delete Entry</button>
       <button type="submit" class="btn btn-primary">Update</button>

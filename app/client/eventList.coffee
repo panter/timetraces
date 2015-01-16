@@ -10,12 +10,12 @@ Router.route 'eventList',
 	path: "/" 
 	waitOn: share.defaultSubscriptions
 	data: ->
-		
+
 		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		days: ->
 			newestMoment = moment().endOf("day")
 			oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
-			
+
 			days = []
 			while(oldestMoment.valueOf()< newestMoment.valueOf())
 				dayMoment = moment newestMoment
@@ -25,7 +25,7 @@ Router.route 'eventList',
 				first = _.min both, (entry) -> entry.start.getTime()
 				last = _.max both, (entry) -> entry.end.getTime()
 				shortestEvent = _.min both, (entry) -> entry.end?.getTime() - entry.start?.getTime()
-				
+
 				days.push 
 					dayMoment: dayMoment
 					dayEvents: events
@@ -39,7 +39,7 @@ Router.route 'eventList',
 			TimeEntries.findOne Session.get "timeEntryIdToEdit"
 		timeEntryToCreate: ->
 			Session.get "timeEntryToCreate"
-			 
+
 
 
 findTaskID = (event) ->
@@ -69,7 +69,6 @@ transformEventToTimeEntry = (event)->
 	description: event.bulletPoints?.map((point) -> "- #{point}").join "\n"
 	project_id: Session.get "currentProjectId"
 	task_id: taskId
-	billable: event.billable
 	user_id: UserSettings.get "controllrUserId"
 	start: event.start
 	end: event.end

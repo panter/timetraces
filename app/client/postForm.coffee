@@ -6,7 +6,6 @@ AutoForm.hooks
 
 			$("##{@formId}").closest ".modal"
 			.modal "hide"
-			
 
 	
 sanitizeTime = (date) ->
@@ -16,22 +15,28 @@ sanitizeStartEndTime = (timeEntry) ->
 	timeEntry.start = sanitizeTime timeEntry.start
 	timeEntry.end = sanitizeTime timeEntry.end
 	timeEntry
-	
 
 
 Template.postForm.helpers
 	timeEntry: ->
 		Session.set "currentProjectId", @timeEntry.project_id
 		sanitizeStartEndTime @timeEntry
+	billable: ->
 
+		taskId = Session.get("currentTaskId")?.toString()
+		projectId = Session.get("currentProjectId")
+		billable_by_default = Tasks.findOne({_id: taskId, project_id: projectId})?.billable_by_default ? false
 
-
+		return @timeEntry.billable ? billable_by_default
 
 
 Template.postForm.events
 	'change .projectId': (event, template) ->
 		projectId =  parseInt $(event.currentTarget).val(),10
 		Session.set "currentProjectId", projectId
+	'change [name="task_id"]': (event) ->
+		taskId =  parseInt $(event.currentTarget).val(),10
+		Session.set "currentTaskId", taskId
 	'click .btn-delete': (event, template) ->
 		Meteor.call "deleteTimeEntry", template.data.timeEntry
 
@@ -74,7 +79,7 @@ Template.postForm.helpers
 		return userID? and key?
 	projects: -> Projects.find({}, sort: shortname: 1).map (project) ->
 		value: parseInt project._id, 10
-		label: project.shortname
+		label: project.shortname+" "+project.description
 	
 	taskIdOptions: -> 
 	
@@ -98,7 +103,6 @@ Template.postForm.helpers
 				type: Number
 				label: "Task ID"
 			project_id: 
-
 				type: Number
 				label: "Project ID"
 				
