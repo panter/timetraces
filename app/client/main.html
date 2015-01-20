@@ -25,7 +25,9 @@
 </template>
 
 <template name="login">
-<p>Please login</p>
+<div class="container">
+<div class="alert alert-warning" role="alert">Please Login</div>
+</div>
 </template>
 
 
@@ -48,7 +50,9 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					{{> yield region='headerNavigationRight'}}
+					<li>
 					{{> loginButtons }} 
+					</li>
 				</ul>
 			</div>
 		</div>

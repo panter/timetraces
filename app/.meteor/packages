@@ -6,7 +6,6 @@
 meteor-platform
 coffeescript
 accounts-google
-ian:accounts-ui-bootstrap-3
 percolate:google-api
 iron:router
 reywood:bootstrap3-sass
@@ -25,3 +24,4 @@ natestrauser:font-awesome
 natestrauser:select2
 zimme:select2-bootstrap3-css
 aldeed:autoform-select2
+accounts-ui
