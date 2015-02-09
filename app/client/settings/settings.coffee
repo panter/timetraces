@@ -1,6 +1,6 @@
 
 Router.route 'settings', 
-	waitOn: share.defaultSubscriptions
+	waitOn: share.SubscriptionService.defaults
 	data: ->
 		redmineProjects: ->RedmineProjects.find().map (project) ->
 			label: project.name

@@ -8,7 +8,13 @@ listHeight = 120
 
 Router.route 'eventList',
 	path: "/" 
-	waitOn: share.defaultSubscriptions
+	waitOn: ->
+		subscriptions = share.SubscriptionService.defaults()
+		firstMoment = moment().startOf("day").subtract(UserSettings.get("numberOfDays", 7), "days")
+		lastMoment = moment().endOf("day")
+		
+		subscriptions = subscriptions.concat share.SubscriptionService.events firstMoment, lastMoment
+		return subscriptions
 	data: ->
 
 		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
@@ -19,6 +25,7 @@ Router.route 'eventList',
 			days = []
 			while(oldestMoment.valueOf()< newestMoment.valueOf())
 				dayMoment = moment newestMoment
+				
 				events = getSanitizedEvents dayMoment
 				timeEntries = getSanitizedTimeEntries dayMoment
 				both = events.concat timeEntries

@@ -107,8 +107,9 @@ if Meteor.isServer
 		fullProperty = "#{property}"
 		$set = {}
 		$set[fullProperty] = value
-	
-		store.update Meteor.userId(), {$set: $set}, upsert: true
+		unless store.findOne(Meteor.userId())? 
+			store.insert _id: Meteor.userId()
+		store.update Meteor.userId(), {$set: $set}
 
 
 
