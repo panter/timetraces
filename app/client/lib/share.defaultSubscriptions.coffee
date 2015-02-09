@@ -2,7 +2,7 @@
 
 share.defaultSubscriptions = ->
 	subscriptions = [] 
-	firstMoment = moment().startOf("day").subtract(UserSettings.get("numberOfWeeks", 2), "weeks")
+	firstMoment = moment().startOf("day").subtract(UserSettings.get("numberOfDays", 7), "days")
 	lastMoment = moment().endOf("day")
 	subscriptions.push Meteor.subscribe "modifiedEvents", timeMax: lastMoment.format(), timeMin: firstMoment.format()
 	subscriptions.push Meteor.subscribe "calendarList"

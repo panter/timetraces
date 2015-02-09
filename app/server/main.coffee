@@ -238,7 +238,4 @@ Meteor.startup ->
 			if result.data?
 				handleIds result.data
 
-	Meteor.publish "modifiedEvents", ({timeMin, timeMax})->
-		
-		EventsModified.find userId: @userId
 

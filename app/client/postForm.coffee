@@ -6,25 +6,19 @@ AutoForm.hooks
 			$("##{@formId}").closest ".modal"
 			.modal "hide"
 
-	
-sanitizeTime = (date) ->
-	moment(date).format "HH:mm"
-			
-sanitizeStartEndTime = (timeEntry) ->
-	timeEntry.start = sanitizeTime timeEntry.start
-	timeEntry.end = sanitizeTime timeEntry.end
-	timeEntry
-
-Template.postForm.rendered = ->
-	Session.set "currentProjectId", @data.timeEntry.project_id
-	Session.set "currentTaskId", @data.timeEntry.task_id
 
 
 Template.postForm.helpers
+
 	timeEntry: ->
-		sanitizeStartEndTime @timeEntry
+		timeEntry = Session.get "timeEntryToEdit"
+		if timeEntry?
+			Session.set "currentProjectId", timeEntry.project_id
+			Session.set "currentTaskId", timeEntry.task_id
+		timeEntry
+
 	billable: ->
-		if @timeEntry.billable?
+		if @timeEntry?.billable?
 			@timeEntry.billable
 		else
 			taskId = Session.get("currentTaskId")?.toString()
@@ -38,15 +32,14 @@ Template.postForm.helpers
 		key = UserSettings.get "controllrApiKey"
 		userID = UserSettings.get "controllrUserId"
 		return userID? and key?
-	projects: -> 
 
+	projects: -> 
 		Projects.find({}, sort: shortname: 1).map (project) ->
 			value: parseInt project._id, 10
 			label: project.shortname+" "+project.description
 	
 	taskIdOptions: -> 
-
-		Tasks.find project_id: Session.get "currentProjectId"
+		Tasks.find project_id: Session.get("currentProjectId") ? @timeEntry?.project_id
 		.map (task) ->
 			label: task.name, 
 			value: parseInt task._id,10

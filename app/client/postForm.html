@@ -4,14 +4,15 @@
 <template name="postForm">
   <div>
 
-    {{#if controllrIsSetUp}}
+    
+    
 
     {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
     <fieldset>
       {{#if timeEntry.new}}
-      <legend>Add Entry</legend>
+        <legend>Add Entry</legend>
       {{else}}
-      <legend>Edit Entry #{{timeEntry._id}}</legend>
+        <legend>Edit Entry #{{timeEntry._id}}</legend>
 
 
       {{/if}}
@@ -47,9 +48,7 @@
     {{/unless}}
     {{/autoForm}}
 
-    {{else}}
-    <p>Please provide a Controllr api-ey and username: <a href="{{pathFor 'settings'}}">Settings</a></p>
-    {{/if}}
+   
 
   </div>
 

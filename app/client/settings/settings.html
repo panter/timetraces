@@ -2,13 +2,13 @@
 <div class="settings container">
 	<h1>Settings</h1>
 
-	{{#autoForm collection="UserSettingsStore" doc=settings id="insertBookForm" type="update" autosave=true}}
+	{{#autoForm collection="UserSettingsStore" doc=settings id="settingForm" type="update" autosave=true}}
 	<div class="row">
 		<fieldset class="col-sm-6">
 			<legend>General Settings</legend>
 			{{> afQuickField name='startOfDay' type="time"}}
 			{{> afQuickField name='minimumMergeTime'}}
-			{{> afQuickField name='numberOfWeeks'}}
+			{{> afQuickField name='numberOfDays'}}
 			{{> afQuickField name='eventListViewMode'}}
 		</fieldset>
 		<fieldset class="col-sm-6">

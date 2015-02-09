@@ -11,9 +11,9 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Start of Day"
 		optional: true
-	numberOfWeeks:
+	numberOfDays:
 		type: Number
-		label: "Number of Weeks to show"
+		label: "Number of Days to show"
 		optional: true
 	calendars:
 		type: [String]

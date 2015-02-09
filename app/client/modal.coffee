@@ -1,2 +1,2 @@
 Template.modal.rendered = ->
-	$modal = @$(".modal").modal()
+	$modal = @$(".modal").modal show: no

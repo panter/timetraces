@@ -1,6 +1,7 @@
 
 
 <template name="eventList">
+
 	<div class="eventList {{viewMode}}">
 
 		{{#each days}}
@@ -10,13 +11,9 @@
 		{{/each}}
 	</div>
 
-	{{#if timeEntryToEdit}}
-		{{>eventList_editDialog}}
-	{{else}}
-		{{#if timeEntryToCreate}}
-			{{>eventList_createDialog}}
-		{{/if}}
-	{{/if}}
+
+	{{>eventList_editDialog}}
+
 
 
 
@@ -24,19 +21,13 @@
 </template>
 
 <template name="eventList_editDialog">
-{{#modal title="Edit"}}
-	{{>postForm timeEntry=timeEntryToEdit}}
+{{#modal title="Time Entry" id="eventList_editDialog"}}
+	{{>postForm}}
 {{/modal}}
 
 	
 </template>
-<template name="eventList_createDialog">
-{{#modal title="Edit"}}
-	{{>postForm timeEntry=timeEntryToCreate}}
-{{/modal}}
 
-	
-</template>
 
 <template name="eventList_oneDay">
 	
@@ -44,6 +35,7 @@
 		<div class="content">
 			<h2 class="date"><i class="fa fa-calendar"></i> {{dayMoment.calendar}}</h2>
 			<h3 class="stats"><i class="fa fa-clock-o"></i> {{totalHoursTracked}}h tracked</h3>
+			<button class="btn btn-default btn-add-entry"><i class="fa fa-plus"></i> Add Entry</button>
 			<div class="timeline" style="height: {{height}}px">
 				{{>eventList_oneDay_timeGrid}}
 

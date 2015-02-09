@@ -14,7 +14,7 @@ Router.route 'eventList',
 		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		days: ->
 			newestMoment = moment().endOf("day")
-			oldestMoment = moment().subtract(UserSettings.get("numberOfWeeks", 2), "weeks").startOf("day")
+			oldestMoment = moment().subtract(UserSettings.get("numberOfDays", 7), "days").startOf("day")
 
 			days = []
 			while(oldestMoment.valueOf()< newestMoment.valueOf())
@@ -35,12 +35,13 @@ Router.route 'eventList',
 					shortestEvent: shortestEvent
 				newestMoment.subtract 1, "d"
 			days
-		timeEntryToEdit: ->
-			TimeEntries.findOne Session.get "timeEntryIdToEdit"
-		timeEntryToCreate: ->
-			Session.get "timeEntryToCreate"
 
 
+
+editTimeEntry = (timeEntry) ->
+	Session.set "timeEntryToEdit", timeEntry
+	
+	$("#eventList_editDialog").modal "show"
 
 findTaskID = (event) ->
 
@@ -57,23 +58,7 @@ findTaskID = (event) ->
 
 
 
-transformEventToTimeEntry = (event)->
-	
 
-	if event.project?._id?
-		Session.set "currentProjectId", parseInt event.project._id, 10
-	taskId = findTaskID event
-
-
-	
-	description: event.bulletPoints?.map((point) -> "- #{point}").join "\n"
-	project_id: Session.get "currentProjectId"
-	task_id: taskId
-	user_id: UserSettings.get "controllrUserId"
-	start: event.start
-	end: event.end
-	day: moment(event.start).toDate()
-	new: true
 
 
 getPreferedStartOfDay = (dayMoment) ->
@@ -207,6 +192,14 @@ getSanitizedTimeEntries = (dayMoment)->
 	entries
 
 
+Template.eventList_oneDay.events
+	'click .btn-add-entry': (event, template)->
+	
+		editTimeEntry 
+			new: yes
+			day: template.data.dayMoment.toDate()
+			user_id: UserSettings.get "controllrUserId"
+			start: getPreferedStartOfDay(template.data.dayMoment).format "HH:mm"
 
 
 #Template.eventList_oneDay.rendered = ->
@@ -287,28 +280,45 @@ Template.eventList_oneTimeEntry.helpers
 
 
 
+sanitizeTime = (date) ->
+	moment(date).format "HH:mm"
+
+sanitizeStartEndTime = (timeEntry) ->
+	if timeEntry?
+		timeEntry.start = sanitizeTime timeEntry.start
+		timeEntry.end = sanitizeTime timeEntry.end
+		timeEntry
+
+transformEventToTimeEntry = (event)->
+	
+
+	if event.project?._id?
+		Session.set "currentProjectId", parseInt event.project._id, 10
+	taskId = findTaskID event
+
+
+	
+	description: event.bulletPoints?.map((point) -> "- #{point}").join "\n"
+	project_id: Session.get "currentProjectId"
+	task_id: taskId
+	user_id: UserSettings.get "controllrUserId"
+	start: sanitizeTime event.start
+	end: sanitizeTime event.end
+	day: moment(event.start).toDate()
+	new: true
+
+
 
 Template.eventList_oneEvent.events
 	'click': (event, template)->
-		Session.set "timeEntryToCreate", transformEventToTimeEntry template.data
+		editTimeEntry transformEventToTimeEntry template.data
+
 
 
 Template.eventList_oneTimeEntry.events
 	'click': ->
 		#Router.go "editTimeEntry", timeEntryId: @_id
-		Session.set "timeEntryIdToEdit", @_id
-
-
-
-Template.eventList_editDialog.rendered = ->
-	@$(".modal").on "hidden.bs.modal", ->
-		Meteor.defer ->
-			Session.set "timeEntryIdToEdit", null
-
-Template.eventList_createDialog.rendered = ->
-	@$(".modal").on "hidden.bs.modal", ->
-		Meteor.defer ->
-			Session.set "timeEntryToCreate", null
+		editTimeEntry sanitizeStartEndTime TimeEntries.findOne @_id
 
 
 
