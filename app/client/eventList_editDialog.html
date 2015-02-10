@@ -1,7 +1,9 @@
 
 
 
-<template name="postForm">
+<template name="eventList_editDialog">
+
+{{#modal title=title id="eventList_editDialog" footerButtons=footerButtons}}
   <div>
 
     
@@ -9,14 +11,6 @@
 
     {{#autoForm id="createOrUpdateTimeEntryForm" schema=schema doc=timeEntry type="method" meteormethod="createOrUpdateEntry" }}
     <fieldset>
-      {{#if timeEntry.new}}
-        <legend>Add Entry</legend>
-      {{else}}
-        <legend>Edit Entry #{{timeEntry._id}}</legend>
-
-
-      {{/if}}
-
       <div class="row">
         <div class="col-xs-6">
           {{> afQuickField type="select2" class="projectId" name='project_id' options=projects }}
@@ -36,22 +30,17 @@
           {{> afQuickField name='end' type="time"}}
         </div>
       </div>
-    {{> afQuickField name='user_id' readonly=true}}
+      {{> afQuickField name='user_id' readonly=true}}
 
     </fieldset>
 
-    {{#unless timeEntry.new}}
-    <button class="btn btn-delete btn-danger">Delete Entry</button>
-      <button type="submit" class="btn btn-primary">Update</button>
-    {{else}}
-      <button type="submit" class="btn btn-primary">Insert</button>
-    {{/unless}}
+    <button type="submit" class="btn btn-primary" style="display: none">Submit</button>
     {{/autoForm}}
 
-   
+    
 
   </div>
-
+  {{/modal}}
 </template>
 
 <template name="projectsSelect">

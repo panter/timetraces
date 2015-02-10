@@ -15,6 +15,9 @@ Router.route 'eventList',
 		
 		subscriptions = subscriptions.concat share.SubscriptionService.events firstMoment, lastMoment
 		return subscriptions
+
+	
+
 	data: ->
 
 		viewMode: -> UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE

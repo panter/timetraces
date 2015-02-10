@@ -1,5 +1,5 @@
 <template name="modal">
-<div class="modal fade" id="{{id}}">
+<div class="modal fade" id="{{id}}" data-keyboard="true" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -10,7 +10,12 @@
           {{> UI.contentBlock}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default btn-close" data-dismiss="modal">Close</button>
+        {{#each footerButtons}}
+          {{> modal_footer_button}}
+        {{/each}}
+       
+      
        
       </div>
     </div><!-- /.modal-content -->
@@ -18,4 +23,8 @@
 </div><!-- /.modal -->
 
 	
+</template>
+
+<template name="modal_footer_button">
+<button type="{{type}}" class="{{class}}">{{label}}</button>
 </template>

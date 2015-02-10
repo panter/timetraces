@@ -7,15 +7,35 @@ AutoForm.hooks
 			.modal "hide"
 
 
+getCurrentTimeEntry = ->
+	timeEntry = Session.get "timeEntryToEdit"
+	if timeEntry?
+		Session.set "currentProjectId", timeEntry.project_id
+		Session.set "currentTaskId", timeEntry.task_id
+	timeEntry
 
-Template.postForm.helpers
+Template.eventList_editDialog.helpers
+	footerButtons: ->
+		timeEntry = getCurrentTimeEntry()
+		if not timeEntry? or timeEntry.new
+			[
+				(class: "btn btn-primary", label: "Insert", type: "submit")
+			]
+		else
+			[
+				(class: "btn btn-delete btn-danger", label: "Delete")
+				(class: "btn btn-primary", label: "Update", type: "submit")
+				
+			]
 
-	timeEntry: ->
-		timeEntry = Session.get "timeEntryToEdit"
-		if timeEntry?
-			Session.set "currentProjectId", timeEntry.project_id
-			Session.set "currentTaskId", timeEntry.task_id
-		timeEntry
+	title: ->
+		timeEntry = getCurrentTimeEntry()
+		if not timeEntry? or timeEntry.new
+			"new Time Entry"
+		else
+			"Edit Entry #{timeEntry._id}"
+
+	timeEntry: getCurrentTimeEntry
 
 	billable: ->
 		if @timeEntry?.billable?
@@ -83,7 +103,7 @@ Template.postForm.helpers
 				label: "Billable"
 
 
-Template.postForm.events
+Template.eventList_editDialog.events
 	'change .projectId': (event, template) ->
 		projectId =  parseInt $(event.currentTarget).val(),10
 		Session.set "currentProjectId", projectId
