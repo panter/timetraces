@@ -188,23 +188,21 @@ Meteor.startup ->
 				_(result.data).map (entry) ->
 					dayMoment = moment entry.day
 
-					# start and end are wrong in the controllr
-					# they have only the time and not the right day
-					# also, they have a wrong timezone suffix
-					fixDay = (aMoment) ->
-
-						aMoment.year dayMoment.year()
-						aMoment.month dayMoment.month()
-						aMoment.date dayMoment.date()
-						# currently, time zone is one hour shifted
-						aMoment.subtract 1, "hours"
+					# start and end have only time on the controller
+					createMoment = (dateString) ->
+						[garbage, time] = dateString.split "T"
+						[h,m,sWithTimeZone] = time.split ":" 
+						aMoment = moment dayMoment
+						aMoment.hour h
+						aMoment.minute m
+						aMoment.second 0
 						aMoment
 					if entry.start?
-						startMoment = fixDay moment entry.start
+						startMoment = createMoment entry.start
 					else 
 						startMoment = dayMoment
 					if entry.end?
-						endMoment = fixDay moment entry.end
+						endMoment = createMoment entry.end
 					else
 						endMoment = moment(dayMoment).add entry.duration, "minutes"
 

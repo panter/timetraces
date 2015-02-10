@@ -2,9 +2,11 @@
 
 AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
-		after: createOrUpdateEntry: ->
+
+		after: createOrUpdateEntry: (doc)->
 			$("##{@formId}").closest ".modal"
 			.modal "hide"
+			return doc # success
 
 
 getCurrentTimeEntry = ->

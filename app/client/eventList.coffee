@@ -85,7 +85,6 @@ getLastEventDate = (eventDate) ->
 	previousEvent = Events.findOne {end: $lt: eventDate}, sort: "end": -1
 	previousTimeEntry = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), end: $lt: eventDate}, sort: "end": -1
 
-	
 	if previousTimeEntry? and previousEvent?
 		# get closer one
 		if previousTimeEntry.end.getTime() > previousEvent.end.getTime()
