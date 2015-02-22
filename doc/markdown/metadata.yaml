@@ -1,0 +1,64 @@
+---
+title:  Timetraces Seminararbeit Handheld
+author: Marco Wettstein
+geometry: margin=3cm
+references:
+-	id: gmailApi
+	title: Google Apps Email API
+	URL: https://developers.google.com/gmail/api/v1/reference/
+-	id: calendarApi
+	title: Google Kalender API
+	URL: https://developers.google.com/google-apps/calendar/v3/reference/events#resource
+-	id: googleOAuth2
+	title: Google OAuth2
+	URL: https://developers.google.com/accounts/docs/OAuth2
+-	id: redmineApi
+	title: Redmine REST API
+	URL: http://www.redmine.org/projects/redmine/wiki/Rest_api
+-	id: githubAuth
+	title: Github Authentifizierung
+	URL: https://developer.github.com/v3/#authentication
+-	id: businessCalendar
+	title: Our 10 Favorite Calendar Apps to Keep Your Schedule in Check
+	URL: http://www.brit.co/10-mobile-calendar-apps/ 
+-	id: meteorCordova
+	title: Building iOS and Android mobile apps with PhoneGap
+	URL: https://www.meteor.com/blog/2014/09/15/meteor-092-iOS-Android-mobile-apps-phonegap-cordova
+-	id: meteorAccounts
+	title: Meteor Accounts
+	URL: https://www.meteor.com/accounts
+- 	id: meteorGoogleApi
+	title: Meteor Google API
+	URL: https://github.com/percolatestudio/meteor-google-api
+-	id: meteorCoffee
+	title: Meteor coffeescript
+	URL: http://docs.meteor.com/#/full/coffeescript
+- 	id: coffeescript
+	title: CoffeeScript (Offizielle Seite)
+	URL: http://coffeescript.org/
+-	id: reactiveProgrammingWiki
+	title: Reactive programming - Wikipedia
+	URL: http://en.wikipedia.org/wiki/Reactive_programming
+-	id: meteorReactive
+	title: Meteor Manual - Transparent Reactive Programming
+	URL: http://manual.meteor.com/#deps-transparentreactiveprogramming
+-	id: autoform
+	title: AutoForm Github
+	URL: https://github.com/aldeed/meteor-autoform
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

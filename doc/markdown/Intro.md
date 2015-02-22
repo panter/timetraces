@@ -1,0 +1,6 @@
+
+
+\listoffigures
+
+\lstlistoflistings
+

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="style.css">
+  <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<nav id="TOC">
+<ul>
+<li><a href="#conventions"><span class="toc-section-number">1</span> Conventions</a></li>
+<li><a href="#probabilistic-machine-learning-terminology"><span class="toc-section-number">2</span> Probabilistic Machine Learning Terminology</a><ul>
+<li><a href="#loss-function"><span class="toc-section-number">2.1</span> Loss Function</a></li>
+<li><a href="#expected-conditional-risk"><span class="toc-section-number">2.2</span> Expected Conditional Risk</a></li>
+<li><a href="#expected-risk"><span class="toc-section-number">2.3</span> Expected Risk</a></li>
+<li><a href="#empirical-risk"><span class="toc-section-number">2.4</span> Empirical Risk</a></li>
+<li><a href="#bayes-optimal-binary-classifier"><span class="toc-section-number">2.5</span> Bayes’ Optimal Binary Classifier</a></li>
+<li><a href="#bayes-theorem"><span class="toc-section-number">2.6</span> Bayes’ Theorem</a></li>
+</ul></li>
+<li><a href="#optimization-background"><span class="toc-section-number">3</span> Optimization Background</a><ul>
+<li><a href="#constrained-optimization-lagrange-multipliers"><span class="toc-section-number">3.1</span> Constrained Optimization – Lagrange Multipliers</a></li>
+<li><a href="#sec:lagrange-duality"><span class="toc-section-number">3.2</span> Lagrange Duality</a></li>
+</ul></li>
+<li><a href="#nearest-neighbor-classifier-nnc"><span class="toc-section-number">4</span> Nearest Neighbor Classifier (NNC)</a><ul>
+<li><a href="#k-nearest-neighbors-classifier-knn"><span class="toc-section-number">4.1</span> K-Nearest Neighbors Classifier (KNN)</a></li>
+<li><a href="#theoretical-guarantees"><span class="toc-section-number">4.2</span> Theoretical Guarantees</a></li>
+</ul></li>
+<li><a href="#linear-regression"><span class="toc-section-number">5</span> Linear Regression</a><ul>
+<li><a href="#ridge-linear-regression"><span class="toc-section-number">5.1</span> Ridge Linear Regression</a></li>
+<li><a href="#bayesian-linear-regression"><span class="toc-section-number">5.2</span> Bayesian Linear Regression</a></li>
+</ul></li>
+<li><a href="#logistic-regression"><span class="toc-section-number">6</span> Logistic Regression</a><ul>
+<li><a href="#multi-class-classification-with-binary-logistic-regression"><span class="toc-section-number">6.1</span> Multi-class Classification with Binary Logistic Regression</a></li>
+<li><a href="#multinomial-logistic-regression"><span class="toc-section-number">6.2</span> Multinomial Logistic Regression</a></li>
+</ul></li>
+<li><a href="#gaussian-discriminant-analysis-gda"><span class="toc-section-number">7</span> Gaussian Discriminant Analysis (GDA)</a><ul>
+<li><a href="#linear-discriminant-analysis-lda"><span class="toc-section-number">7.1</span> Linear Discriminant Analysis (LDA)</a></li>
+<li><a href="#quadratic-discriminant-analysis-qda"><span class="toc-section-number">7.2</span> Quadratic Discriminant Analysis (QDA)</a></li>
+<li><a href="#gda-vs-logistic-regression"><span class="toc-section-number">7.3</span> GDA vs Logistic Regression</a></li>
+</ul></li>
+<li><a href="#kernel-methods"><span class="toc-section-number">8</span> Kernel Methods</a><ul>
+<li><a href="#kernelized-ridge-regression"><span class="toc-section-number">8.1</span> Kernelized Ridge Regression</a></li>
+<li><a href="#kernelized-nearest-neighbor-classifier"><span class="toc-section-number">8.2</span> Kernelized Nearest Neighbor Classifier</a></li>
+<li><a href="#gaussian-process"><span class="toc-section-number">8.3</span> Gaussian Process</a></li>
+</ul></li>
+<li><a href="#support-vector-machines"><span class="toc-section-number">9</span> Support Vector Machines</a><ul>
+<li><a href="#perceptron"><span class="toc-section-number">9.1</span> Perceptron</a></li>
+<li><a href="#hinge-loss"><span class="toc-section-number">9.2</span> Hinge-Loss</a></li>
+<li><a href="#svm-derivation"><span class="toc-section-number">9.3</span> SVM Derivation</a></li>
+<li><a href="#analysis"><span class="toc-section-number">9.4</span> Analysis</a></li>
+</ul></li>
+<li><a href="#adaboost"><span class="toc-section-number">10</span> Adaboost</a></li>
+<li><a href="#k-means-clustering"><span class="toc-section-number">11</span> K-Means Clustering</a></li>
+<li><a href="#gaussian-mixture-model-gmm"><span class="toc-section-number">12</span> Gaussian Mixture Model (GMM)</a><ul>
+<li><a href="#expectation-maximization-em-algorithm"><span class="toc-section-number">12.1</span> Expectation Maximization (EM) Algorithm</a></li>
+<li><a href="#em-for-gmm"><span class="toc-section-number">12.2</span> EM for GMM</a></li>
+</ul></li>
+<li><a href="#dimensionality-reduction"><span class="toc-section-number">13</span> Dimensionality Reduction</a><ul>
+<li><a href="#principle-component-analysis-pca"><span class="toc-section-number">13.1</span> Principle Component Analysis (PCA)</a></li>
+<li><a href="#kernelized-principle-component-analysis-kpca"><span class="toc-section-number">13.2</span> Kernelized Principle Component Analysis (kPCA)</a></li>
+</ul></li>
+<li><a href="#sec:bias-variance"><span class="toc-section-number">14</span> Bias vs Variance Trade-off</a></li>
+<li><a href="#model-selection"><span class="toc-section-number">15</span> Model Selection</a></li>
+<li><a href="#sec:hyperparameters"><span class="toc-section-number">16</span> Hyperparameter Selection</a></li>
+</ul>
+</nav>
+<h1 id="conventions"><span class="header-section-number">1</span> Conventions</h1>
+<p>All vectors are assumed to be vertical vectors and are denoted with bold-face, <span class="math">\(\boldsymbol{v}\)</span>.<br />Matrices are capitalized and boldface, <span class="math">\({\boldsymbol{M}}\)</span>.</p>
+<p><span class="math">\(p(\cdot)\)</span> is the probability function.<br /><span class="math">\(f(\cdot)\)</span> is the prediction function, predicting some output, <span class="math">\(y\)</span> given input parameters, <span class="math">\({\boldsymbol{x}}\)</span>. There are two types of prediction functions, continuous (regression) and classification.</p>
+<p><span class="math">\(\mathcal{D} = \{ ({\boldsymbol{x}}_1,y_1), ({\boldsymbol{x}}_2, y_2), \hdots, ({\boldsymbol{x}}_N,y_N)\}\)</span> is a dataset of <span class="math">\(N\)</span> samples drawn from a joint distribution, <span class="math">\(p({\boldsymbol{x}}, y)\)</span>, with known inputs, <span class="math">\({\boldsymbol{x}}_i\)</span> and corresponding correct output, <span class="math">\(y_i\)</span>. <span class="math">\({\boldsymbol{x}} \sim {\mathbb{R}}^{D \times 1}\)</span> corresponding to D dimensions or features of each sample. For predicting house prices, a feature may be size of the house, lot size, number of bathrooms, or number of bedrooms.</p>
+<p>Often, data will be represented in matrix form where <span class="math">\({\boldsymbol{X}} \sim {\mathbb{R}}^{N \times D}\)</span> and <span class="math">\({\boldsymbol{y}} \sim {\mathbb{R}}^{N \times 1}\)</span>. Sometimes this data may be preprocessed (zero mean, unit variance), and often, one of the dimensions will be a column of 1’s representing a bias or offset term.</p>
+<h1 id="probabilistic-machine-learning-terminology"><span class="header-section-number">2</span> Probabilistic Machine Learning Terminology</h1>
+<h2 id="loss-function"><span class="header-section-number">2.1</span> Loss Function</h2>
+<p><span class="math">\(L(f({\boldsymbol{x}}),y)\)</span>, is some measure of prediction error. There are many types of loss functions.</p>
+<ul>
+<li><p>L1-norm: <span class="math">\(L(f({\boldsymbol{x}}),y) = \|f({\boldsymbol{x}}) - y\|_1\)</span> – city block distance</p></li>
+<li><p>L2-norm: <span class="math">\(L(f({\boldsymbol{x}}),y) = \|f({\boldsymbol{x}}) - y\|_2\)</span> – just the euclidian</p></li>
+<li><p>p-norm: <span class="math">\(L(f({\boldsymbol{x}}),y) = \|f({\boldsymbol{x}}) - y\|_p\)</span> – more generally speaking</p></li>
+<li>square-error: <span class="math">\(L(f({\boldsymbol{x}}),y) = \|f({\boldsymbol{x}}) - y\|_2^2\)</span> – used in linear regression and logistic regression</li>
+<li>hinge-loss: <span class="math">\(L(f({\boldsymbol{x}}),y) = \text{max}(0,1-yf({\boldsymbol{x}}))\)</span> – used in SVMs for classification.</li>
+<li><p>exponential-loss: <span class="math">\(L(f({\boldsymbol{x}}),y) = e^{-yf({\boldsymbol{x}})}\)</span> – used in adaboost for classification</p></li>
+</ul>
+<p>The loss function is equal to the negated conditional log-likelihood</p>
+<p><span class="math">\[\begin{aligned}
+L(f({\boldsymbol{x}}),y) &amp;= - \log p(\mathcal{D}|{\boldsymbol{w}})\\
+&amp;= - \sum_n \log p(y_n|{\boldsymbol{x}}_n,{\boldsymbol{w}})\end{aligned}\]</span></p>
+<h2 id="expected-conditional-risk"><span class="header-section-number">2.2</span> Expected Conditional Risk</h2>
+<p><span class="math">\[\begin{aligned}
+R(f,{\boldsymbol{x}}) &amp;= {\mathbb{E}}_{y \sim p(y|{\boldsymbol{x}})}\;L(f({\boldsymbol{x}}),y)\\
+ &amp;= \int L(f({\boldsymbol{x}}),y) \;p(y|{\boldsymbol{x}})  \;dy\end{aligned}\]</span></p>
+<p>says, given <span class="math">\(y\)</span> follows some distribution conditioned on <span class="math">\({\boldsymbol{x}}\)</span>, what can we expect the loss to be if we marginalize over <span class="math">\(y\)</span>. This means, what sort of loss (risk) can we expect from this predictor, <span class="math">\(f(\cdot)\)</span>, given (conditioned) on the data we are given (<span class="math">\({\boldsymbol{x}}\)</span>).</p>
+<h2 id="expected-risk"><span class="header-section-number">2.3</span> Expected Risk</h2>
+<p><span class="math">\[\begin{aligned}
+R(f) &amp;= {\mathbb{E}}_{{\boldsymbol{x}}} \;R(f,{\boldsymbol{x}})\\
+&amp;= {\mathbb{E}}_{{\boldsymbol{x}} \sim p({\boldsymbol{x}})}{\mathbb{E}}_{y \sim p(y|{\boldsymbol{x}})}\;L(f({\boldsymbol{x}}),y) \\
+&amp;= \int \int L(f({\boldsymbol{x}}),y) \;p(y|{\boldsymbol{x}}) p({\boldsymbol{x}})  \;dy \;d{\boldsymbol{x}} \\
+&amp;= \int \int L(f({\boldsymbol{x}}),y) \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>marginalizes the expected conditional risk over the input data, <span class="math">\({\boldsymbol{x}}\)</span>, leaving us with the overall expected risk of some prediction function.</p>
+<h2 id="empirical-risk"><span class="header-section-number">2.4</span> Empirical Risk</h2>
+<p>Given some data, we can approximate the expected risk with the empirical risk given by</p>
+<p><span class="math">\[\begin{aligned}
+R_{\mathcal{D}}(f) &amp;= \frac{1}{N} \sum_n L(f({\boldsymbol{x}}_n),y_n)\end{aligned}\]</span></p>
+<p>Also, with infinite data, empirical risk is the expected risk</p>
+<p><span class="math">\[\begin{aligned}
+\lim_{N \to \infty} R_{\mathcal{D}}(f) &amp;= R(f)\end{aligned}\]</span></p>
+<p>Emperical risk is by definition the average of the loss function over all data. This is also known as cross-entropy <span class="math">\(\mathcal{E}(\cdot)\)</span>.</p>
+<h2 id="bayes-optimal-binary-classifier"><span class="header-section-number">2.5</span> Bayes’ Optimal Binary Classifier</h2>
+<p>This is a theoretical probabilistically optimal classifier. Assume some <span class="math">\(\eta({\boldsymbol{x}}) = p(y=1|{\boldsymbol{x}})\)</span>. Then the Bayes’ Optimal Binary Classifier is</p>
+<p><span class="math">\[\begin{aligned}
+f^*({\boldsymbol{x}}) =  \begin{cases} 1 &amp; \text{if } \eta({\boldsymbol{x}}) \ge 1/2 \\
+0 &amp; \text{if } \eta({\boldsymbol{x}}) &lt; 1/2 \end{cases} \end{aligned}\]</span></p>
+<p>This is very useful in proving the performance of your classifier.</p>
+<h2 id="bayes-theorem"><span class="header-section-number">2.6</span> Bayes’ Theorem</h2>
+<p>You are probably familiar with Bayes’ Theorem but I want to go over it just to clear up some terms.</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}}|\mathcal{D}) &amp;= \frac{p({\boldsymbol{w}}) \times p(\mathcal{D}|{\boldsymbol{w}})}{p(\mathcal{D})}\\
+\text{posterior} &amp;= \frac{\text{prior} \times \text{likelihood}}{\text{evidence}}\end{aligned}\]</span></p>
+<p>These terms will come up. Also pertinent to this topic is the concept of conjugate priors which defines the type of posterior distribution given the type of likelihood and prior distributions.</p>
+<p>In plain english, this theorem describes that the probability of some parametric weights fitting some data is equal to any prior knowledge of what the weights should be times the likelihood that data is described by those weights divided by the probability of seeing that data.</p>
+<p>When doing maximum likelihood estimation, we just maximize (typically the log) conditional likelihood. When we want to find the maximum a posterior solution, we typically leave out the evidence term because it is a constant that is nearly impossible to know and does not effect the optimization.</p>
+<h1 id="optimization-background"><span class="header-section-number">3</span> Optimization Background</h1>
+<h2 id="constrained-optimization-lagrange-multipliers"><span class="header-section-number">3.1</span> Constrained Optimization – Lagrange Multipliers</h2>
+<p>Suppose we want to minimize some function subject to some constrains.</p>
+<p><span class="math">\[\begin{aligned}
+\text{min }&amp; f(x)\\
+\text{s.t. }&amp; g(x) = 0\end{aligned}\]</span></p>
+<p>To solve this, we construct the <span><em>Lagrangian</em></span>.</p>
+<p><span class="math">\[\begin{aligned}
+L(x,\lambda) = f(x) + \lambda g(x)\end{aligned}\]</span></p>
+<p>Here, <span class="math">\(\lambda\)</span> is called a <span><em>lagrange multiplier</em></span>. To solve our constrained minimization, take the derivative with respect to each of the <span><em>primal</em></span> variables, <span class="math">\(x\)</span> and <span class="math">\(\lambda\)</span>, and solve equal to zero. <span class="math">\(\frac{d\;L(x,\lambda)}{dx}=0\)</span> and <span class="math">\(\frac{d\;L(x,\lambda)}{d\lambda }=0\)</span>. Substitute and solve.</p>
+<p>If there is more than one constraint, just create another lagrange multiplier and add it to the lagrangian.</p>
+<h2 id="sec:lagrange-duality"><span class="header-section-number">3.2</span> Lagrange Duality</h2>
+<p>Lagrange duality refers to the difference between the dual and primal formulations of an optimization problem.</p>
+<p>Given the constrained optimization problem, the <span><em>primal</em></span> formulation of the problem is given by</p>
+<p><span class="math">\[\begin{aligned}
+\min_{x} \;\;&amp; f(x)\\
+\text{s.t.} \;\; &amp; g_i(x) \le 0 \; \;\forall \; i\end{aligned}\]</span></p>
+<p>To get the <span><em>dual</em></span> formulation, we derive the lagrangian as follows, where <span class="math">\(\{\lambda_i\}\)</span> are the set of lagrange multipliers</p>
+<p><span class="math">\[\begin{aligned}
+L(x,\{\lambda_i\}) = f(x) + \sum_i \lambda_i g_i(x)\end{aligned}\]</span></p>
+<p>Note that</p>
+<p><span class="math">\[\begin{aligned}
+L(x,\{\lambda_i\}) &amp; \le f(x)\\
+\min_{x} \;\max_{\{\lambda_i\}} \;L(x,\{\lambda_i\}) &amp; = \min_{x} \;f(x) \text{ s.t. } g_i(x) \le 0 \; \;\forall \; i\end{aligned}\]</span></p>
+<p>Performing this min-max is difficult. This gives rise to the <span><em>dual</em></span> formulation which is a lower bound on the optimal solution.</p>
+<p><span class="math">\[\begin{aligned}
+g(\{\lambda_i\}) &amp;= \min_{x} \;L(x,\{\lambda_i\})\\
+\max_{\{\lambda_i\}} \;g(\{\lambda_i\}) &amp;= \max_{\{\lambda_i\}} \;\min_{x} \;L(x,\{\lambda_i\})\end{aligned}\]</span></p>
+<p>From before, we can clearly see that</p>
+<p><span class="math">\[\begin{aligned}
+g(\{\lambda_i\}) \le f(x)\end{aligned}\]</span></p>
+<p>Thus the solution to the dual</p>
+<p><span class="math">\[\begin{aligned}
+\max_{\{\lambda_i\}} \;g(\{\lambda_i\}) \le \min_{x} \; f(x)\end{aligned}\]</span></p>
+<p>The difference between the primal and dual solutions is called the duality gap.</p>
+<p>The dual formulation is properly given by</p>
+<p><span class="math">\[\begin{aligned}
+\max_{\{\lambda_i\}} \;\;&amp; g(\{\lambda_i\})\\
+s.t. \;\; &amp; \lambda_i \ge 0 \; \;\forall \; i\end{aligned}\]</span></p>
+<h1 id="nearest-neighbor-classifier-nnc"><span class="header-section-number">4</span> Nearest Neighbor Classifier (NNC)</h1>
+<p>This is a very basic classifier, but it has a very strong theoretical proof. We define the <span><em>nearest neighbor</em></span> as the sample in the training set with the smallest distance to some sample in question.</p>
+<p><span class="math">\[\begin{aligned}
+nn({\boldsymbol{x}}) = \text{arg min}_n \;\; \text{distance}({\boldsymbol{x}}, {\boldsymbol{x}}_n)\end{aligned}\]</span></p>
+<p>This distance function is typically the squared euclidian distance</p>
+<p><span class="math">\[\begin{aligned}
+nn({\boldsymbol{x}}) = \text{arg min}_n \| {\boldsymbol{x}} - {\boldsymbol{x}}_n \|_2^2\end{aligned}\]</span></p>
+<p>We then classify based on the classification of the nearest neighbor</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}) = y_{nn({\boldsymbol{x}})}\end{aligned}\]</span></p>
+<p>This is called a non-parametric model because it depends only on our training data. We will have to carry our training data around with us in order to classify new samples.</p>
+<h2 id="k-nearest-neighbors-classifier-knn"><span class="header-section-number">4.1</span> K-Nearest Neighbors Classifier (KNN)</h2>
+<p>This simply extends nearest neighbor to classify based on the classes of the k nearest neighbors</p>
+<p><span class="math">\[\begin{aligned}
+knn({\boldsymbol{x}}) = \{ nn_1({\boldsymbol{x}}), nn_2({\boldsymbol{x}}), \hdots, nn_k({\boldsymbol{x}}) \}\end{aligned}\]</span></p>
+<p>We then classify based on the majority class <span class="math">\(c \in \{C\}\)</span> (reads: some class <span class="math">\(c\)</span> that is an element of the set of all classes, <span class="math">\(\{C\}\)</span>).</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}) = \text{arg max}_c \sum_{n \in knn({\boldsymbol{x}})} {\mathbb{I}}(y_n == c)\end{aligned}\]</span></p>
+<p>Here, we utilize the identity function, <span class="math">\({\mathbb{I}}(\cdot)\)</span> which returns 1 if input is true and 0 if the input is false.</p>
+<h2 id="theoretical-guarantees"><span class="header-section-number">4.2</span> Theoretical Guarantees</h2>
+<p>We have a simple loss function</p>
+<p><span class="math">\[\begin{aligned}
+L(f({\boldsymbol{x}}),y) = \begin{cases} 0 &amp; \text{if } f({\boldsymbol{x}}) = y \\ 1  &amp; \text{if } f({\boldsymbol{x}}) \ne y \end{cases}\end{aligned}\]</span></p>
+<p>We can compute the expected conditional risk as follows. There are two possible ways of making a mistake and we can compute their probabilities (where <span class="math">\(\eta({\boldsymbol{x}}) = p(y=1|{\boldsymbol{x}})\)</span>)<br />1) <span class="math">\(p(f({\boldsymbol{x}}) = 1 | y = 0) = \eta(nn({\boldsymbol{x}}))(1- \eta({\boldsymbol{x}}))\)</span><br />2) <span class="math">\(p(f({\boldsymbol{x}}) = 0 | y = 1) = (1- \eta(nn({\boldsymbol{x}})))\eta({\boldsymbol{x}})\)</span><br /> Writing out the expected conditional risk</p>
+<p><span class="math">\[\begin{aligned}
+R(f,{\boldsymbol{x}}) = \eta(nn({\boldsymbol{x}}))(1- \eta({\boldsymbol{x}})) +  (1- \eta(nn({\boldsymbol{x}}))){\boldsymbol{x}})\end{aligned}\]</span></p>
+<p>It can be shown that</p>
+<p><span class="math">\[\begin{aligned}
+\lim_{N \to \infty} \eta(nn({\boldsymbol{x}})) = \eta({\boldsymbol{x}})\end{aligned}\]</span></p>
+<p>Thus for <span class="math">\(N \to \infty\)</span></p>
+<p><span class="math">\[\begin{aligned}
+R(f,{\boldsymbol{x}}) = 2\eta({\boldsymbol{x}})(1-\eta({\boldsymbol{x}}))\end{aligned}\]</span></p>
+<p>When compared to the Bayes’ optimal binary classifier</p>
+<p><span class="math">\[\begin{aligned}
+R(f^*,{\boldsymbol{x}}) = \text{min}\{\eta({\boldsymbol{x}}), 1-\eta({\boldsymbol{x}}) \}\end{aligned}\]</span></p>
+<p>We see that</p>
+<p><span class="math">\[\begin{aligned}
+R(f,{\boldsymbol{x}}) = 2R(f^*,{\boldsymbol{x}}) (1 - R(f^*,{\boldsymbol{x}}) )\end{aligned}\]</span></p>
+<p>We can then proceed to show an upper bound on the expected risk</p>
+<p><span class="math">\[\begin{aligned}
+R(f) &amp;= {\mathbb{E}}_{x}R(f,{\boldsymbol{x}})\\
+&amp;=  {\mathbb{E}}_{x}2R(f^*,{\boldsymbol{x}})(1- R(f^*,{\boldsymbol{x}}))\\
+&amp;=  2{\mathbb{E}}_{x}R(f^*,{\boldsymbol{x}}) - 2{\mathbb{E}}_{x}R(f^*,{\boldsymbol{x}})^2\\
+&amp;=  2R(f^*) - [2R(f^*)^2 + \text{var}(R(f^*,x))]\\
+&amp;=  2R(f^*)(1 - R(f^*)) - \text{var}(R(f^*,x))\\
+&amp;\le  2R(f^*)(1 - R(f^*))\end{aligned}\]</span></p>
+<p>In the last step, we drop off the variance term and set the = to <span class="math">\(\le\)</span> because the variance must be positive.</p>
+<p>We have thus shown a very strong theoretical guarantee for NNC and that is</p>
+<p><span class="math">\[\begin{aligned}
+R(f^*) \le R(f^{NNC}) \le 2R(f^*,{\boldsymbol{x}}) (1 - R(f^*,{\boldsymbol{x}}) )\end{aligned}\]</span></p>
+<h1 id="linear-regression"><span class="header-section-number">5</span> Linear Regression</h1>
+<p>Linear regression is the problem of fitting a line to a set of points given a square-error loss function and a linear parametric model defined by</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}) = {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>where <span class="math">\({\boldsymbol{w}}\)</span> are a set of parametric weights for each dimension.</p>
+<p>Note the difference between parametric models (linear regression) and non-parametric models (KNN or NNC) is that non-parametric models use only the data to make predictions while parametric models make predictions based on some parameters, in this case <span class="math">\({\boldsymbol{w}}\)</span>. These parameters are often referred to as weights. This is because the prediction is based on a weighted sum of sample features (dimensions).</p>
+<p>This gives us an empirical risk (or cross-entropy) of</p>
+<p><span class="math">\[\begin{aligned}
+R_{\mathcal{D}}(f) = \frac{1}{N} \sum_n \|y_n - f({\boldsymbol{x}})\|_2^2\end{aligned}\]</span></p>
+<p>In this case, empirical risk is often referred to as the residual-sum-of-squares (RSS) or mean-square-error (MSE).</p>
+<p>The proper probabilistic way of deriving the solution to the weights is by maximizing the conditional likelihood or probability of seeing the data. By doing , we are creating a <span><em>discriminative</em></span> model because we optimizing the conditional probability. Later on with Bayesian linear regression, we will create a <span><em>generative</em></span> model by maximizing the complete likelihood (joint probability).</p>
+<p><span class="math">\[\begin{aligned}
+\text{arg max}_{{\boldsymbol{w}}} p(\mathcal{D}|{\boldsymbol{w}}) = \text{arg max}_{{\boldsymbol{w}}} \prod_n p(y_n|x_n,{\boldsymbol{w}})\end{aligned}\]</span></p>
+<p>To clean up the notion, we will leave out the weights in the probability and assume it is implied</p>
+<p><span class="math">\[\begin{aligned}
+\text{arg max}_{{\boldsymbol{w}}} p(\mathcal{D}) = \text{arg max}_{{\boldsymbol{w}}} \prod_n p(y_n|x_n)\end{aligned}\]</span></p>
+<p>We assume a noisy observation model such that</p>
+<p><span class="math">\[\begin{aligned}
+y = {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}} + \eta\end{aligned}\]</span></p>
+<p>where the noise, <span class="math">\(\eta \sim N(0,\sigma^2)\)</span> is zero mean gaussian noise. Thus for one training sample</p>
+<p><span class="math">\[\begin{aligned}
+p(y_n|x_n) &amp;= N(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}, \sigma^2)\\
+&amp;= \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}})^2}{2\sigma^2}}\end{aligned}\]</span></p>
+<p>Now we can maximize the conditional likelihood. A common trick is to equivalently maximize log-likelihood. This turns products into sums which makes things easier.</p>
+<p><span class="math">\[\begin{aligned}
+\log p(\mathcal{D}) &amp;=  \log \prod_n p(y_n|x_n)\\
+&amp;=  \sum_n \log p(y_n|x_n)\\
+&amp;=  \sum_n -\frac{(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}})^2}{2\sigma^2} - \log\sigma\sqrt{2\pi}\\\end{aligned}\]</span></p>
+<p>Now, to find the optimal weights, we take the derivative set to zero</p>
+<p><span class="math">\[\begin{aligned}
+\frac{\partial}{\partial {\boldsymbol{w}}} \log p(\mathcal{D}) &amp;\propto \frac{\partial}{\partial {\boldsymbol{w}}} \sum_n (y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}})^2 = 0\end{aligned}\]</span></p>
+<p>This means that <span class="math">\(\text{arg max}_{{\boldsymbol{w}}} \log p(\mathcal{D}) = \text{arg min}_{{\boldsymbol{w}}} R_{\mathcal{D}}(f)\)</span>!</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}} &amp;= \text{arg min}_{{\boldsymbol{w}}} R_{\mathcal{D}}(f)\\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \frac{1}{N} \sum_n (y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n){^{\textrm T}}(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)\\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \frac{1}{N} \sum_n {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n{\boldsymbol{x}}_n{^{\textrm T}}{\boldsymbol{w}} - 2y_n{\boldsymbol{x}}_n{^{\textrm T}}{\boldsymbol{w}} + y_n^2\\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \frac{1}{N} \left[ {\boldsymbol{w}}{^{\textrm T}}\left(\sum_n {\boldsymbol{x}}_n{\boldsymbol{x}}_n{^{\textrm T}}\right){\boldsymbol{w}} - 2\left(\sum_n y_n{\boldsymbol{x}}_n{^{\textrm T}}\right){\boldsymbol{w}} \right]+\text{constant}\\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \frac{1}{N} \left[ {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{w}} - 2\left({\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}}\right){\boldsymbol{w}} \right]+\text{constant}\\
+0 &amp;= \frac{\partial}{\partial {\boldsymbol{w}}} \frac{1}{N} \left[ {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{w}} - 2\left({\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}}\right){\boldsymbol{w}} \right]\\
+{\boldsymbol{w}}^{MLE} &amp;= \left({\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}\right)^{-1}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}} \end{aligned}\]</span></p>
+<p>The solution derived above is also known as the maximum likelihood estimation (MLE) solution or the least-mean-squares (LMS) solution.</p>
+<p>Note that all of the different dimensions of the weights are independent. Also, the solution is independent of the noise, <span class="math">\(\eta\)</span>.</p>
+<p>Also note that we could use numerical optimization tools. What if <span class="math">\(D\)</span> is large? That matrix inversion may be intractable. Thankfully, the (empirical risk) objective function is convex</p>
+<p><span class="math">\[\begin{aligned}
+\frac{\partial R_{\mathcal{D}}(f)}{\partial {\boldsymbol{w}}} &amp;\propto {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{w}} - 2{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}}\\
+\frac{\partial^2 R_{\mathcal{D}}(f)}{\partial {\boldsymbol{w}}{\boldsymbol{w}}{^{\textrm T}}} &amp;= {\boldsymbol{H}}\\
+&amp;\propto {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}\end{aligned}\]</span></p>
+<p>This is positive semidefinite, thus proving convexity.</p>
+<p>Linear regression can be extended to nonlinear regression using a basis function, <span class="math">\({\boldsymbol{\phi}}({\boldsymbol{x}})\)</span>, which transforms the data into a nonlinear basis. For example, given a dataset where <span class="math">\(D=2\)</span>, we can use a nonlinear basis function to transform the data into a quadratic space</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\phi}}({\boldsymbol{x}}) \to \left[ \begin{array}{c} x_1\\x_2\\x_1^2\\x_1\cdot x_2\\ x_2^2 \end{array}\right]\end{aligned}\]</span></p>
+<p>This allows us to fit a quadratic to our data using linear regression rather than simply a line. In this way, we are increasing the dimensionality of our data. However, this will be prone to overfitting. See section [sec:bias-variance] about the trade-off between model complexity and overfitting.</p>
+<h2 id="ridge-linear-regression"><span class="header-section-number">5.1</span> Ridge Linear Regression</h2>
+<p>Also known as regularized linear regression.</p>
+<p>This can be thought of from two difference perspectives.</p>
+<p>1) Given the MLE solution, what if <span class="math">\({\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}\)</span> is not invertible? This could happen if <span class="math">\(N&lt;D\)</span>. Intuitively, this would mean there is not enough data to estimate all the parameters. This could also happen is the columns of <span class="math">\({\boldsymbol{X}}\)</span> are not linearly independent. This would happen if any features are perfectly correlated.</p>
+<p>An easy solution to this is to add a diagonal matrix to the solution</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}} &amp;= \left( {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}} + \lambda {\boldsymbol{I}}\right)^{-1}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}} \end{aligned}\]</span></p>
+<p>This makes linear regression more numerically stable. The matrix is now guaranteed to be invertible.</p>
+<p><span class="math">\(\lambda&gt;0\)</span> is called the regularization term. It is considered a <span><em>hyperparameter</em></span> of the model because it will need to be optimized separately from the optimization of the parametric weights of the model. For more on tuning hyperparameters, see section [sec:hyperparameters].</p>
+<p>2) Suppose our model is susceptible to overfitting. Thus we want to our model to be more simple. We can do this by introducing a <span><em>prior</em></span> belief</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}}) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{w}}}{2\sigma^2}}\end{aligned}\]</span></p>
+<p>namely, that <span class="math">\({\boldsymbol{w}}\)</span> is around zero resulting in a simple model. This line of thinking is to regard <span class="math">\({\boldsymbol{w}}\)</span> as a random variable and we will use the observed data to update our <span><em>a prior</em></span> belief on <span class="math">\({\boldsymbol{w}}\)</span>.</p>
+<p>Now, rather than maximizing the conditional likelihood, we want to maximize the joint probability</p>
+<p><span class="math">\[\begin{aligned}
+p(\mathcal{D},{\boldsymbol{w}}) &amp;= p(\mathcal{D}|{\boldsymbol{w}})p({\boldsymbol{w}})\\
+\log p(\mathcal{D},{\boldsymbol{w}}) &amp;= \sum_n \log p(y_n|{\boldsymbol{x}}_n,{\boldsymbol{w}}) + \log p({\boldsymbol{w}})\\
+&amp;= - \frac{1}{2\sigma_0^2} \sum_n ({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n - y_n)^2 -  \frac{1}{2\sigma^2} \|{\boldsymbol{w}}\|_2^2 + \text{constant}\\
+\mathcal{E}({\boldsymbol{w}}) &amp;= \frac{1}{2\sigma_0^2} \sum_n ({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n - y_n)^2 +  \frac{1}{2\sigma^2} \|{\boldsymbol{w}}\|_2^2\end{aligned}\]</span></p>
+<p>Where <span class="math">\(\sigma_0\)</span> is the variance of the noise. Now, we seek to maximize the <span><em>a posterior</em></span> (MAP) solution to the weights</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}}^{MAP} = \text{arg max}_{{\boldsymbol{w}}} \log p({\boldsymbol{w}}|\mathcal{D})\end{aligned}\]</span></p>
+<p>and we know that</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}},\mathcal{D}) &amp;= p({\boldsymbol{w}}|\mathcal{D})p(\mathcal{D})\\
+\log p({\boldsymbol{w}},\mathcal{D}) &amp;= \log p({\boldsymbol{w}}|\mathcal{D})+ \log p(\mathcal{D})\\
+\log p({\boldsymbol{w}},\mathcal{D}) &amp;= \log p({\boldsymbol{w}}|\mathcal{D})+ \text{constant}\\\end{aligned}\]</span></p>
+<p>so maximizing the a posterior is analogous to maximizing the the joint likelihood. Thus,</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}}^{MAP} &amp;= \text{arg max}_{{\boldsymbol{w}}} \log p({\boldsymbol{w}}|\mathcal{D}) \\
+&amp;= \text{arg max}_{{\boldsymbol{w}}} \log p({\boldsymbol{w}},\mathcal{D}) \\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \mathcal{E}({\boldsymbol{w}}) \\
+&amp;= \text{arg min}_{{\boldsymbol{w}}} \sum_n ({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n - y_n)^2 +  \frac{\sigma_0^2}{\sigma^2} \|{\boldsymbol{w}}\|_2^2\\
+&amp;= \left( {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}} + \frac{\sigma_0^2}{\sigma^2} {\boldsymbol{I}}\right)^{-1}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}}\end{aligned}\]</span></p>
+<p>where the regularization term <span class="math">\(\lambda = \frac{\sigma_0^2}{\sigma^2}\)</span>, the ratio of the model noise variance <span class="math">\(\sigma_0\)</span>, to the variance of the weights <span class="math">\(\sigma\)</span>. A smaller <span class="math">\(\sigma\)</span> indications a stronger prior for a simpler model, thus more regularization.</p>
+<p>Again, regularization must be treated as a hyperparameter of the model. For more on tuning hyperparameters, see section [sec:hyperparameters].</p>
+<h2 id="bayesian-linear-regression"><span class="header-section-number">5.2</span> Bayesian Linear Regression</h2>
+<p>This is the full blown Bayesian treatment of linear regression. Bayesian methods can be applied all over the place. Conjugate priors make life a bit easier though its not necessary. However, for linear regression, all distributions are Gaussian which makes things nice and easy.</p>
+<p>First we define the likelihood as a normal distribution with some precision/variance due to noise</p>
+<p><span class="math">\[\begin{aligned}
+p(y|{\boldsymbol{x}}) &amp;= N({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}, \beta^{-1})\end{aligned}\]</span></p>
+<p><span class="math">\(\beta\)</span> is known as precision and is the inverse of the variance of the noise (remember <span class="math">\(\eta \sim N(0,\sigma^2)\)</span>). We also define a prior that tries urge a simpler model.</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}}) = N({\boldsymbol{0}},\alpha^{-1}{\boldsymbol{I}})\end{aligned}\]</span></p>
+<p>Our prior suggests that <span class="math">\({\boldsymbol{w}}\)</span> is around zero resulting in a simple model. <span class="math">\(\alpha\)</span> is the precision that tells us how confident we think we are about where <span class="math">\({\boldsymbol{w}}\)</span> is centered. Given this prior (the weights centered at zero), <span class="math">\(\alpha\)</span> defines how simple out model ought to be.</p>
+<p>Now to derive the maximum a posterior solution</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}}|\mathcal{D}) &amp;\propto p({\boldsymbol{w}})  p(y|{\boldsymbol{x}}, {\boldsymbol{w}})\\
+&amp;\propto N({\boldsymbol{w}}|{\boldsymbol{0}}, \alpha^{-1}) \times \prod_n N(y_n|{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n, \beta^{-1})\\
+&amp;\propto \exp{- \frac{\alpha}{2}{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{w}} - \frac{\beta}{2}\sum_n(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)^2} \\
+&amp;\propto \exp{ - \frac{1}{2}({\boldsymbol{w}} - {\boldsymbol{\mu}}){^{\textrm T}}{\boldsymbol{\Sigma}}^{-1}({\boldsymbol{w}} - {\boldsymbol{\mu}})}\\
+&amp;\propto N({\boldsymbol{w}}|{\boldsymbol{\mu}}, {\boldsymbol{\Sigma}})\end{aligned}\]</span></p>
+<p>The last step involves completing the square.</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\Sigma}} &amp;= \left(\alpha {\boldsymbol{I}} + \beta {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}\right)^{-1}\\
+{\boldsymbol{\mu}} &amp;= \beta {\boldsymbol{\Sigma}} {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{y}}\end{aligned}\]</span></p>
+<p>Note that we derived what the MAP solution is proportional to. That is because the evidence is just a constant. If we were to maximize the log posterior probability, we would be left with <span class="math">\({\boldsymbol{w}} = {\boldsymbol{\mu}}\)</span>. This is the same solution as we saw before for ridge regression only this time we also have our confidence in that solution.</p>
+<p>Next, we derive the predictive distribution for a new data point</p>
+<p><span class="math">\[\begin{aligned}
+p(y|{\boldsymbol{x}}, \mathcal{D}) &amp;= \int \text{likelihood} \times \text{posterior } d{\boldsymbol{w}}\\
+&amp;= \int p(y|{\boldsymbol{x}}, {\boldsymbol{w}}) p({\boldsymbol{w}}|\mathcal{D})d{\boldsymbol{w}}\\
+&amp;\propto \int \exp{-\frac{\beta}{2}(y - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}})^2 - \frac{1}{2}({\boldsymbol{w}} - {\boldsymbol{\mu}}){^{\textrm T}}{\boldsymbol{\Sigma}}^{-1}({\boldsymbol{w}} - {\boldsymbol{\mu}})}d{\boldsymbol{w}}\\
+ &amp;\propto N(y|{\boldsymbol{\mu}}{^{\textrm T}}{\boldsymbol{x}}, \beta^{-1} + {\boldsymbol{x}}{^{\textrm T}}{\boldsymbol{\Sigma}}{\boldsymbol{x}}) \\
+ &amp;\propto N(y|{\boldsymbol{\mu}}{^{\textrm T}}{\boldsymbol{x}},\sigma^2({\boldsymbol{x}})
+ \end{aligned}\]</span></p>
+<p>What we are left with is same prediction as before, <span class="math">\({\boldsymbol{\mu}}{^{\textrm T}}{\boldsymbol{x}}\)</span>, but now we also have a confidence for each data point, <span class="math">\(\sigma^2({\boldsymbol{x}})\)</span>! This allows you to plot your regression curve along with error bounds indicating confidence in any region of the curve.</p>
+<p>So how do we choose <span class="math">\(\alpha\)</span> and <span class="math">\(\beta\)</span>? There is no analytical solution. There are some iterative procedures involving eigendecomposition, but in practice, they are tuned as hyperparameters of the model using cross-validation.</p>
+<p>A huge benefit of Bayesian linear regression is that we can update the model with new data without recalculating computing all of the training data. When we first train the model on the training data and get a posterior, we can use that as the prior to compute a new posterior with new data!</p>
+<p>Another benefit is that we treat every prediction as an independent gaussian process and thus we can compute the confidence in each prediction given by <span class="math">\(\sigma^2({\boldsymbol{x}})\)</span>.</p>
+<h1 id="logistic-regression"><span class="header-section-number">6</span> Logistic Regression</h1>
+<p>This is very analogous to linear regression except it is used for classification. It is a non-linear model with no analytical solution, but it is often referred to as a linear model because the decision boundary must be a hyperplane. The model returns a probability of some sample belonging to a specific class or not, defined by the conditional likelihood</p>
+<p><span class="math">\[\begin{aligned}
+p(y_n=c|{\boldsymbol{x}}_n) &amp;= \frac{1}{1+e^{-{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n}}\\
+&amp;= \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)\end{aligned}\]</span></p>
+<p>where <span class="math">\(\sigma(\cdot)\)</span> is the sigmoid function. Note that this is binary classification. Either <span class="math">\(y=c\)</span> or <span class="math">\(y\ne c\)</span>. We will alter the notation to be <span class="math">\(y=1\)</span> and <span class="math">\(y=0\)</span> respectively. This allows us to rewrite this nicely</p>
+<p><span class="math">\[\begin{aligned}
+p(y_n|{\boldsymbol{x}}_n) &amp;= \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)^{y_n}(1-\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n))^{1-y_n}\end{aligned}\]</span></p>
+<p>We then proceed to determine the optimal weights using maximum likelihood estimation. But first, we take the log to make things easier</p>
+<p><span class="math">\[\begin{aligned}
+\log p(\mathcal{D}) &amp;= \sum_n y_n \log \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n) + (1-y_n) \log (1-\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n))\end{aligned}\]</span></p>
+<p>It is convenient to work with the negation of the log likelihood known as the cross-entropy error function</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{E}({\boldsymbol{w}}) &amp;= \sum_n -y_n \log \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n) - (1-y_n) \log (1-\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n))\end{aligned}\]</span></p>
+<p>We find the minimum of the cross-entropy error using the stationary point condition</p>
+<p><span class="math">\[\begin{aligned}
+\frac{\partial \mathcal{E}({\boldsymbol{w}})}{\partial {\boldsymbol{w}}} &amp;= \sum_n -y_n[1- \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)]{\boldsymbol{x}}_n - (1-y_n)\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n){\boldsymbol{x}}_n\\
+0 &amp;= \sum_n [\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n) - y_n]{\boldsymbol{x}}_n\end{aligned}\]</span></p>
+<p>Note that there is no closed-form analytical solution to identify <span class="math">\({\boldsymbol{w}}\)</span> from the stationary point condition. Thus we use numerical optimization. Gradient decent works, but second-order Newton’s method works swimmingly. However inverting the hessian makes Newton’s method unscalable. We can show that the cross-entropy function is convex, thus a numerical optimization can guarantee a global optima. We start by computing the hessian matrix</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{H}} &amp;= \frac{\partial^2 \mathcal{E}({\boldsymbol{w}})}{\partial {\boldsymbol{w}}{\boldsymbol{w}}{^{\textrm T}}}\\
+&amp;= \sum_n \sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)[1-\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)]{\boldsymbol{x}}_n{\boldsymbol{x}}_n{^{\textrm T}}\\
+&amp;= \sum_n (\alpha_n {\boldsymbol{x}}_n)(\alpha_n {\boldsymbol{x}}_n){^{\textrm T}}\end{aligned}\]</span></p>
+<p>where <span class="math">\(\alpha_n = \sqrt{\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)[1-\sigma({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)]}\)</span>.</p>
+<p>For any vector, <span class="math">\({\boldsymbol{v}}\)</span>,</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{v}}{^{\textrm T}}{\boldsymbol{H}}{\boldsymbol{v}} &amp;=  \sum_n {\boldsymbol{v}} {^{\textrm T}}(\alpha_n {\boldsymbol{x}}_n)(\alpha_n {\boldsymbol{x}}_n){^{\textrm T}}{\boldsymbol{v}} \\
+&amp;= \sum_n [\alpha_n{\boldsymbol{v}}{^{\textrm T}}{\boldsymbol{x}}_n]^2 \ge 0\end{aligned}\]</span></p>
+<p>and thus, this optimization is convex which guarantees our solution is a global optima.</p>
+<h2 id="multi-class-classification-with-binary-logistic-regression"><span class="header-section-number">6.1</span> Multi-class Classification with Binary Logistic Regression</h2>
+<p>You have two choices for using binary classifiers for multi-class classification<br />1) “one vs rest”: Train K classifiers, one for each class to discriminate between that class and the rest of the classes. On a new sample, predict with all K classifiers and choose the one with the highest probability. This method is beneficial if you have many classes.</p>
+<p>2) “one vs one”: Train “K choose 2” classifiers, one for each pair of classes to discriminate between them. On a new sample, predict with all classifiers and choose the class that was predicted most often. This method is beneficial if you have lot of data, because you are training on a subset of the data – only the data for the two classes.</p>
+<h2 id="multinomial-logistic-regression"><span class="header-section-number">6.2</span> Multinomial Logistic Regression</h2>
+<p>Multinomial logistic regression is used for multi-class classification and is a simple extension of logistic regression. The conditional likelihood is given by</p>
+<p><span class="math">\[\begin{aligned}
+p(y_n = c_k|{\boldsymbol{x}}_n) &amp;= \frac{e^{{\boldsymbol{w}}_k{^{\textrm T}}{\boldsymbol{x}}_n}}{\sum_{k&#39;} e^{{\boldsymbol{w}}_{k&#39;}{^{\textrm T}}{\boldsymbol{x}}_n}}\end{aligned}\]</span></p>
+<p>This is called the <span><em>softmax</em></span> function.</p>
+<p>Also, since we are no longer doing binary classification, we need to use one-hot encoding for the target vector, <span class="math">\({\boldsymbol{y}}_n \sim {\mathbb{R}}^{K \times 1}\)</span> such that</p>
+<p><span class="math">\[\begin{aligned}
+y_{nk} = \begin{cases} 1 &amp; \text{if } y_n = k \\ 0 &amp; \text{otherwise} \end{cases}\end{aligned}\]</span></p>
+<p>And now the conditional log likelihood</p>
+<p><span class="math">\[\begin{aligned}
+\log P(\mathcal{D}) &amp;= \sum_n \log P({\boldsymbol{y}}_n|{\boldsymbol{x}}_n)\\
+&amp;= \sum_n \log \prod_k P(y_{nk}=1|{\boldsymbol{x}}_n)^{y_{nk}}\\
+&amp;= \sum_n \sum_k y_{nk} \log P(y_{nk}=1|{\boldsymbol{x}}_n)\\
+\mathcal{E}({\boldsymbol{w}}_1, {\boldsymbol{w}}_2, \hdots, {\boldsymbol{w}}_K) &amp;= -\sum_n \sum_k y_{nk} \log P(y_{nk}=1|{\boldsymbol{x}}_n)\\\end{aligned}\]</span></p>
+<p>The cross-entropy function is convex and can therefore has a unique global optimum. Optimization requires numerical techniques analogous to those used for binary logistic regression, but large-scale implementation of multinomial logistic regression is non-trivial both for the number of classes and the number of training samples.</p>
+<h1 id="gaussian-discriminant-analysis-gda"><span class="header-section-number">7</span> Gaussian Discriminant Analysis (GDA)</h1>
+<p>Gaussian discriminant analysis is a generative classification model (funny, its called “discriminant” analysis). The primary benefit of GDA is it is a parametric classification model that has a closed form analytical solution, unlike logistic regression.</p>
+<h2 id="linear-discriminant-analysis-lda"><span class="header-section-number">7.1</span> Linear Discriminant Analysis (LDA)</h2>
+<p>Linear discriminant analysis is very similar to logistic regression. Given a dataset with two classes (a binary classification problem), we great a generative model by fitting gaussians to the data. However, for LDA we must assume the same variance. Thus, we must must maximize the log likelihood to find the parameters <span class="math">\({\boldsymbol{\mu}}_1\)</span>, <span class="math">\({\boldsymbol{\mu}}_2\)</span> and <span class="math">\(\sigma\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+\log P(\mathcal{D}|{\boldsymbol{\mu}}_1, {\boldsymbol{\mu}}_2,\sigma) = \sum_{n:y_n=1} \log \left(p_1 \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_1)^2}{2\sigma^2}}\right) + \sum_{n:y_n=2} \log \left(p_1 \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_2)^2}{2\sigma^2}}\right)\end{aligned}\]</span></p>
+<p>Where <span class="math">\(p_i = 1/N \sum_n {\mathbb{I}}(y_n == c_i) = N_i/N\)</span>. LDA is analogous to logistic regression because we will have a linear decision boundary given by</p>
+<p><span class="math">\[\begin{aligned}
+-\frac{({\boldsymbol{x}} - {\boldsymbol{\mu}}_1)^2}{2\sigma^2} + \log p_1 &amp;= -\frac{({\boldsymbol{x}} - {\boldsymbol{\mu}}_2)^2}{2\sigma^2} + \log p_2\\
+\frac{{\boldsymbol{\mu}}_2 - {\boldsymbol{\mu}}_1}{\sigma^2}{\boldsymbol{x}} + \left( \frac{{\boldsymbol{\mu}}_1^2 - {\boldsymbol{\mu}}_2^2}{2\sigma^2}  - \log p_1 + \log p_2\right) &amp;= 0\\
+{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}} + {\boldsymbol{b}} &amp;= 0\end{aligned}\]</span></p>
+<p>If we decouple the bias term, <span class="math">\({\boldsymbol{b}}\)</span>, from <span class="math">\({\boldsymbol{w}}\)</span> in logistic regression (remove the leading 1 from <span class="math">\({\boldsymbol{x}}\)</span>), such that <span class="math">\(p(y_n=c|{\boldsymbol{x}}_n) = \sigma({\boldsymbol{b}} + {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)\)</span> for logistic regression, then we can compute the equivalent logistic regression parameters</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}} &amp;= {\boldsymbol{\Sigma}}^{-1}({\boldsymbol{\mu}}_2 - {\boldsymbol{\mu}}_1)\\
+{\boldsymbol{b}} &amp;= \frac{1}{2}({\boldsymbol{\mu}}_1{^{\textrm T}}{\boldsymbol{\Sigma}}^{-1}{\boldsymbol{\mu}}_1 - {\boldsymbol{\mu}}_2{^{\textrm T}}{\boldsymbol{\Sigma}}^{-1}{\boldsymbol{\mu}}_2) - \log \frac{p_2}{p_1}\end{aligned}\]</span></p>
+<p>The benefit of LDA over logistic regression is that the parameters can be estimated analytically in closed-form. However, the closed-form LDA is the optimal solution. In fact, LDA is rarely ever used in practice because constraining the variances to be the same is in fact a harder problem than QDA. LDA is explored simply to contrast with logistic regression. In practice, GDA usually refers to QDA.</p>
+<h2 id="quadratic-discriminant-analysis-qda"><span class="header-section-number">7.2</span> Quadratic Discriminant Analysis (QDA)</h2>
+<p>Quadratic discriminant analysis is a generative model in the same way as LDA except we do not assume the covariances to be the same. This allows us to directly compute the parameters of the gaussians for each class. Different covariance matrices gives rise to a quadratic decision boundary. If we do not assume the same covariances, the log likelihood decomposes into independent optimizations for generating a gaussian for each class!</p>
+<p>In practice, for both LDA and QDA, you will never care to compute the decision boundary. You will approximate the data with gaussians, then compute the probability that new sample belongs to each gaussian (class), and choose the the class with the highest probability.</p>
+<h2 id="gda-vs-logistic-regression"><span class="header-section-number">7.3</span> GDA vs Logistic Regression</h2>
+<p>GDA makes strong modeling assumptions and is more efficient both in amount of training data necessary and computation. If the modeling assumptions are correct (the data is gaussian) GDA is most certainly better. However logistic regression makes weaker assumptions and significantly more robust to deviations from modeling assumptions – it finds the optimal linear boundary. When data is non-gaussian, logistic regression will almost always be better. If the data is poisson, logistic regression is very good.</p>
+<h1 id="kernel-methods"><span class="header-section-number">8</span> Kernel Methods</h1>
+<p>Kernel methods involve using a nonlinear basis function in your model and leveraging the <span><em>kernel trick</em></span>.</p>
+<p>A kernel function <span class="math">\(k(\cdot, \cdot)\)</span> is the inner product between two nonlinear basis functions.</p>
+<p><span class="math">\[\begin{aligned}
+k({\boldsymbol{x}}_1, {\boldsymbol{x}}_2) &amp;= {\boldsymbol{\phi}}({\boldsymbol{x}}_1){^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_2) \\
+&amp;= {\boldsymbol{\phi}}({\boldsymbol{x}}_2){^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_1) \end{aligned}\]</span></p>
+<p>The kernel matrix is a matrix of kernel functions defined by</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{K}} &amp;= {\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}\\
+&amp;= \left[ \begin{array}{c c c c} k({\boldsymbol{x}}_1, {\boldsymbol{x}}_1) &amp; k({\boldsymbol{x}}_1, {\boldsymbol{x}}_2) &amp; \hdots &amp; k({\boldsymbol{x}}_1, {\boldsymbol{x}}_N) \\ k({\boldsymbol{x}}_2, {\boldsymbol{x}}_1) &amp; k({\boldsymbol{x}}_2, {\boldsymbol{x}}_2) &amp; \hdots &amp; k({\boldsymbol{x}}_2, {\boldsymbol{x}}_N) \\ \hdots &amp; \hdots &amp; \hdots &amp; \hdots \\ k({\boldsymbol{x}}_N, {\boldsymbol{x}}_1) &amp; k({\boldsymbol{x}}_N, {\boldsymbol{x}}_2) &amp; \hdots &amp; k({\boldsymbol{x}}_N, {\boldsymbol{x}}_N) \end{array} \right]\end{aligned}\]</span></p>
+<p>The kernel matrix <span class="math">\({\boldsymbol{K}}\)</span> is positive semi-definite and symmetric and <span class="math">\({\boldsymbol{K}} \in {\mathbb{R}}^{N \times N}\)</span> and doesn’t depend on the dimension of the basis function!</p>
+<p>Some other notation</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\Phi}}{^{\textrm T}}&amp;= ({\boldsymbol{\phi}}({\boldsymbol{x}}_1), {\boldsymbol{\phi}}({\boldsymbol{x}}_2), \hdots ,{\boldsymbol{\phi}}({\boldsymbol{x}}_N))\end{aligned}\]</span></p>
+<p><span class="math">\({\boldsymbol{\Phi}} \in {\mathbb{R}}^{N \times M}\)</span> where <span class="math">\(M\)</span> is the dimensionality of the basis function, <span class="math">\({\boldsymbol{\phi}}({\boldsymbol{x}})\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\Phi}}{\boldsymbol{x}} &amp;= \left[ \begin{array}{c} k({\boldsymbol{x}}_1, {\boldsymbol{x}}) \\ k({\boldsymbol{x}}_2, {\boldsymbol{x}}) \\ \vdots \\ k({\boldsymbol{x}}_N, {\boldsymbol{x}}) \end{array} \right]\\
+&amp;= {\boldsymbol{k}}_x\end{aligned}\]</span></p>
+<p>What most compelling about the kernel trick is that since we do not need to compute the basis function to compute the kernel, we our kernel function can have an infinite dimensional basis function! Here is a simple example illustrating the point. Suppose we have the following mapping</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\psi}}_\theta({\boldsymbol{x}}) &amp;= \left[ \begin{array}{c} \cos(\theta x_1) \\ \sin(\theta x_1) \\ \cos(\theta x_2) \\ \sin(\theta x_2) \end{array} \right]\end{aligned}\]</span></p>
+<p>Now lets consider the basis function</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\phi}}_L({\boldsymbol{x}}) &amp;= \left[ \begin{array}{c}  {\boldsymbol{\psi}}_0({\boldsymbol{x}}) \\ {\boldsymbol{\psi}}_{\frac{2\pi}{L}}({\boldsymbol{x}}) \\ {\boldsymbol{\psi}}_{2\frac{2\pi}{L}}({\boldsymbol{x}}) \\ \vdots \\ {\boldsymbol{\psi}}_{L\frac{2\pi}{L}}({\boldsymbol{x}})  \end{array} \right]\end{aligned}\]</span></p>
+<p>where <span class="math">\(L \in [0,2\pi]\)</span>. Can we compute the inner product as <span class="math">\(L \to \infty\)</span>?</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\phi}}_\infty({\boldsymbol{x}}){^{\textrm T}}{\boldsymbol{\phi}}_\infty({\boldsymbol{x}}) &amp;= \lim_{L \to \infty} {\boldsymbol{\phi}}_L({\boldsymbol{x}}){^{\textrm T}}{\boldsymbol{\phi}}_L({\boldsymbol{x}})\\
+&amp;= \int_0^{2\pi} \cos(\theta(x_{m1} - x_{n1})) + \cos(\theta(x_{m2} - x_{n2}))\; d\theta \\
+&amp;= 1 - \frac{\sin (2\pi(x_{m1} - x_{n1}))}{x_{m1} - x_{n1}} + 1 - \frac{\sin (2\pi(x_{m2} - x_{n2}))}{x_{m2} - x_{n2}}\end{aligned}\]</span></p>
+<p>This inner product of an infinite-dimensional feature space is finite and thus computable!</p>
+<p>In practice, it is very difficult, if not impossible, to compute a basis function from a kernel function. A very popular kernel function is known as the Gaussian kernel, Radial Basis Function (RBF) kernel, or Gaussian RBF kernel</p>
+<p><span class="math">\[\begin{aligned}
+k({\boldsymbol{x}}_m, {\boldsymbol{x}}_n) &amp;= e^{- \|{\boldsymbol{x}}_m - {\boldsymbol{x}}_n\|_2^2 / 2\sigma^2}\end{aligned}\]</span></p>
+<p>Composing new kernels is somewhat of a “black art” since we cannot back out the basis function. What is so beneficial about the kernel trick is it allows our model infinite complexity / dimensionality. The regularization term therefore regulates overfitting. The kernel trick is not possible without regularization.</p>
+<h2 id="kernelized-ridge-regression"><span class="header-section-number">8.1</span> Kernelized Ridge Regression</h2>
+<p>The cross-entropy error function for ridge regression with a nonlinear basis function is given by</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{E}({\boldsymbol{w}}) &amp;= \frac{1}{2}\sum_n(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n))^2 + \frac{\lambda}{2}\|{\boldsymbol{w}}\|_2^2\end{aligned}\]</span></p>
+<p>And the <span class="math">\({\boldsymbol{w}}^{MAP}\)</span> solution is given by</p>
+<p><span class="math">\[\begin{aligned}
+\frac{\partial \mathcal{E}({\boldsymbol{w}})}{\partial {\boldsymbol{w}}} &amp;= -\sum_n(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n)){\boldsymbol{\phi}}({\boldsymbol{x}}_n) + \lambda{\boldsymbol{w}}\\
+{\boldsymbol{w}}^{MAP} &amp;= \sum_n \frac{1}{\lambda}(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n)){\boldsymbol{\phi}}({\boldsymbol{x}}_n)\\
+&amp;= \sum_n \alpha_n {\boldsymbol{\phi}}({\boldsymbol{x}}_n) \\
+&amp;= {\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}}\end{aligned}\]</span></p>
+<p><span class="math">\(\alpha_n = \frac{1}{\lambda}(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n))\)</span> but we do not know the vector of all <span class="math">\(\alpha_n\)</span>’s, <span class="math">\({\boldsymbol{\alpha}}\)</span>.</p>
+<p>Next, we substitute this solution <span class="math">\({\boldsymbol{w}}^{MAP} = {\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}}\)</span> back into <span class="math">\(\mathcal{E}({\boldsymbol{w}})\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{E}({\boldsymbol{w}}) &amp;= \frac{1}{2}\sum_n(y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n))^2 + \frac{\lambda}{2}\|{\boldsymbol{w}}\|_2^2\\
+ &amp;= \frac{1}{2} \|{\boldsymbol{y}} - {\boldsymbol{\Phi}}{\boldsymbol{w}}\|_2^2 + \frac{\lambda}{2}\|{\boldsymbol{w}}\|_2^2\\
+ &amp;= \frac{1}{2} \|{\boldsymbol{y}} - {\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}}\|_2^2 + \frac{\lambda}{2}\|{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}}\|_2^2\\
+\mathcal{E}({\boldsymbol{\alpha}}) &amp;= \frac{1}{2} {\boldsymbol{\alpha}}{^{\textrm T}}{\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}} - ({\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{y}}){^{\textrm T}}{\boldsymbol{\alpha}} + \frac{\lambda}{2}{\boldsymbol{\alpha}}{^{\textrm T}}{\boldsymbol{\Phi}}{\boldsymbol{\Phi}}{^{\textrm T}}{\boldsymbol{\alpha}}\\
+&amp;= \frac{1}{2} {\boldsymbol{\alpha}}{^{\textrm T}}{\boldsymbol{K}}^2{\boldsymbol{\alpha}} - ({\boldsymbol{K}}{\boldsymbol{y}}){^{\textrm T}}{\boldsymbol{\alpha}} + \frac{\lambda}{2}{\boldsymbol{\alpha}}{^{\textrm T}}{\boldsymbol{K}}{\boldsymbol{\alpha}}\end{aligned}\]</span></p>
+<p>Note that we drop the <span class="math">\({\boldsymbol{y}}{^{\textrm T}}{\boldsymbol{y}}\)</span> because it is a constant and will not effect the cross-entropy minimization. Now lets derive the optimal <span class="math">\({\boldsymbol{\alpha}}\)</span> from the cross-entropy error function using the stationary point condition</p>
+<p><span class="math">\[\begin{aligned}
+\frac{ \partial \mathcal{E}({\boldsymbol{\alpha}})}{\partial {\boldsymbol{\alpha}}} &amp;=  {\boldsymbol{K}}^2{\boldsymbol{\alpha}} - {\boldsymbol{K}}{\boldsymbol{y}} + \lambda{\boldsymbol{K}}{\boldsymbol{\alpha}} = 0\\
+{\boldsymbol{\alpha}} &amp;= ({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1}{\boldsymbol{y}}\end{aligned}\]</span></p>
+<p>Note that the solution to <span class="math">\({\boldsymbol{\alpha}}\)</span> depends on <span class="math">\({\boldsymbol{K}}\)</span> and not directly on <span class="math">\({\boldsymbol{\phi}}({\boldsymbol{x}})\)</span>! So long as you know how to compute the kernel function, you don’t even need to know the basis function. More to come on this, but for now, we want back out the <span class="math">\({\boldsymbol{w}}^{MAP}\)</span> solution</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}}^{MAP} &amp;= {\boldsymbol{\Phi}}{^{\textrm T}}({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1}{\boldsymbol{y}}\end{aligned}\]</span></p>
+<p>Then, for prediction</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}) &amp;={\boldsymbol{y}}{^{\textrm T}}({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1}  {\boldsymbol{\Phi}} {\boldsymbol{x}} \\
+ &amp;={\boldsymbol{y}}{^{\textrm T}}({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1} {\boldsymbol{k}}_x \\\end{aligned}\]</span></p>
+<p>Note that to make a prediction, once again, we only need to know the kernel function!</p>
+<p>To summarize, first we must come up with a kernel function that satisfies</p>
+<p><span class="math">\[\begin{aligned}
+k({\boldsymbol{x}}_1, {\boldsymbol{x}}_2) &amp;= k({\boldsymbol{x}}_2, {\boldsymbol{x}}_1)\end{aligned}\]</span></p>
+<p>Then we can calculate <span class="math">\({\boldsymbol{\alpha}}\)</span></p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\alpha}} &amp;= ({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1}{\boldsymbol{y}}\end{aligned}\]</span></p>
+<p>And then we can make predictions</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}) &amp;={\boldsymbol{y}}{^{\textrm T}}({\boldsymbol{K}} + \lambda {\boldsymbol{I}})^{-1} {\boldsymbol{k}}_x\end{aligned}\]</span></p>
+<h2 id="kernelized-nearest-neighbor-classifier"><span class="header-section-number">8.2</span> Kernelized Nearest Neighbor Classifier</h2>
+<p>Is <span class="math">\(d({\boldsymbol{x}}_m, {\boldsymbol{x}}_n) = \|{\boldsymbol{x}}_n - {\boldsymbol{x}}_m\|_2^2\)</span> a kernel function?</p>
+<p><span class="math">\[\begin{aligned}
+d({\boldsymbol{x}}_m, {\boldsymbol{x}}_n) &amp;= \|{\boldsymbol{x}}_n - {\boldsymbol{x}}_m\|_2^2\\
+&amp;= {\boldsymbol{x}}_m{^{\textrm T}}{\boldsymbol{x}}_m + {\boldsymbol{x}}_m{^{\textrm T}}{\boldsymbol{x}}_m - 2{\boldsymbol{x}}_m{^{\textrm T}}{\boldsymbol{x}}_n\\
+&amp;= k({\boldsymbol{x}}_m,{\boldsymbol{x}}_m) + k({\boldsymbol{x}}_n, {\boldsymbol{x}}_n) - 2k({\boldsymbol{x}}_m,{\boldsymbol{x}}_n)\\\end{aligned}\]</span></p>
+<p>The summation of kernel functions and the product of kernel functions are also kernel functions. Thus, this distance is a kernel function! We have thus derived the kerneled nearest neighbor classifier as</p>
+<p><span class="math">\[\begin{aligned}
+y_n = \text{arg min}_n k({\boldsymbol{x}}, {\boldsymbol{x}}_n)\end{aligned}\]</span></p>
+<p>And now you can use different kernel functions as well to transform the data into a different basis, perhaps an infinite basis! This can be easily extended for kernelized K-nearest neighbor classifier.</p>
+<h2 id="gaussian-process"><span class="header-section-number">8.3</span> Gaussian Process</h2>
+<p>Gaussian process is the term given to kernelized Bayesian linear regression. We start by assuming the same prior as before</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{w}}) &amp;\sim N({\boldsymbol{0}}, \alpha^{-1}{\boldsymbol{I}})\end{aligned}\]</span></p>
+<p>This is equivalent to putting a prior on an infinite set of functions, <span class="math">\(f_{{\boldsymbol{w}}}({\boldsymbol{x}})\)</span>.</p>
+<p>We use this same idea to derive the gaussian process, <span class="math">\(\mathcal{GP}(\cdot)\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}) &amp;\sim \mathcal{GP}(\cdot)\end{aligned}\]</span></p>
+<p>Here, were are saying that this function is a gaussian random process. This implies a joint distribution for every sample in the dataset</p>
+<p><span class="math">\[\begin{aligned}
+p(f({\boldsymbol{x}}_1), f({\boldsymbol{x}}_2), \hdots, f({\boldsymbol{x}}_N)) &amp;\sim N({\boldsymbol{\mu}}({\boldsymbol{x}}), {\boldsymbol{C}}({\boldsymbol{x}}))\end{aligned}\]</span></p>
+<p>Same as with Bayesian linear regression.</p>
+<p>For simplicity, we choose <span class="math">\({\boldsymbol{\mu}}({\boldsymbol{x}}) = {\boldsymbol{0}}\)</span>. Intuitively, as in Bayesian linear regression, the expected value of the prior’s prediction is zero. <span class="math">\({\boldsymbol{C}}({\boldsymbol{x}})\)</span> is a covariance matrix. Namely, a kernel matrix!</p>
+<p>Lacking a good derivation, here is the predictive distribution</p>
+<p><span class="math">\[\begin{aligned}
+p(y|{\boldsymbol{x}}, \mathcal{D}) &amp;= N({\boldsymbol{k_x}}{^{\textrm T}}{\boldsymbol{K}}^{-1}{\boldsymbol{y}}, k({\boldsymbol{x}}, {\boldsymbol{x}}) - {\boldsymbol{k_x}}{^{\textrm T}}{\boldsymbol{K}}^{-1}{\boldsymbol{k_x}})\end{aligned}\]</span></p>
+<h1 id="support-vector-machines"><span class="header-section-number">9</span> Support Vector Machines</h1>
+<p>Support vector machines are a kernelized method used for classification. Before discussing support vector machines, it helps to understand the perceptron.</p>
+<h2 id="perceptron"><span class="header-section-number">9.1</span> Perceptron</h2>
+<p>The perceptron algorithm does binary classification. Suppose the two classes are <span class="math">\(y_n \in \{-1, +1\}\)</span> and we have a linear discriminant predictive function</p>
+<p><span class="math">\[\begin{aligned}
+f({\boldsymbol{x}}_n) &amp;= \text{sign}({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n)\end{aligned}\]</span></p>
+<p>Our goal is to reduce the cross-entropy error function</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{E}({\boldsymbol{w}}) &amp;= \sum_n {\mathbb{I}}(y_n \ne \text{sign}({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n))\end{aligned}\]</span></p>
+<p>The solution is to iterate through the data and</p>
+<p><span class="math">\[\begin{aligned}
+\text{if } y_n = \text{sign}({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n) &amp; \;\;\;\text{  do nothing}\\
+\text{if } y_n \ne \text{sign}({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{x}}_n) &amp;\;\;\;\; {\boldsymbol{w}} \gets {\boldsymbol{w}} + y_n{\boldsymbol{x}}_n\end{aligned}\]</span></p>
+<p>If the training data is linearly separable, the algorithm stops in a finite amount of time. Also, the parameter vector is always a linear combination of the training samples.</p>
+<p>The problem with the perceptron is that it is not a high margin classifier. Once the algorithm converges, the decision boundary may be able separate the data perfectly, but that boundary is arbitrary and may come very close to misclassifying some sample by finding a sub-optimal solution. The solution to this is to not use a 1-0 loss function, rather a hinge-loss function.</p>
+<h2 id="hinge-loss"><span class="header-section-number">9.2</span> Hinge-Loss</h2>
+<p>The hinge loss function ensures a margin for the linear discriminant (decision boundary).</p>
+<p><span class="math">\[\begin{aligned}
+L(f({\boldsymbol{x}}),y) &amp;= \begin{cases} 0 &amp; \text{if } y\;f({\boldsymbol{x}}) \ge 1 \\ 1 - y\;f({\boldsymbol{x}}) &amp; \text{otherwise} \end{cases}\\
+&amp;= \text{max}(0, 1-y\;f({\boldsymbol{x}}))\end{aligned}\]</span></p>
+<p>This is known as a high margin loss function and makes for a high margin classifier. This is because the hinge-loss function still penalizes the weights for samples that classified correctly but are close to the decision boundary.</p>
+<h2 id="svm-derivation"><span class="header-section-number">9.3</span> SVM Derivation</h2>
+<p>SVMs do classification based on a hinge loss of a nonlinear basis function discriminant. The cross-entropy error function is defined by</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{E}({\boldsymbol{w}}) &amp;= \sum_n \text{max}(0, 1- y_n[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n) + b]) + \frac{\lambda}{2}\|{\boldsymbol{w}}\|_2^2\\
+ &amp;= C\sum_n \text{max}(0, 1- y_n[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n) + b]) + \frac{1}{2}\|{\boldsymbol{w}}\|_2^2
+ \end{aligned}\]</span></p>
+<p>It is common to use <span class="math">\(C = 1/\lambda\)</span>. We also rewrite with slack variables</p>
+<p><span class="math">\[\begin{aligned}
+ \xi_n &amp;= \text{max}(0, 1- y_n[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_n) + b])
+ \end{aligned}\]</span></p>
+<p>Using slack variables allows us to formulate a constrained differentiable convex optimization problem.</p>
+<p>Now we are left with the <span><em>primal formulation</em></span> (note the simple change in notation – <span class="math">\(f(\cdot)\)</span> is the primal objective function).</p>
+<p><span class="math">\[\begin{aligned}
+\min_{{\boldsymbol{w}}, b, \{\xi_{n}\}} f(\{{\boldsymbol{x}}_{n}\}) =
+\min_{{\boldsymbol{w}}, b, \{\xi_{n}\}} &amp; C \sum_{n} \xi_{n} + \frac{1}{2}\|{\boldsymbol{w}}\|_{2}^{2}\\
+s.t. \;\; &amp;1 - y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] \le \xi_{n}, \; \;\forall n \\
+&amp;\xi_{n} \ge 0\end{aligned}\]</span></p>
+<p>To solve this constrained optimization problem, we introduce the Lagrangian. <span class="math">\(\{\alpha_{n}\}\)</span> and <span class="math">\(\{\lambda_{n}\}\)</span> are Lagrange multipliers ensuring the constraints.</p>
+<p><span class="math">\[\begin{aligned}
+&amp;L(\{{\boldsymbol{x}}_{n}\}, {\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\}) \\&amp;= C \sum_{n} \xi_{n} + \frac{1}{2}\|{\boldsymbol{w}}\|_{2}^{2} - \sum_{n} \lambda_{n} \xi_{n} + \sum_{n} \alpha_{n} \left(1 - y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] - \xi_{n} \right)\\
+&amp;= C \sum_{n} \xi_{n} + \frac{1}{2}\|{\boldsymbol{w}}\|_{2}^{2} - \sum_{n} \lambda_{n} \xi_{n} + \sum_{n} \alpha_{n}  - \sum_{n} \alpha_{n} y_{n}{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) - \sum_{n} \alpha_{n} y_{n} b - \sum_{n} \alpha_{n} \xi_{n}\\
+&amp;= \sum_{n} (C - \lambda_{n} - \alpha_{n}) \xi_{n} + \frac{1}{2}\|{\boldsymbol{w}}\|_{2}^{2}  + \sum_{n} \alpha_{n}  - \sum_{n} \alpha_{n} y_{n}{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) - b\sum_{n} \alpha_{n} y_{n}\end{aligned}\]</span></p>
+<p>To solve the primal formulation we need to perform a <span class="math">\(max\)</span>, then a <span class="math">\(min\)</span> on the Lagrangian. This is difficult.</p>
+<p><span class="math">\[\begin{aligned}
+L(\{{\boldsymbol{x}}_{n}\},{\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;\le f(\{{\boldsymbol{x}}_{n}\})\\
+\min_{{\boldsymbol{w}}, b, \{\xi_{n}\}}  \;\;\max_{ \{\alpha_{n}\} , \{\lambda_{n}\}} L(\{{\boldsymbol{x}}_{n}\},{\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;= \min_{{\boldsymbol{w}}, b, \{\xi_{n}\}}f(\{{\boldsymbol{x}}_{n}\})\end{aligned}\]</span></p>
+<p>Flipping <span class="math">\(min\)</span> and <span class="math">\(max\)</span> gives rise to the dual formulation which gives yields (in most cases) a different result which is a lower bound on the optimal primal result (for more on lagrange duality, see section [sec:lagrange-duality]).</p>
+<p><span class="math">\[\begin{aligned}
+g( \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;= \min_{{\boldsymbol{w}}, b, \{\xi_{n}\}}  L(\{{\boldsymbol{x}}_{n}\},{\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\})\\
+ \max_{ \{\alpha_{n}\} , \{\lambda_{n}\}}g( \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;=  \max_{ \{\alpha_{n}\} , \{\lambda_{n}\}} \min_{{\boldsymbol{w}}, b, \{\xi_{n}\}}  L(\{{\boldsymbol{x}}_{n}\},{\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\})\end{aligned}\]</span></p>
+<p>Note that</p>
+<p><span class="math">\[\begin{aligned}
+ \max_{ \{\alpha_{n}\} , \{\lambda_{n}\}}g( \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;\le  \min_{{\boldsymbol{w}}, b, \{\xi_{n}\}} f(\{{\boldsymbol{x}}_{n}\})\end{aligned}\]</span></p>
+<p>Where <span class="math">\(g( \{\alpha_{n}\}, \{\lambda_{n}\})\)</span> is the dual objective function and <span class="math">\(f(\{{\boldsymbol{x}}_{n}\})\)</span> is the primal objective function. This discrepancy is called the duality gap.</p>
+<p>Continuing to derive the dual formulation, we minimize <span class="math">\(L\)</span> using the stationary point condition with respect to the primal variables</p>
+<p><span class="math">\[\begin{aligned}
+\frac{dL}{d{\boldsymbol{w}}} &amp;= {\boldsymbol{w}} - \sum_{n} y_{n} \alpha_{n} {\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) = 0 \\
+\frac{dL}{db} &amp;= \sum_{n}  \alpha_{n} y_{n} = 0 \\
+\frac{dL}{d\xi_{n}} &amp;= C - \alpha_{n} - \lambda_{n} = 0 \end{aligned}\]</span></p>
+<p>Note here that one of the constraints solves for the primal weight variable. Substitute the back to find the dual objective function:</p>
+<p><span class="math">\[\begin{aligned}
+g( \{\alpha_{n}\}, \{\lambda_{n}\}) &amp;= \min_{{\boldsymbol{w}}, b, \{\xi_{n}\}} L({\boldsymbol{w}}, b, \{\xi_{n}\}, \{\alpha_{n}\}, \{\lambda_{n}\})\\
+ &amp;= \cancel{\sum_{n} (C - \lambda_{n} - \alpha_{n}) \xi_{n}} + \frac{1}{2}\|{\boldsymbol{w}}\|_{2}^{2}  + \sum_{n} \alpha_{n}  - \sum_{n} \alpha_{n} y_{n}{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) - \cancel{b\sum_{n} \alpha_{n} y_{n}}\\
+ &amp;= \frac{1}{2}\|\sum_{n} y_{n} \alpha_{n} {\boldsymbol{\phi}}({\boldsymbol{x}}_{n})\|_{2}^{2}  + \sum_{n} \alpha_{n}  - \sum_{n} \alpha_{n} y_{n}\left(\sum_{m} y_{m} \alpha_{m} {\boldsymbol{\phi}}({\boldsymbol{x}}_{m}) \right){^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) \\
+  &amp;=  \sum_{n} \alpha_{n}  - \frac{1}{2}\sum_{mn} \alpha_{n} \alpha_{m}y_{n}y_{m}  {\boldsymbol{\phi}}({\boldsymbol{x}}_{m}){^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) \end{aligned}\]</span></p>
+<p>Now we have our dual formulation subject to the Lagrangian constraints we previously derived:</p>
+<p><span class="math">\[\begin{aligned}
+ \max_{ \{\alpha_{n}\} \in \mathbb{R}^{+}, \{\lambda_{n}\}\in \mathbb{R}^{+}} &amp;g( \{\alpha_{n}\}, \{\lambda_{n}\}) =  \sum_{n} \alpha_{n}  - \frac{1}{2}\sum_{mn} \alpha_{n} \alpha_{m}y_{n}y_{m}  {\boldsymbol{\phi}}({\boldsymbol{x}}_{m}){^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n})\\
+ s.t. \;\;\;&amp; \alpha_{n} \ge 0 \;\; \forall n\\
+&amp; \lambda_{n} \ge 0 \;\; \forall n\\
+ &amp; \sum_{n}  \alpha_{n} y_{n} = 0 \\
+ &amp; C - \alpha_{n} - \lambda_{n} = 0 \;\; \forall n\end{aligned}\]</span></p>
+<p>We can clean this up a little bit</p>
+<p><span class="math">\[\begin{aligned}
+\lambda_{n} &amp;\ge 0\\
+C - \alpha_{n} - \lambda_{n} &amp;= 0\\
+\lambda_{n}&amp; = C - \alpha_n\\
+\implies \alpha_{n} &amp;\le C\\\end{aligned}\]</span></p>
+<p>The final form of the the dual formulation is</p>
+<p><span class="math">\[\begin{aligned}
+ \max_{ \{\alpha_{n}\}, \{\lambda_{n}\}} &amp; \sum_{n} \alpha_{n}  - \frac{1}{2}\sum_{mn} \alpha_{n} \alpha_{m}y_{n}y_{m}  k({\boldsymbol{x}}_{m},{\boldsymbol{x}}_{n})\\
+ s.t. \;\;\;&amp; 0 \le \alpha_{n} \le C \;\; \forall\; n\\
+ &amp; \sum_{n}  \alpha_{n} y_{n} = 0\end{aligned}\]</span></p>
+<p>One obvious benefit of the dual formulation is the use of a kernel function! This is a quadratic programming problem and can be solved using MATLAB’s <span><em>quadprog()</em></span> function.</p>
+<h2 id="analysis"><span class="header-section-number">9.4</span> Analysis</h2>
+<p>One of the primal variables has already been derived while solving the lagrangian, that is</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{w}} = \sum_{n} y_{n} \alpha_{n} {\boldsymbol{\phi}}({\boldsymbol{x}}_{n})\end{aligned}\]</span></p>
+<p>To solve for <span class="math">\(b\)</span>, we look at complementary slackness. Complementary slackness says the lagrange multipliers times the constrains in the lagrangian must equal zero at the optimal solution to both primal and dual</p>
+<p><span class="math">\[\begin{aligned}
+&amp;\lambda_{n} \xi_{n} = 0\\
+ &amp;\alpha_{n} \left(1 - y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] - \xi_{n} \right) = 0\\\end{aligned}\]</span></p>
+<p>From the first condition, <span class="math">\(\alpha_n &lt; C\)</span>,</p>
+<p><span class="math">\[\begin{aligned}
+&amp;\lambda_n = C - \alpha_n &gt; 0\\
+&amp;\implies \xi_n = 0\end{aligned}\]</span></p>
+<p>And if we assume that <span class="math">\(\alpha_n \ne 0\)</span>, then</p>
+<p><span class="math">\[\begin{aligned}
+&amp;1 - y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] - \xi_{n} = 0\\
+&amp;\implies b = y_n - {\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n})\end{aligned}\]</span></p>
+<p>for <span class="math">\(y \in \{-1, +1\}\)</span>.</p>
+<p>From this analysis, we can deduce from $ {} = <em>{n} y</em>{n} <em>{n} {}({}</em>{n})$ that the solution is dependent only those samples whose corresponding <span class="math">\(\alpha_n &gt; 0\)</span>. These samples are called <span><em>support vectors</em></span>. This allows us to throw out all of the training data for those <span class="math">\(\alpha_n = 0\)</span>, shrinking the amount of data we need to carry around.</p>
+<p>From complementary slackness we see that for those support vectors (<span class="math">\(\alpha_n &gt;0\)</span>):<br />- if <span class="math">\(\xi_n = 0\)</span>, then <span class="math">\(y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] = 1\)</span>. These are points are correctly classified and are right on the hinge of the loss function, or <span class="math">\(1/\|{\boldsymbol{w}}\|_2\)</span> away from the decision boundary.<br />- if <span class="math">\(\xi_n &lt; 1\)</span>, then <span class="math">\(y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] &gt; 0\)</span>. These points are classified correctly, but are not outside the margin of the hinge-loss function.<br />- if <span class="math">\(\xi_n &gt; 1\)</span>, then <span class="math">\(y_{n}[{\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}_{n}) + b] &lt; 0\)</span>. These points are misclassified.</p>
+<p>As you can see, the support vectors are only those samples that are non-zero in the hinge-loss function. This means samples that are misclassified or within the margin of the decision boundary.</p>
+<p>To predict the classification of a new sample,</p>
+<p><span class="math">\[\begin{aligned}
+y &amp;= \text{sign}({\boldsymbol{w}}{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}) + b)\\
+&amp;= \text{sign}\left(\left[ \sum_{n} y_{n} \alpha_{n} {\boldsymbol{\phi}}({\boldsymbol{x}}_{n})\right]{^{\textrm T}}{\boldsymbol{\phi}}({\boldsymbol{x}}) + b\right)\\
+&amp;= \text{sign}\left( \sum_{n} y_{n} \alpha_{n} k({\boldsymbol{x}}_{n},{\boldsymbol{x}}) + b\right)\\\end{aligned}\]</span></p>
+<h1 id="adaboost"><span class="header-section-number">10</span> Adaboost</h1>
+<p>Adaboost stands for adaptive boosting. Boosting combines a lot of classifiers in a greedy way to construct a more powerful classifier and more complex decision boundaries. Since boosting creates a cascade of classifiers, it is best to use weak classifiers that are quick and easy to solve.</p>
+<p>Our boosting algorithm prediction function will be</p>
+<p><span class="math">\[\begin{aligned}
+h({\boldsymbol{x}}) = \text{sign}\left(\sum_t \beta_t h_t({\boldsymbol{x}})\right)\end{aligned}\]</span></p>
+<p>where <span class="math">\(\beta_t\)</span> a weight on each weak classifier <span class="math">\(h_t({\boldsymbol{x}})\)</span>.</p>
+<p>Here’s how it works. Every data sample has a weighted exponential-loss. Initially, all of their weights are the same, <span class="math">\(w_1(n) = 1/N\)</span>. Train a weak classifier, <span class="math">\(h_t({\boldsymbol{x}})\)</span> by minimizing the weighted classification error</p>
+<p><span class="math">\[\begin{aligned}
+\epsilon_t &amp;= \sum_n w_t(n){\mathbb{I}}(y_n \ne h_t({\boldsymbol{x}}_n))\end{aligned}\]</span></p>
+<p>Calculate the weight of this classifier</p>
+<p><span class="math">\[\begin{aligned}
+\beta_t &amp;= \frac{1}{2}\log \frac{1-\epsilon_t}{\epsilon_t}\end{aligned}\]</span></p>
+<p>Update the weights on each data sample based on the weighted exponential-loss</p>
+<p><span class="math">\[\begin{aligned}
+w_{t+1}(n) \gets w_t(n)e^{-\beta_t y_n h_t({\boldsymbol{x}}_n)}\end{aligned}\]</span></p>
+<p>Then normalize the them</p>
+<p><span class="math">\[\begin{aligned}
+w_{t+1}(n) \gets \frac{w_{t+1}(n)}{\sum_n w_{t+1}(n)} \end{aligned}\]</span></p>
+<p>Now, the sample weights are exponentially weighted so that misclassified samples are weighted more. This is called a greedy algorithm. Loop back to training a new weak classifier, <span class="math">\(h_{t+1}({\boldsymbol{x}})\)</span>. Continue until convergence.</p>
+<h1 id="k-means-clustering"><span class="header-section-number">11</span> K-Means Clustering</h1>
+<p>K-means is an unsupervised learning algorithm that attempts to cluster data into K clusters. The objective function we wish to minimize is</p>
+<p><span class="math">\[\begin{aligned}
+J &amp;= \sum_n \sum_k r_{nk} \|{\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k \|_2^2\end{aligned}\]</span></p>
+<p>where <span class="math">\({\boldsymbol{\mu}}_k\)</span> is the centroid of each cluster and <span class="math">\(r_{nk} \in \{0,1\}\)</span> is an indicator variable where <span class="math">\(r_{nk} = 1\)</span> if and only if <span class="math">\(y_n = k = \text{arg min}_k \|{\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k \|_2\)</span>, sample <span class="math">\(n\)</span> is closest to centroid <span class="math">\(k\)</span>.</p>
+<p>This algorithm works by initializing the <span class="math">\({\boldsymbol{\mu}}_k\)</span>’s randomly. Determine the classification of all samples, <span class="math">\(r_{nk}\)</span>. Then update <span class="math">\({\boldsymbol{\mu}}_k\)</span> to be the centroid of all the samples belonging to cluster <span class="math">\(k\)</span>. Loop back to re-classifying all of the samples again. Iterate until convergence.</p>
+<p>Note that K-means does not guarantee the procedure terminates at a global optimum. In practice, K-means is run multiple times and the best solution is used.</p>
+<p>Also, determining K is non-trivial. It is a hyperparameter, but it does not suffice to do cross-validation because the optimal <span class="math">\(K = N\)</span>.</p>
+<h1 id="gaussian-mixture-model-gmm"><span class="header-section-number">12</span> Gaussian Mixture Model (GMM)</h1>
+<p>GMM is a generative unsupervised clustering algorithm. Suppose we have a dataset made of up of multiple gaussian distributions, but they overlap. K-means does not return a probability of belonging to each cluster, only a classification. GMMs try to solve this problem by estimating the gaussians and returning probabilities of belonging to each cluster.</p>
+<p>A GMM has the following density function</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{x}}) = \sum_k w_k N({\boldsymbol{x}}|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)\end{aligned}\]</span></p>
+<p>Each gaussian has a mean, covariance and weight associated with that cluster, <span class="math">\(w_k\)</span>. Because <span class="math">\(p({\boldsymbol{x}})\)</span> is a probability, <span class="math">\(w_k \ge 0 \; \forall \; k\)</span> and <span class="math">\(\sum_k w_k = 1\)</span>.</p>
+<p>This optimization is going to be tricky because of the constraints on the parameters. Namely, that <span class="math">\(\sum_k w_k = 1\)</span> and <span class="math">\({\boldsymbol{\Sigma}}_k\)</span> must be positive semi-definite.</p>
+<p>So, lets suppose we know the classification of each. Let <span class="math">\(z_n\)</span> denote the classification for each sample. Thus <span class="math">\(w_k = p(z=k) = p(z_n=k) \; \forall \; n\)</span>. Now consider the joint distribution</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{x}}, z) &amp;= p(z)p({\boldsymbol{x}}|z)\end{aligned}\]</span></p>
+<p>Then the conditional distribution is</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{x}}|z=k) &amp;= N({\boldsymbol{x}}|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)\end{aligned}\]</span></p>
+<p>and the marginal distribution is</p>
+<p><span class="math">\[\begin{aligned}
+p({\boldsymbol{x}}) = \sum_k w_k N({\boldsymbol{x}}|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)\end{aligned}\]</span></p>
+<p>The <span><em>complete</em></span> likelihood is</p>
+<p><span class="math">\[\begin{aligned}
+\sum_n \log p({\boldsymbol{x}}_n, z_n) &amp;= \sum_n \log p(z_n)p({\boldsymbol{x}}_n|z_n) \\
+&amp;= \sum_k \sum_{n:z_n=k}\log p(z_n)p({\boldsymbol{x}}_n|z_n)\end{aligned}\]</span></p>
+<p>Let is define <span class="math">\(\gamma_{nk} \in \{0,1\}\)</span> to indicate whether <span class="math">\(z_n=k\)</span>. Then we can write</p>
+<p><span class="math">\[\begin{aligned}
+\sum_n \log p({\boldsymbol{x}}_n, z_n) &amp;= \sum_k \sum_{n} \gamma_{nk}[\log w_k + \log N({\boldsymbol{x}}_n|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)]\\
+&amp;= \sum_k \sum_{n} \gamma_{nk}\log w_k + \sum_k \left[ \sum_{n} \gamma_{nk}\log N({\boldsymbol{x}}_n|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)\right]\end{aligned}\]</span></p>
+<p>After taking the derivative and solving the maximum likelihood estimation, we come to a rather intuitive solution</p>
+<p><span class="math">\[\begin{aligned}
+w_k &amp;= \frac{\sum_n\gamma_{nk}}{\sum_k \sum_n \gamma_{nk}}\\
+{\boldsymbol{\mu}}_k &amp;= \frac{1}{\sum_n \gamma_{nk}} \sum_n \gamma_{nk}{\boldsymbol{x}}_n\\
+{\boldsymbol{\Sigma}}_k &amp;= \frac{1}{\sum_n \gamma_{nk}} \sum_n \gamma_{nk}({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}\end{aligned}\]</span></p>
+<p>This is nice and all, but we aren’t given <span class="math">\(z_n\)</span>, so we can compute them given the posterior probability</p>
+<p><span class="math">\[\begin{aligned}
+p(z_n=k|{\boldsymbol{x}}_n) &amp;= \frac{p({\boldsymbol{x}}_n|z_n=k)p(z_n=k)}{p({\boldsymbol{x}}_n)}\\
+&amp;= \frac{p({\boldsymbol{x}}_n|z_n=k)p(z_n=k)}{\sum_{k&#39;} p({\boldsymbol{x}}_n|z_n=k&#39;)p(z_n=k&#39;)}\end{aligned}\]</span></p>
+<p>Note that we need to know all the parameters to be able to calculate the posterior <span class="math">\(p(z_n=k|{\boldsymbol{x}}_n)\)</span>.</p>
+<p>To get around this, first we are going to assume a <span><em>soft</em></span> <span class="math">\(\gamma_{nk}\)</span> meaning that rather than <span class="math">\(\gamma_{nk}\)</span> being binary, it is the posterior probability</p>
+<p><span class="math">\[\begin{aligned}
+\gamma_{nk} &amp;= p(z_n=k|{\boldsymbol{x}}_n)\end{aligned}\]</span></p>
+<p>Now we can come up with a simple iterative algorithm to find a solution. First initialize random parameters <span class="math">\(\theta = \{ \{ {\boldsymbol{\mu}}_k \}, \{ {\boldsymbol{\Sigma}}_k \}, \{ w_k \} \}\)</span>. Then we compute the <span class="math">\(\gamma_{nk}\)</span>’s. Then we update <span class="math">\(\theta\)</span> based on the new <span class="math">\(\gamma_{nk}\)</span>’s and loop back over. Note that this optimization is not convex. This solution can be derived from the expectation maximization algorithm.</p>
+<h2 id="expectation-maximization-em-algorithm"><span class="header-section-number">12.1</span> Expectation Maximization (EM) Algorithm</h2>
+<p>In general, EM is used to estimate parameters for probabilistic models with hidden/latent variables</p>
+<p><span class="math">\[\begin{aligned}
+p(x|\theta) &amp;= \sum_z p(x,z|\theta)\end{aligned}\]</span></p>
+<p>where <span class="math">\(x\)</span> is observed, <span class="math">\(\theta\)</span> are the model parameters, and <span class="math">\(z\)</span> is hidden. To obtain the maximum likelihood estimate of <span class="math">\(\theta\)</span></p>
+<p><span class="math">\[\begin{aligned}
+\theta &amp;= \text{arg max}_\theta \; l(\theta)\\
+ &amp;= \text{arg max}_\theta \sum_n \log p(x_n|\theta)\\
+&amp;= \text{arg max}_\theta \sum_n \log \sum_{z_n} p(x_n, z_n|\theta)\end{aligned}\]</span></p>
+<p><span class="math">\(l(\theta)\)</span> is called the <span><em>incomplete</em></span> log-likelihood. The difficulty with the incomplete log-likelihood is that it needs to sum over all possible hidden variables and then take the logarithm. This log-sum format makes computation intractable. Thus the EM algorithm leverages a clever trick to change this into sum-log by changing this into the expected (<span><em>complete</em></span>) log-likelihood</p>
+<p><span class="math">\[\begin{aligned}
+Q_q(\theta) &amp;= \sum_n {\mathbb{E}}_{z_n \sim q(z_n)} \log p(x_n, z_n | \theta) \\
+&amp;= \sum_n \sum_{z_n} q(z_n)\log p(x_n, z_n | \theta)\end{aligned}\]</span></p>
+<p>Now if we choose the distribution of <span class="math">\(z\)</span> to be the posterior distribution, <span class="math">\(q(z) = p(z|x,\theta)\)</span>, then we define</p>
+<p><span class="math">\[\begin{aligned}
+Q(\theta) &amp;= Q_{z \sim p(z|x, \theta)}(\theta)\\
+&amp;= \sum_n \sum_{z_n} p(z|x, \theta) \log p(x_n, z_n | \theta)\\
+&amp;= \sum_n \sum_{z_n} p(z|x, \theta)[ \log p(x_n | \theta) + \log p(z_n| x_n, \theta)]\\
+&amp;= \sum_n \sum_{z_n} p(z|x, \theta) \log p(x_n | \theta) + \sum_n \sum_{z_n} p(z|x, \theta)\log p(z_n| x_n, \theta)\\
+&amp;= \sum_n  \log p(x_n | \theta) \sum_{z_n}p(z|x, \theta)+ \sum_n{\mathbb{H}}[p(z|x, \theta)]\\
+&amp;= \sum_n  \log p(x_n | \theta)+ \sum_n{\mathbb{H}}[p(z|x, \theta)]\\
+&amp;=  l(\theta)+ \sum_n{\mathbb{H}}[p(z|x, \theta)]\end{aligned}\]</span></p>
+<p>Where <span class="math">\({\mathbb{H}}[p(x)] = - \int p(x) \log p(x) dx\)</span> is known as the entropy of the probabilistic distribution, <span class="math">\(p(x)\)</span>. As before, we need to know the parameters, <span class="math">\(\theta\)</span>, to compute the posterior probability <span class="math">\(p(z|x, \theta)\)</span>. Thus we will use a known <span class="math">\(\theta^{OLD}\)</span> to compute the expected likelihood.</p>
+<p><span class="math">\[\begin{aligned}
+Q(\theta,\theta^{OLD} )&amp;= \sum_n \sum_{z_n} p(z|x, \theta^{OLD}) \log p(x_n, z_n | \theta)\end{aligned}\]</span></p>
+<p>It can be shown that</p>
+<p><span class="math">\[\begin{aligned}
+l(\theta) &amp;\ge Q(\theta,\theta^{OLD} )+  \sum_n{\mathbb{H}}[p(z|x, \theta^{OLD})]\\
+&amp;\ge A(\theta,\theta^{OLD} )\end{aligned}\]</span></p>
+<p>and thus we have a lower lower bound on the log-likelihood defined by the <span><em>auxiliary function</em></span>, <span class="math">\(A(\theta,\theta^{OLD} )\)</span>. An important property of the auxiliary function is that <span class="math">\(A(\theta,\theta ) = l(\theta)\)</span>.</p>
+<p>Thus we want to maximize the auxiliary function</p>
+<p><span class="math">\[\begin{aligned}
+\theta^{NEW} = \text{arg max}_\theta A(\theta,\theta^{OLD} )\end{aligned}\]</span></p>
+<p>and repeat this process such that</p>
+<p><span class="math">\[\begin{aligned}
+\theta^{(t+1)} \gets \text{arg max}_\theta A(\theta,\theta^{(t)} )\end{aligned}\]</span></p>
+<p>However, this maximization step does not depend on the entropy term, so</p>
+<p><span class="math">\[\begin{aligned}
+\theta^{(t+1)} \gets \text{arg max}_\theta Q(\theta,\theta^{(t)} )\end{aligned}\]</span></p>
+<p>Thus, the EM algorithm procedure iteratively predicts the posterior probability (the E-step),</p>
+<p><span class="math">\[\begin{aligned}
+p(z|x, \theta^{OLD})\end{aligned}\]</span></p>
+<p>and then updated the parameters in by the maximization (the M-step)</p>
+<p><span class="math">\[\begin{aligned}
+\theta^{(t+1)} \gets \text{arg max}_\theta Q(\theta,\theta^{(t)} )\end{aligned}\]</span></p>
+<p>The EM algorithm converges, but only to a local optima – a global optima is not guaranteed to be found.</p>
+<h2 id="em-for-gmm"><span class="header-section-number">12.2</span> EM for GMM</h2>
+<p>For the E-step, we simply compute</p>
+<p><span class="math">\[\begin{aligned}
+\gamma_{nk} &amp;= p(z_n=k|{\boldsymbol{x}}_n, {\boldsymbol{\theta}})\\
+&amp;= \frac{p({\boldsymbol{x}}_n|z_n=k, {\boldsymbol{\theta}})p(z_n=k)}{\sum_{k&#39;} p({\boldsymbol{x}}_n|z_n=k&#39;, {\boldsymbol{\theta}})p(z_n=k&#39;)}\\
+&amp;= \frac{ w_k N({\boldsymbol{x}}|{\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k)}{\sum_{k&#39;}  w_{k&#39;} N({\boldsymbol{x}}|{\boldsymbol{\mu}}_{k&#39;}, {\boldsymbol{\Sigma}}_{k&#39;})}\end{aligned}\]</span></p>
+<p>Then for the M-step</p>
+<p><span class="math">\[\begin{aligned}
+Q({\boldsymbol{\theta}},{\boldsymbol{\theta}}^{old}) &amp;= \sum_n \sum_k p(z_n=k|{\boldsymbol{x}}_n, {\boldsymbol{\theta}}^{OLD}) \log  p({\boldsymbol{x}}_n , z_n = k| {\boldsymbol{\theta}})\\
+&amp;= \sum_n \sum_k \gamma_{nk}  \log p({\boldsymbol{x}}_n, z_n = k | {\boldsymbol{\theta}})\\
+&amp;= \sum_n \sum_k \gamma_{nk}  \log p({\boldsymbol{x}}_n | z_n = k, {\boldsymbol{\theta}}) \; p(z_n = k | {\boldsymbol{\theta}})\\
+ &amp;= \sum_n \sum_k \gamma_{nk}   \log N({\boldsymbol{x}}_n | {\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k) \; \omega_k \\
+ &amp;= \sum_n \sum_k \gamma_{nk}\log  N({\boldsymbol{x}}_n | {\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k) + \gamma_{nk} log \;  \omega_k\end{aligned}\]</span></p>
+<p>To find the optimal <span class="math">\({\boldsymbol{\mu}}_k\)</span> and <span class="math">\({\boldsymbol{\Sigma}}_k\)</span>, we use the stationary point condition</p>
+<p><span class="math">\[\begin{aligned}
+\frac{d}{d{\boldsymbol{\mu}}_k}Q({\boldsymbol{\theta}},{\boldsymbol{\theta}}^{old}) &amp;= \frac{d}{d{\boldsymbol{\mu}}_k}\sum_n \sum_k \gamma_{nk}log \; N({\boldsymbol{x}}_n | {\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k) + \gamma_{nk} log \;  \omega_k\\
+0 &amp;= \frac{d}{d{\boldsymbol{\mu}}_k} \sum_n \sum_k \gamma_{nk}log \; \left((2 \pi)^{-d/2} |{\boldsymbol{\Sigma}}_k|^{-1/2} \text{exp}\{-\frac{1}{2}({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}{\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\}\right)\\
+0 &amp;= \frac{d}{d{\boldsymbol{\mu}}_k} \sum_n \sum_k -\gamma_{nk}\frac{1}{2}({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}{\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\\
+0 &amp;=  \sum_n \gamma_{nk}\frac{1}{2} {\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\\
+\sum_n \gamma_{nk}  {\boldsymbol{\mu}}_k &amp;=  \sum_n \gamma_{nk}{\boldsymbol{x}}_n\\
+{\boldsymbol{\mu}}_k &amp;=  \frac{\sum_n \gamma_{nk}{\boldsymbol{x}}_n}{\sum_n \gamma_{nk}}\\
+{\boldsymbol{\mu}}_k &amp;=  \frac{1}{N_k}\sum_n \gamma_{nk}{\boldsymbol{x}}_n\\\end{aligned}\]</span></p>
+<p><span class="math">\[\begin{aligned}
+\frac{d}{d{\boldsymbol{\Sigma}}_k}Q({\boldsymbol{\theta}},{\boldsymbol{\theta}}^{old}) &amp;= \frac{d}{d{\boldsymbol{\Sigma}}_k}\sum_n \sum_k \gamma_{nk}log \; N({\boldsymbol{x}}_n | {\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k) + \gamma_{nk} log \;  \omega_k\\
+0 &amp;=\frac{d}{d{\boldsymbol{\Sigma}}_k} \sum_n \sum_k \gamma_{nk}log \; \left((2 \pi)^{-d/2} |{\boldsymbol{\Sigma}}_k|^{-1/2} \text{exp}\{-\frac{1}{2}({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}{\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\}\right)\\
+0 &amp;=\frac{d}{d{\boldsymbol{\Sigma}}_k} \sum_n \sum_k \gamma_{nk}log \; |{\boldsymbol{\Sigma}}_k|^{-1/2}  - \frac{d}{d{\boldsymbol{\Sigma}}_k} \sum_n \sum_k \gamma_{nk} \frac{1}{2}({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}{\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\\
+0 &amp;=\frac{d}{d{\boldsymbol{\Sigma}}_k} \sum_n \sum_k \gamma_{nk}log \; |{\boldsymbol{\Sigma}}_k|  + \frac{d}{d{\boldsymbol{\Sigma}}_k} \sum_n \sum_k \gamma_{nk} ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}{\boldsymbol{\Sigma}}_k ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k)\\
+0 &amp;= \left({\boldsymbol{\Sigma}}_k^{-1}\right){^{\textrm T}}\sum_n \gamma_{nk} + \sum_n \gamma_{nk} ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k) ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}\\
+0 &amp;= {\boldsymbol{\Sigma}}_k N_k + \sum_n \gamma_{nk} ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k) ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}\\
+{\boldsymbol{\Sigma}}_k  &amp;= \frac{1}{N_k} \sum_n \gamma_{nk} ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k) ({\boldsymbol{x}}_n - {\boldsymbol{\mu}}_k){^{\textrm T}}\\\end{aligned}\]</span></p>
+<p>To find the optimal <span class="math">\(\omega_k\)</span> we must use Lagrange to constrain <span class="math">\(\sum_{k} \omega_k = 1\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{L}(\lambda,{\boldsymbol{\theta}})  &amp;= Q({\boldsymbol{\theta}},{\boldsymbol{\theta}}^{old}) - \lambda\left( \sum_{k} \omega_k - 1\right)\end{aligned}\]</span></p>
+<p>And now we solve for the optimal parameters</p>
+<p><span class="math">\[\begin{aligned}
+\frac{d\mathcal{L}(\lambda,{\boldsymbol{\theta}}) }{d\omega_k} &amp;= \frac{d}{d\omega_k}\left[\sum_n \sum_k \gamma_{nk}\left(log \; N({\boldsymbol{x}}_n | {\boldsymbol{\mu}}_k, {\boldsymbol{\Sigma}}_k) + log \;  \omega_k\right)  - \lambda\left( \sum_{k} \omega_k - 1\right)\right]\\
+0 &amp;=  \frac{\sum_n \gamma_{nk}}{\omega_k} - \lambda\\
+\omega_k &amp;=  \frac{\sum_n \gamma_{nk}}{\lambda}\\
+\sum_k \omega_k &amp;=  1\\
+1 &amp;= \sum_k \frac{\sum_n \gamma_{nk}}{\lambda}\\
+\lambda &amp;= \sum_k \sum_n \gamma_{nk}\\
+\omega_k &amp;=  \frac{\sum_n \gamma_{nk}}{\sum_k \sum_n \gamma_{nk}}\\
+\omega_k &amp;=  \frac{N_k}{\sum_k N_k}\\\end{aligned}\]</span></p>
+<h1 id="dimensionality-reduction"><span class="header-section-number">13</span> Dimensionality Reduction</h1>
+<p>Very high dimensional data will make algorithms slower and even intractable.</p>
+<h2 id="principle-component-analysis-pca"><span class="header-section-number">13.1</span> Principle Component Analysis (PCA)</h2>
+<p>Often, data may be highly dimensional but highly correlated. If there are correlated features, it is beneficial to reduce the dimensionality of the data to have only uncorrelated features.</p>
+<p>One way of deriving PCA is to maximize the projected variance in the data. This derivation assumes the data has zero-mean and the projection vector is given by <span class="math">\({\boldsymbol{u}}\)</span>.</p>
+<p>Variance is given by (given the centered data assumption)</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\Sigma}} = \frac{1}{N} {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}\end{aligned}\]</span></p>
+<p>Thus the formulation is</p>
+<p><span class="math">\[\begin{aligned}
+\max_{{\boldsymbol{u}}} {\boldsymbol{u}}{^{\textrm T}}{\boldsymbol{\Sigma}}{\boldsymbol{u}} = \max_{{\boldsymbol{u}}} \frac{1}{N} {\boldsymbol{u}}{^{\textrm T}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{u}}\end{aligned}\]</span></p>
+<p>but we must constrain <span class="math">\({\boldsymbol{u}}\)</span> so that it doesn’t become arbitrarily large. Thus</p>
+<p><span class="math">\[\begin{aligned}
+\max_{{\boldsymbol{u}}} \;\;&amp;\frac{1}{N} {\boldsymbol{u}}{^{\textrm T}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{u}}\\
+\text{s.t.}\;\;&amp; \|{\boldsymbol{u}}\|_2^2 = 1\end{aligned}\]</span></p>
+<p>Solve using the lagrangian</p>
+<p><span class="math">\[\begin{aligned}
+\mathcal{L}(\lambda,{\boldsymbol{u}}) = \frac{1}{N} {\boldsymbol{u}}{^{\textrm T}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{u}} + \lambda(1 - {\boldsymbol{u}}{^{\textrm T}}{\boldsymbol{u}})\end{aligned}\]</span></p>
+<p>when solving for the optima, we see that <span class="math">\((\lambda,{\boldsymbol{u}})\)</span> is an eigenvalue-eigenvector pair!</p>
+<p><span class="math">\[\begin{aligned}
+\frac{\partial \mathcal{L}(\lambda,{\boldsymbol{u}})}{\partial {\boldsymbol{u}}} &amp;= 2{\boldsymbol{\Sigma}}{\boldsymbol{u}} - 2\lambda{\boldsymbol{u}} = 0\\
+{\boldsymbol{\Sigma}}{\boldsymbol{u}} &amp;= \lambda{\boldsymbol{u}}\\\end{aligned}\]</span></p>
+<p>plugging back to the original formulation</p>
+<p><span class="math">\[\begin{aligned}
+\max_{{\boldsymbol{u}}} {\boldsymbol{u}}{^{\textrm T}}\lambda{\boldsymbol{u}}\end{aligned}\]</span></p>
+<p>We see that <span class="math">\({\boldsymbol{u}}\)</span> must be the eigenvector with the largest eigenvalue.</p>
+<p>Its not a stretch to see that to project into multiple dimensions, <span class="math">\(D\)</span>, with maximal projected variance we will project using the eigenvectors associated with the <span class="math">\(D\)</span> largest eigenvalues.</p>
+<p>Note that if you do not center the data, you will not have maximized the variance. However, funny enough, it still sort of works though you will not get the same result as PCA. In fact, your first axis will likely be very close to the mean vector.</p>
+<h2 id="kernelized-principle-component-analysis-kpca"><span class="header-section-number">13.2</span> Kernelized Principle Component Analysis (kPCA)</h2>
+<p>Starting from where we left off with standard PCA</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{\Sigma}}{\boldsymbol{u}} &amp;= \lambda{\boldsymbol{u}}\\
+\frac{1}{N} {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{u}} &amp;= \lambda{\boldsymbol{u}}\\
+{\boldsymbol{u}} &amp;= \frac{1}{\lambda N} {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{u}}\\
+&amp;= {\boldsymbol{X}}{^{\textrm T}}\left(\frac{1}{\lambda N} {\boldsymbol{X}}{\boldsymbol{u}}\right)\\
+&amp;= {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}}\end{aligned}\]</span></p>
+<p>What is <span class="math">\({\boldsymbol{\alpha}}\)</span>? Plugging into for <span class="math">\({\boldsymbol{u}} = {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}}\)</span></p>
+<p><span class="math">\[\begin{aligned}
+\frac{1}{N} {\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}} &amp;= \lambda{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}}\\
+\frac{1}{N} {\boldsymbol{X}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{X}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}} &amp;= \lambda{\boldsymbol{X}}{\boldsymbol{X}}{^{\textrm T}}{\boldsymbol{\alpha}}\end{aligned}\]</span></p>
+<p>Now replace <span class="math">\({\boldsymbol{X}}{\boldsymbol{X}}{^{\textrm T}}\)</span> with a kernel matrix, <span class="math">\({\boldsymbol{K}}\)</span> and you have</p>
+<p><span class="math">\[\begin{aligned}
+\frac{1}{N} {\boldsymbol{K}}{\boldsymbol{K}}{\boldsymbol{\alpha}} &amp;= \lambda{\boldsymbol{K}}{\boldsymbol{\alpha}}\\
+\frac{1}{N} {\boldsymbol{K}}{\boldsymbol{\alpha}} &amp;= \lambda{\boldsymbol{\alpha}}\end{aligned}\]</span></p>
+<p><span class="math">\({\boldsymbol{\alpha}}\)</span> is the eigenvector with the largest associated eigenvalue of the kernel matrix!</p>
+<p>Subtle Issue 1: the kernel matrix must be centralized. This can be done like so</p>
+<p><span class="math">\[\begin{aligned}
+{\boldsymbol{K}}_{centered} = ({\boldsymbol{I}} - {\boldsymbol{1}}){\boldsymbol{K}}({\boldsymbol{I}} - {\boldsymbol{1}})\end{aligned}\]</span></p>
+<p>Subtle Issue 2: to ensure <span class="math">\(\|{\boldsymbol{u}}\|_2^2 = 1\)</span>, we must rescale <span class="math">\({\boldsymbol{\alpha}}\)</span> by <span class="math">\(\frac{1}{\sqrt{\lambda N}}\)</span>.</p>
+<h1 id="sec:bias-variance"><span class="header-section-number">14</span> Bias vs Variance Trade-off</h1>
+<p>Bias vs Variance is the trade off between model complexity, over-fitting and under-fitting. There are some strong theoretical proofs as well.</p>
+<p>Lets assume a square-error loss function, and lets assume our prediction function, <span class="math">\(f(\cdot)\)</span>, is trained on the data, <span class="math">\(\mathcal{D}\)</span>, and thus is denoted <span class="math">\(f_{\mathcal{D}}(\cdot)\)</span>. So, the expected risk is defined by</p>
+<p><span class="math">\[\begin{aligned}
+R(f_{\mathcal{D}}) &amp;= \int \int L(f_{\mathcal{D}}({\boldsymbol{x}}),y) \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\
+&amp;=  \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-y)^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\\end{aligned}\]</span></p>
+<p>Lets define the averaged risk</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_{\mathcal{D}} R(f_{\mathcal{D}}) &amp;=  \int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-y)^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\\end{aligned}\]</span></p>
+<p>This marginalized out the randomness with respect to the data, <span class="math">\(\mathcal{D}\)</span> and the risk. Lets also define the averaged prediction</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) &amp;=  \int  f_{\mathcal{D}}({\boldsymbol{x}}) P(\mathcal{D})\;d\mathcal{D}\\\end{aligned}\]</span></p>
+<p>Again, to marginalize out the randomness of the data on training the model.</p>
+<p>Now, lets add and subtract the averaged prediction</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_{\mathcal{D}} R(f_{\mathcal{D}}) &amp;=  \int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-y)^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;=  \int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})  + {\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y)^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;=  \int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}))^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;\;\;\;\;\;+ \int \int \int ({\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y)^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;\;\;\;\;\;+  \int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}))({\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y) \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\\end{aligned}\]</span></p>
+<p>The third term equals zero</p>
+<p><span class="math">\[\begin{aligned}
+\int \int \int (f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}))({\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y) \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+\int \int \cancel{\left[ \int (f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})) \; P(\mathcal{D})\;d\mathcal{D}  \right]}({\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y) \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\\end{aligned}\]</span></p>
+<p>So now we are left with the two terms</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_{\mathcal{D}} R(f_{\mathcal{D}}) &amp;=   \int \int \int [f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;\;\;\;\;\;+ \int \int \int [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\end{aligned}\]</span></p>
+<p>Lets explore the second term further. It is no longer dependent on <span class="math">\(\mathcal{D}\)</span> so lets get rid of that.</p>
+<p><span class="math">\[\begin{aligned}
+&amp;\int \int \int [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\\
+&amp;=\int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>To simplify further, we will use a similar trick by defining the the averaged target</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_y y = \int y\; p(y|{\boldsymbol{x}})\;dy\end{aligned}\]</span></p>
+<p>Plug it in</p>
+<p><span class="math">\[\begin{aligned}
+&amp;\int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) -y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\
+&amp;= \int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y + {\mathbb{E}}_y y -y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\
+&amp;= \int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}} \\
+&amp;\;\;\;\;\;+ \int \int  [{\mathbb{E}}_y y - y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}} \\
+&amp;\;\;\;\;\;+ \int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y][{\mathbb{E}}_y y -y] \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>Again, the last term is zero</p>
+<p><span class="math">\[\begin{aligned}
+\int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y][{\mathbb{E}}_y y -y] \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}
+&amp;= \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]\left\{\int [{\mathbb{E}}_y y -y] p(y|{\boldsymbol{x}}) \; dy \; \right\} \;p({\boldsymbol{x}}) \;d{\boldsymbol{x}}\\
+\int [{\mathbb{E}}_y y -y] p(y|{\boldsymbol{x}}) \; dy &amp;= \int {\mathbb{E}}_y y p(y|{\boldsymbol{x}}) \; dy  - \int y p(y|{\boldsymbol{x}}) \; dy\\
+&amp;=  {\mathbb{E}}_y y \int p(y|{\boldsymbol{x}}) \; dy  - \int y p(y|{\boldsymbol{x}}) \; dy\\
+&amp;=  {\mathbb{E}}_y y - {\mathbb{E}}_y y\\
+&amp;=0\end{aligned}\]</span></p>
+<p>And the first term simplifies by marginalizing <span class="math">\(y\)</span>.</p>
+<p><span class="math">\[\begin{aligned}
+&amp;\int \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\\
+&amp;= \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]^2 \;p({\boldsymbol{x}}) \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>Finally, we are left with</p>
+<p><span class="math">\[\begin{aligned}
+{\mathbb{E}}_{\mathcal{D}} R(f_{\mathcal{D}}) &amp;=   \int \int \int [f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D} \\ &amp;\;\;\;\;\; +\int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]^2 \;p({\boldsymbol{x}}) \;d{\boldsymbol{x}} \\&amp;\;\;\;\;\; + \int \int  [{\mathbb{E}}_y y - y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}} \\
+{\mathbb{E}}_{\mathcal{D}} R(f_{\mathcal{D}}) &amp;= \text{variance} + \text{bias}^2 + \text{noise}\end{aligned}\]</span></p>
+<p>This first term is known as the <span><em>variance</em></span> of the model.</p>
+<p><span class="math">\[\begin{aligned}
+\text{variance}&amp;=\int \int \int [f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\; P(\mathcal{D})\;d\mathcal{D}\end{aligned}\]</span></p>
+<p>There are two ways to reduce variance:<br />1) Use a lot of data. Increasing <span class="math">\(\mathcal{D}\)</span> will decrease <span class="math">\(f_{\mathcal{D}}({\boldsymbol{x}})-{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}})\)</span>.<br />2) Use a simple model, <span class="math">\(f(\cdot)\)</span>, so that <span class="math">\(f_{\mathcal{D}}(\cdot)\)</span> does not vary much across datasets.</p>
+<p>The second term is known as the <span><em>bias</em></span> of the model.</p>
+<p><span class="math">\[\begin{aligned}
+\text{bias}^2 &amp;= \int  [{\mathbb{E}}_{\mathcal{D}} f_{\mathcal{D}}({\boldsymbol{x}}) - {\mathbb{E}}_y y]^2 \;p({\boldsymbol{x}}) \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>We can reduce the bias by using more complex models allowing <span class="math">\(f(\cdot)\)</span> to be as flexible as possible to better approximate <span class="math">\({\mathbb{E}}_y y\)</span>. However, this causes the variance to increase.</p>
+<p>The third term is known as the <span><em>noise</em></span> of the mode.</p>
+<p><span class="math">\[\begin{aligned}
+\text{noise} &amp;= \int \int  [{\mathbb{E}}_y y - y]^2 \;p({\boldsymbol{x}},y) \;dy \;d{\boldsymbol{x}}\end{aligned}\]</span></p>
+<p>There is nothing we can do about noise. Choosing <span class="math">\(f(\cdot)\)</span> or <span class="math">\(\mathcal{D}\)</span> will not affect it.</p>
+<p>As you can see, expected risk (error) breaks down into three terms. Bias and variance both contribute to this error and fight each other over model complexity/simplicity. Increasing the amount of training data will help with the variance contribution to error. The noise is simply inherent and nothing can be done about this.</p>
+<h1 id="model-selection"><span class="header-section-number">15</span> Model Selection</h1>
+<p>Given some model, <span class="math">\(\mathcal{M}\)</span>, the Bayesian information criterion (BIC) is used to approximate</p>
+<p><span class="math">\[\begin{aligned}
+\log p(\mathcal{D}|\mathcal{M}) &amp;\approx \log p(\mathcal{D}|{\boldsymbol{w}}^{MLE}) - \frac{D}{2}\log N\end{aligned}\]</span></p>
+<p>Where <span class="math">\({\boldsymbol{w}}^{MLE}\)</span> is the maximum likelihood estimation solution to the parameters of the model. For linear regression, we have</p>
+<p><span class="math">\[\begin{aligned}
+\text{BIC } &amp;= -\frac{N}{2}\left(\frac{1}{N}\sum_n(y_n - {\boldsymbol{w}}^{MLE{^{\textrm T}}}{\boldsymbol{x}}_n)^2 \right) - \frac{D}{2}\log N\end{aligned}\]</span></p>
+<p>Maximizing the BIC should give us a decent measure of whether our model is too complicated or not complicated enough.</p>
+<h1 id="sec:hyperparameters"><span class="header-section-number">16</span> Hyperparameter Selection</h1>
+<p>When training a model and comparing it against other models, it is crucial to separate the training data from the test data. Training your model on the data you test with will cause your model to overfit the data and you have shown absolutely nothing.</p>
+<p>When choosing hyperparameters for your model, it is crucial that you tune these hyperparameters with data separate from the training data. Well, there are two ways of going about this.</p>
+<p>1) Use training, cross-validation, and test data sets. None of these data sets should overlap. Vary your hyperparameters and train your model with the training dataset. Find the set of hyperparameters that give you the minimal prediction error on the cross-validation set. Then run your prediction on the test dataset and report that as the accuracy of your model.</p>
+<p>2) Use training and test datasets that do not overlap and do a N-fold cross-validation in your training data to tune your hyperparameters. What this means is split your training data evenly into N groups. Train your model on N-1 groups and use the left over group as the cross-validation set. Do this N times with the same hyperparameters, iterating over the groups so that each group takes a turn as the cross-validation set. Then average these accuracies. This is the cross-validation accuracy for one set of hyperparameters. Find an optimal set of hyperparameters, then run your prediction on the test dataset and report that as the accuracy of your model.</p>
+</body>
+</html>

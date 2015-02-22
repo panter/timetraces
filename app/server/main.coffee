@@ -160,7 +160,7 @@ Meteor.startup ->
 			userToken = UserSettings.get "controllrApiKey", null, @userId
 
 			if userToken?
-				result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}"
+				result = HTTP.get "http://controllr.panter.biz/api/projects.json?user_token=#{userToken}&with_times=false&scope=active"
 				if result.data?
 					filtered = _(result.data).filter (project) ->
 						project.active
