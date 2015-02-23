@@ -3,9 +3,7 @@
 
 #Ist-Analyse
 
-Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen vielleicht Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar.
-
-Auch das Verhalten der Benutzer kann varieren, welches zudem einen Einfluss auf die Gestaltung der zu entwickelnden Anwendung haben kann.
+Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen vielleicht Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar. 
 
 
 ##Rollen
@@ -32,7 +30,7 @@ Marketing
 Community-Manager
 :	Kümmert sich um die Verwaltung des Cowork-Space “colab-zurich.ch”. Zur Zeit (Ende 2014) eine Praktikumsstelle.
 
-
+\pagebreak
 
 ##Systeme
 
@@ -63,30 +61,30 @@ DELETE   /api/entries/:id(.:format)
 
 ~~~~{caption="Schema von /api/entries" label=lstcontrollrentriesresult}
 {
-"id": 12513,
-"created_at": "2014-09-15T14:25:07.000Z",
-"updated_at": "2014-11-13T14:45:31.000Z",
-"deleted_at": null,
-"day": "2014-09-15",
-"start": "2000-01-01T09:50:00Z",
-"end": "2000-01-01T10:00:00Z",
-"duration": 10,
-"state": "invoiced",
-"description": "Standup Meeting",
-"billable": true,
-"invoice_id": 123,
-"project_id": 1100,
-"task_id": 10042,
-"user_id": 12,
-"project_shortname": "abc-001",
-"task_name": "Internal Meeting",
-"user_username": "maw"
+	"id": 12513,
+	"created_at": "2014-09-15T14:25:07.000Z",
+	"updated_at": "2014-11-13T14:45:31.000Z",
+	"deleted_at": null,
+	"day": "2014-09-15",
+	"start": "2000-01-01T09:50:00Z",
+	"end": "2000-01-01T10:00:00Z",
+	"duration": 10,
+	"state": "invoiced",
+	"description": "Standup Meeting",
+	"billable": true,
+	"invoice_id": 123,
+	"project_id": 1100,
+	"task_id": 10042,
+	"user_id": 12,
+	"project_shortname": "abc-001",
+	"task_name": "Internal Meeting",
+	"user_username": "maw"
 }
 ~~~~
 
 Auffallend ist “start” und “end”, bei denen das Datum offenbar aus Formatgründen angefügt wird und ohne Relevanz ist. Lediglich die Zeit ist relevant. Für das Datum des Zeiteintrages ist “day” relevant. Dies bedeutet auch, dass jeder Zeiteintrag einem Tag zugeordnet ist, es kann keine einzelnzen Zeiteinträge geben, die über mehrere Tage gehen (z.b. über Mitternacht). 
 
-Manche relationale Daten sind zudem Denormalisiert (project_shortaname und task_name).[^fnDenormalisiert]
+Manche relationale Daten sind zudem Denormalisiert (project_shortname und task_name).[^fnDenormalisiert]
 
 [^fnDenormalisiert]: Als Denormalisierung bezeichnet man das bewusste Einfügen redundanter Informationen einer relationalen Datenbank zu Gunsten eines besseren Laufzeitverhaltens oder einfacherem Zugriff. Im obigen Beispiel, wird neben der project_id auch der project_shortname mitgegeben, welcher direkt abhängig von der project_id ist. Das Denormalisieren entspricht der Umkehrung der Normalisierung. 
 
@@ -238,7 +236,7 @@ Sich in Entwicklung befindende Software, welche von Panter entwickelt wird. Die 
 
 ### Systemübersicht
 
-Abbildung \ref{figSystems} zeigt eine Übersicht der Syteme
+Abbildung \ref{figSystems} zeigt eine Übersicht der Syteme und eine mögliche Integration der zu erstellenden Applikation.
 
 ![Systemübersicht\label{figSystems}](../img/systems.png)
 

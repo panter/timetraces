@@ -38,7 +38,7 @@ Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das
 
 Dieses Verfahren wird nachfolgend "Reactive REST-Mapping" genannt.
 
-`panter:publish-array` “publiziert” eine normales Javascript-Array aus Objekten auf dem Server als Meteor-Collection auf dem Client. Dabei muss eine Funktion angegeben werden, welches dieses Array zurückgibt. in dieser Funktion kann beispielsweise eine REST-API aufgerufen werden, welche dieses Array zurückgibt. Es kann eine Intervall-Zeit angegeben werden, wodurch die definierte Funktion periodisch aufgerufen wird, solange der Client sich auf dieses Publikation eingeschrieben (“subscribed”) hat.
+`panter:publish-array` “publiziert” ein beliebiges Javascript-Array aus Objekten auf dem Server als Meteor-Collection auf dem Client. Dabei muss eine Funktion angegeben werden, welches dieses Array zurückgibt. In dieser Funktion kann beispielsweise eine REST-API aufgerufen werden, welche dieses Array zurückgibt. Es kann eine Intervall-Zeit angegeben werden, wodurch die definierte Funktion periodisch aufgerufen wird, solange der Client sich auf dieses Publikation eingeschrieben (“subscribed”) hat.
 
 Durch dieses Verfahren können die Daten aus den verschiedenen Quellen auf dem Server der Anwendung vorkonsolidiert und vorbearbeitet werden. Die Daten der verschiedenen “Event”-Quellen werden beispielsweise in eine Collection “Events” auf dem Client publiziert. Auf dem Client kann so das normale Data-Binding von Meteor verwendet werden, die Quellen der Events sind dabei bereits abstrahiert und transparent. Neue Quellen können somit einfach implementiert werden, der Code für das Client-UI muss nicht angepasst werden.
 
@@ -62,14 +62,14 @@ Listing \ref{lstGetCalendarList} zeigt ein Beispiel, wie mit dem erstellen Paket
 ~~~~{caption="Publizieren der Google Kalender mit Hilfe von `panter:publish-array` in CoffeeScript" label=lstGetCalendarList}
 Meteor.publishArray 
 	name: "calendarList"
-		collection: "Calendars"
-		refreshTime: 10000
-		data: (params)->
-			user =  Meteor.users.findOne _id: @userId
-			if user?
-				url = "calendar/v3/users/me/calendarList"
-				result = GoogleApi.get url, user: user
-				return handleIds result.items
+	collection: "Calendars"
+	refreshTime: 10000
+	data: (params) ->
+		user =  Meteor.users.findOne _id: @userId
+		if user?
+			url = "calendar/v3/users/me/calendarList"
+			result = GoogleApi.get url, user: user
+			return handleIds result.items
 
 ~~~~~
 
@@ -92,9 +92,9 @@ Listing \ref{calendarSettingsTemplate} zeigt das Spacebars[^fnSpacebars]-Templat
 ~~~~
 
 
-In Listing \ref{claendarSettingsRoute} wird ein Teil der Routen-Konfiguration des Einstellungsbildschirms gezeigt. Die Daten-Funktion `data` gibt dabei unter anderem ein `calendars`-Feld zurück, welches im Template als Optionen für das Formularfeld verwendet werden. 
+In Listing \ref{claendarSettingsRoute} wird ein Teil der Routen-Konfiguration des Einstellungsbildschirms gezeigt. Die Daten-Funktion `data` gibt dabei unter anderem ein `calendars`-Feld zurück, welches im Template als Optionen für das Formularfeld verwendet wird. 
 
-~~~~{caption="Routen-Konfiguration für den Einstellungsbildschirm auf Abbildung \ref{figCalendarSettings} in CoffeScript" label=claendarSettingsRoute}
+~~~~{caption="Routen-Konfiguration für den Einstellungsbildschirm auf Abbildung \ref{figCalendarSettings} in CoffeeScript" label=claendarSettingsRoute}
 Router.route 'settings', 
 	waitOn: share.defaultSubscriptions
 	data: ->
@@ -107,13 +107,13 @@ Router.route 'settings',
 
 Abbonniert nun ein Benutzer einen neuen Kalender auf Google Apps, so wird innerhalb des Aktualisierungs-Intervals von `panter:publish-array` der neue Kalender geladen und an den Client publiziert. Auf dem Client wird nun der Einstellungsbildschirm automatisch um den neuen Kalender ergänzt.
 
-Auf eine ähnliche Art wurden die Ereignisse vom Kalender abgefragt und als "Events" publiziert.
+Auf eine ähnliche Art werden die Ereignisse vom Kalender abgefragt und als "Events" publiziert.
 
 ### Redmine
 
-Von Redmine wurde die Liste der Projekte geladen, von welchen analog zur Kalenderliste bestimmte Projekte gewählt werden können, von denen die Stories und Tasks geladen werden.
+Von Redmine wird die Liste der Projekte geladen, von welchen analog zur Kalenderliste bestimmte Projekte gewählt werden können, von denen die Stories und Tasks geladen werden.
 
-Über die issues-Schnittstelle wurden dann die Stories und Tasks geladen, an denen der Benutzer gearbeitet hat.
+Über die issues-Schnittstelle werden die Stories und Tasks geladen, an denen der Benutzer gearbeitet hat.
 
 ### Github
 
