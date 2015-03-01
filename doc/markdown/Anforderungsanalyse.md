@@ -17,6 +17,7 @@ Es ging darum, einen Einblick in folgende Fragestellungen zu erhalten:
 ## Resultate
 
 In der Auswertung der Umfrage wurden folgende Beobachtungen gemacht:
+
 -	Google Kalender und Email wird von jedem Mitarbeiter häufig verwendet, egal ob im externen Einsatz oder nicht.
 -	Github und Redmine werden ebenfalls sehr häufig verwendet, einen signifikanten Unterschied zwischen internen oder externen Einsatz wurde nicht festgestellt, allerdings waren nur sehr wenige Beantwortungen von externen Mitarbeitern eingegangen.
 -	Die Mitarbeiter schätzen, dass Redmine, Github, Email und Kalender ihre tägliche Arbeit am besten protokollieren, wobei der Kalender leicht vorne liegt.

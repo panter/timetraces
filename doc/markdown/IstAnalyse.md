@@ -5,7 +5,7 @@
 
 ## Ausgangslage
 
-Jeder Mitarbeiter muss regelmässig seine gearbeitete Zeit in der Anwendung "Controllr" eintragen. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben.
+Jeder Mitarbeiter der Firma panter AG trägt regelmässig seine gearbeitete Zeit in der Anwendung "Controllr" ein. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben.
 
 Diese Tasks müssen am Ende eines Monats bestätigt werden, damit eine Auswertung stattfinden kann.
 
@@ -23,11 +23,11 @@ Die Erfassung eines Zeiteintrages erfordert folgende Interaktionen:
 
 Weitere Einzelheiten sind unter Abschnitt \ref{secControllr} zu finden.
 
-Jedem Mitarbeiter stehen weitere Systeme zur Verfügung, welche er in seiner täglichen Arbeit benutzen kann (Siehe Abschnitt \ref{secSysteme}). Vieler dieser Systeme können über Schnittstellen ausgewertet werden um beispielsweise die Aktivität eines Benutzers auszuwerten
+Jedem Mitarbeiter stehen weitere Systeme zur Verfügung, welche er in seiner täglichen Arbeit benutzen kann (Siehe Abschnitt \ref{secSysteme}). Vieler dieser Systeme können über Schnittstellen ausgewertet werden um beispielsweise die Aktivität eines Benutzers auszuwerten. Dadurch entsteht eine Art "Protokoll" des Benutzers und seiner Arbeit.
 
 ##Rollen
 
-Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar. 
+Ein zentraler Aspekt der Arbeit sind die erwähnten Protokoll-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Protokoll. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar. 
 
 
 Nachfolgend eine Liste der Rollen, welche bei Panter vertreten sind. Manche Mitarbeiter nehmen mehrere Rollen ein. Manche Mitarbeiter arbeiten zudem häufig extern bei Kunden und nutzen teilweise andere Systeme.

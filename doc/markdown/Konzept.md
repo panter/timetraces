@@ -55,6 +55,7 @@ Nah aneinanderliegende Events oder überlappende Events können miteinander komb
 - Die Gesamtlänge der kombinierten Events sollte einen weiteren Grenzwert nicht überschreiten
 - Die Startzeit des zweiten Events liegt vor der Endzeit des ersten Events (Überlappung)
 
+\pagebreak
 
 ## Mögliche Darstellungen
 
@@ -78,6 +79,7 @@ Diese Darstellung eignet sich auch für die geplante Zeiterfassungsanwendung. "E
 - Kurze Events können sehr klein werden - und dadurch auch schwer klickbar
 - Je nach Breite ist nur sehr wenig Platz vorhanden für Beschriftungen oder Details auf den einzelnen Einträgen, bei kurzen Events ist dies noch akuter.
 - Die Umsetzung einer solchen Darstellung ist vergleichsweise aufwendig
+
 
 ### Listen-Darstellung
 
