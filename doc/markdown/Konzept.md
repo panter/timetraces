@@ -15,7 +15,7 @@ Timeentry
 
 [^fnTimeEntry]:	Einfache transkription aus dem Englischen von “Zeiteintrag” in Anlehnung an “Entry”, dem Datenmodel, welches in der Zeiterfassungsapplikation “Controllr” verwendet wird
 
-## Vom Event zum Timeentry
+## Vom Event zum Timeentry\label{secEventTimeEntry}
 
 Listet man alle gesammelten “Events” eines Tages nacheinander auf, erhält man ein erstes Protokoll. Um daraus konkrete Zeiteinträge zu erstellen, müssen die Events noch umgeformt und mit weiteren Daten versehen werden:
 
@@ -81,8 +81,17 @@ Diese Darstellung eignet sich auch für die geplante Zeiterfassungsanwendung. "E
 
 ### Listen-Darstellung
 
+Viele Kalender bieten als alternative Darstellung eine Listenansicht an. In dieser Ansicht werden Einträge untereinander aufgelistet ohne dass die Zeitdauer berücksichtigt wird. 
 
-(...)
+**Vorteile:**
+
+- Jeder Eintrag kann gleich gross dargestellt werden und somit steht für Titel oder Beschreibung des Eintrages genug Platz zur Verfügung.
+- Die Ansicht kann sehr kompakt gemacht werden, insbesondere, wenn an einem Tag nur wenige Ereignisse eingetragen sind
+- Einfach zu implementieren
+
+**Nachteile:**
+
+- Für den Betrachter ist nicht direkt ersichtlich, wie lange ein einzelnes Ereignis dauert
 
 
 ## Datenquellen für den Prototyp

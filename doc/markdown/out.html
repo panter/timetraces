@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Marco Wettstein" />
+  <title>Timetraces Seminararbeit Handheld</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Timetraces Seminararbeit Handheld</h1>
+<h2 class="author">Marco Wettstein</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#vorwort"><span class="toc-section-number">1</span> Vorwort</a></li>
+<li><a href="#ist-analyse"><span class="toc-section-number">2</span> Ist-Analyse</a><ul>
+<li><a href="#ausgangslage"><span class="toc-section-number">2.1</span> Ausgangslage</a></li>
+<li><a href="#rollen"><span class="toc-section-number">2.2</span> Rollen</a></li>
+<li><a href="#systeme"><span class="toc-section-number">2.3</span> Systeme</a><ul>
+<li><a href="#controllr"><span class="toc-section-number">2.3.1</span> Controllr</a></li>
+<li><a href="#google-apps"><span class="toc-section-number">2.3.2</span> Google Apps</a></li>
+<li><a href="#redmine"><span class="toc-section-number">2.3.3</span> Redmine</a></li>
+<li><a href="#github"><span class="toc-section-number">2.3.4</span> Github</a></li>
+<li><a href="#timetunnel"><span class="toc-section-number">2.3.5</span> Timetunnel</a></li>
+<li><a href="#strms.io-vormals-storyline.li"><span class="toc-section-number">2.3.6</span> strms.io (vormals storyline.li)</a></li>
+<li><a href="#systemübersicht"><span class="toc-section-number">2.3.7</span> Systemübersicht</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#anforderungsanalyse"><span class="toc-section-number">3</span> Anforderungsanalyse</a><ul>
+<li><a href="#resultate"><span class="toc-section-number">3.1</span> Resultate</a></li>
+</ul></li>
+<li><a href="#konzept"><span class="toc-section-number">4</span> Konzept</a><ul>
+<li><a href="#begriffe"><span class="toc-section-number">4.1</span> Begriffe</a></li>
+<li><a href="#vom-event-zum-timeentry"><span class="toc-section-number">4.2</span> Vom Event zum Timeentry</a><ul>
+<li><a href="#projekt-und-task-zuweisung"><span class="toc-section-number">4.2.1</span> Projekt und Task-zuweisung</a></li>
+<li><a href="#fehlende-start--und-endzeit"><span class="toc-section-number">4.2.2</span> Fehlende Start- und Endzeit</a></li>
+<li><a href="#merging---kombinieren-von-events"><span class="toc-section-number">4.2.3</span> “Merging” - Kombinieren von Events</a></li>
+</ul></li>
+<li><a href="#mögliche-darstellungen"><span class="toc-section-number">4.3</span> Mögliche Darstellungen</a><ul>
+<li><a href="#kalender-darstellung"><span class="toc-section-number">4.3.1</span> Kalender-Darstellung</a></li>
+<li><a href="#listen-darstellung"><span class="toc-section-number">4.3.2</span> Listen-Darstellung</a></li>
+</ul></li>
+<li><a href="#datenquellen-für-den-prototyp"><span class="toc-section-number">4.4</span> Datenquellen für den Prototyp</a></li>
+</ul></li>
+<li><a href="#umsetzung-prototyp"><span class="toc-section-number">5</span> Umsetzung Prototyp</a><ul>
+<li><a href="#technologie-wahl"><span class="toc-section-number">5.1</span> Technologie-Wahl</a></li>
+<li><a href="#meteor"><span class="toc-section-number">5.2</span> Meteor</a></li>
+<li><a href="#sprache"><span class="toc-section-number">5.3</span> Sprache</a></li>
+<li><a href="#authentifizierung-4"><span class="toc-section-number">5.4</span> Authentifizierung</a></li>
+<li><a href="#reactive-programming-und-rest-schnittstellen-reactive-rest-mapping"><span class="toc-section-number">5.5</span> Reactive-Programming und REST-Schnittstellen: &quot;Reactive REST-Mapping&quot;</a></li>
+<li><a href="#verwendete-event-quellen"><span class="toc-section-number">5.6</span> Verwendete Event-Quellen</a><ul>
+<li><a href="#google-kalendar"><span class="toc-section-number">5.6.1</span> Google Kalendar</a></li>
+<li><a href="#beispiel-für-panterpublish-array-anhand-von-google-kalender"><span class="toc-section-number">5.6.2</span> Beispiel für <code>panter:publish-array</code> anhand von Google Kalender</a></li>
+<li><a href="#redmine-1"><span class="toc-section-number">5.6.3</span> Redmine</a></li>
+<li><a href="#github-1"><span class="toc-section-number">5.6.4</span> Github</a></li>
+</ul></li>
+<li><a href="#vorteile-von-reactive-rest-mapping"><span class="toc-section-number">5.7</span> Vorteile von &quot;Reactive REST-Mapping&quot;</a></li>
+<li><a href="#event-darstellung"><span class="toc-section-number">5.8</span> Event-Darstellung</a></li>
+<li><a href="#schwierigkeiten"><span class="toc-section-number">5.9</span> Schwierigkeiten</a></li>
+</ul></li>
+</ul>
+</div>
+<p></p>
+<p></p>
+<p></p>
+<h1 id="vorwort"><span class="header-section-number">1</span> Vorwort</h1>
+<p>Sehr geehrte Leserschaft</p>
+<p>Smartphones und andere mobilen Geräte haben nicht nur durch ihre Mobilität unseren Alltag und die Arbeitswelt erobert, sondern auch durch neue Bedienkonzepte und durch Bündelung verschiedener Datenquellen und Dienste. Kalender und GPS verbinden Ort und Zeit des Benutzers - das Gerät weiss jederzeit, was der Benutzer gerade tut oder geplant hat und wo er sich befindet und kann daraus Absichten des Benutzers vorhersehen. Konzepte wie Google Now verfolgen diesen Ansatz . Das Smartphone wird vermehrt zum intelligenten digitalen Assistenten.</p>
+<p>Mit dieser Vision versuchte ich die firmeninterne Anwendung zur Zeiterfassung (&quot;controllr&quot;) für Smartphones neu zu konzipieren.</p>
+<p>Die bestehende Anwendung funktioniert prinzipiell auch auf mobilen Endgeräten mit kleinen Bildschirmen mittels einfachen Verfahren des Responsive Webdesign<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, doch reicht das reine Umordnen der Elemente in diesem Fall nicht, um den Prozess der Zeiterfassung sinnvoll auf ein Smartphone zu übertragen. Denn nicht nur die Grösse des Bildschirms hat einfluss auf die Bedienbarkeit, sondern auch die Eingabemöglichkeiten des Gerätes. Schaltflächen sind mit einem berührungssensitiven Bildschirms schwerer zu treffen und müssen entsprechend gestaltet werden, ebenso ist die Eingabe von Text auf einem Smartphone aufwendiger und daher langsamer im Vergleich zu einem klassischen Computer mit Maus und Tastatur.</p>
+<p>Um dieses Problem anzugehen überlegte ich mir daher zwei Stossrichtungen:</p>
+<ul>
+<li>Bedienelemente der Zeiterfassung für Smartphones optimieren</li>
+<li>Die Menge der Bedienelemente und Eingaben reduzieren</li>
+</ul>
+<p>Während die erste Option in der Regel einfacher umzusetzen ist und auch häufig gemacht wird, empfinde ich doch die zweite Variante als weitaus spannender und zeitgemässer.</p>
+<p>Mit der Eingangs erwähnten Vision im Hinterkopf überlegte ich mir daher, wie ich die Anzahl Benutzerinteraktionen für eine Zeiterfassung minimieren kann, indem ich verschiedene Datenquellen eines Mitarbeiters miteinander verbinde.</p>
+<p></p>
+<h1 id="ist-analyse"><span class="header-section-number">2</span> Ist-Analyse</h1>
+<h2 id="ausgangslage"><span class="header-section-number">2.1</span> Ausgangslage</h2>
+<p>Jeder Mitarbeiter muss regelmässig seine gearbeitete Zeit in der Anwendung &quot;Controllr&quot; eintragen. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben.</p>
+<p>Diese Tasks müssen am Ende eines Monats bestätigt werden, damit eine Auswertung stattfinden kann.</p>
+<p>Die Anwendung ist als Webbasierte Lösung implementiert und ist für die Benutzung am Computer ausgerichtet, funktioniert prinzipiell aber auch auf kleineren Smartphones und Tablet-Computer. Dabei wurden die Elemente bei wenig Platz untereinander angeordnet. Die Eingabe-Elemente bleiben unangetastet.</p>
+<p>Die Erfassung eines Zeiteintrages erfordert folgende Interaktionen:</p>
+<ul>
+<li>Auswahl eines Tages durch klick auf einen kleinen Kalender.</li>
+<li>Auswahl eines Projektes durch ein <em>Select</em>-Element</li>
+<li>Auswahl eines Tasks durch ein <em>Select</em>-Element</li>
+<li>Eingabe der Startzeit im Format hh:mm</li>
+<li>Eingabe der Endzeit im Format hh:mm</li>
+<li>Eingabe eines Beschreibungstextest</li>
+<li>Bestätigung durch Klick auf &quot;Create Entry&quot;</li>
+</ul>
+<p>Weitere Einzelheiten sind unter Abschnitt  zu finden.</p>
+<p>Jedem Mitarbeiter stehen weitere Systeme zur Verfügung, welche er in seiner täglichen Arbeit benutzen kann (Siehe Abschnitt ). Vieler dieser Systeme können ausgewertet werden um Kontext-Daten eines Benutzers zu TODO...</p>
+<h2 id="rollen"><span class="header-section-number">2.2</span> Rollen</h2>
+<p>Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen vielleicht Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar.</p>
+<p>Nachfolgend eine Liste der Rollen, welche bei Panter vertreten sind. Manche Mitarbeiter nehmen mehrere Rollen ein. Manche Mitarbeiter arbeiten zudem häufig extern bei Kunden und nutzen teilweise andere Systeme. Software-Engineer Konzipiert, erstellt, testet und wartet Anwendungen und Systeme. Arbeitet häufig im Team in einem agilen Entwicklungsprozess (häufig Scrum).</p>
+<dl>
+<dt>Scrum-Master</dt>
+<dd>Leitet und überwacht den Scrumprozess. Er plant und moderiert häufig die Scrum-Meetings, wie Planning-Meeting und Daily Scrum-Meetings, sowie andere Scrum-Aktivitäten.
+</dd>
+<dt>Product Owner-Assistent</dt>
+<dd>Der Product Owner-Assistent (PO-Assistant) wird dem häufig externen Product Owner zur Seite gestellt und unterstützt diesen beim Erstellen und Abnehmen der User Stories.
+</dd>
+<dt>Sales</dt>
+<dd>Sales-Mitarbeiter beraten bestehende Kunden und potentielle neue Kunden über neue Projekte und nehmen an Pitches teil.
+</dd>
+<dt>Administration</dt>
+<dd>Kümmert sich um Buchhaltung, Administation und Human Resources-Aufgaben.
+</dd>
+<dt>Marketing</dt>
+<dd>Erstellt und setzt das Marketing-Konzept der Firma um, fördert die Sichtbarkeit der Firma und unterstützt dadurch die Bestrebungen der Sales-Mitarbeiter.
+</dd>
+<dt>Community-Manager</dt>
+<dd>Kümmert sich um die Verwaltung des Cowork-Space “colab-zurich.ch”. Zur Zeit (Ende 2014) eine Praktikumsstelle.
+</dd>
+</dl>
+<p></p>
+<h2 id="systeme"><span class="header-section-number">2.3</span> Systeme</h2>
+<p>Den Mitarbeitern stehen in der Regel folgende Systeme und Anwendungen zur Verfügung, sofern sie nicht im externen Einsatz eingschränkt sind:</p>
+<h3 id="controllr"><span class="header-section-number">2.3.1</span> Controllr</h3>
+<p>Von Panter erstellte Software für das Finanz-Controlling, Zeiterfassung und Resourcenplanung. Es ist das zentrale System, welches die Anwendung anbinden soll. Zugriff erfolgt über ein Webinterface oder über eine REST-Schnittstelle.</p>
+<div class="figure">
+<img src="../img/controllr.png" alt="Screenshot von &quot;Controllr&quot;" />
+<p class="caption">Screenshot von &quot;Controllr&quot;</p>
+</div>
+<h4 id="zeiteinträge"><span class="header-section-number">2.3.1.1</span> Zeiteinträge</h4>
+<p>Die REST-Schnittstelle von Controllr ermöglicht unter anderem das Lesen und Manipulieren von Zeiteinträgen, Projekten und Tasks. Im Listing  sind die Schnittstellen zu den Zeiteinträgen zu sehen. Diese Schnittstellen dienen zum Lesen (GET), Erstellen (POST), Bearbeiten (PUT / PATCH) und Löschen (DELETE) von Zeiteinträgen. Listing  zeigt das Schema eines solchen Zeiteintrages.</p>
+<pre caption="Controllr REST API für Zeiteinträge" label="lstcontrollrentries"><code>GET      /api/entries(.:format)                          
+POST     /api/entries(.:format)                          
+GET      /api/entries/new(.:format)                      
+GET      /api/entries/:id/edit(.:format)                 
+GET      /api/entries/:id(.:format)                      
+PATCH    /api/entries/:id(.:format)                      
+PUT      /api/entries/:id(.:format)                      
+DELETE   /api/entries/:id(.:format)</code></pre>
+<pre caption="Schema von /api/entries" label="lstcontrollrentriesresult"><code>{
+    &quot;id&quot;: 12513,
+    &quot;created_at&quot;: &quot;2014-09-15T14:25:07.000Z&quot;,
+    &quot;updated_at&quot;: &quot;2014-11-13T14:45:31.000Z&quot;,
+    &quot;deleted_at&quot;: null,
+    &quot;day&quot;: &quot;2014-09-15&quot;,
+    &quot;start&quot;: &quot;2000-01-01T09:50:00Z&quot;,
+    &quot;end&quot;: &quot;2000-01-01T10:00:00Z&quot;,
+    &quot;duration&quot;: 10,
+    &quot;state&quot;: &quot;invoiced&quot;,
+    &quot;description&quot;: &quot;Standup Meeting&quot;,
+    &quot;billable&quot;: true,
+    &quot;invoice_id&quot;: 123,
+    &quot;project_id&quot;: 1100,
+    &quot;task_id&quot;: 10042,
+    &quot;user_id&quot;: 12,
+    &quot;project_shortname&quot;: &quot;abc-001&quot;,
+    &quot;task_name&quot;: &quot;Internal Meeting&quot;,
+    &quot;user_username&quot;: &quot;maw&quot;
+}</code></pre>
+<p>Auffallend ist “start” und “end”, bei denen das Datum offenbar aus Formatgründen angefügt wird und ohne Relevanz ist. Lediglich die Zeit ist relevant. Für das Datum des Zeiteintrages ist “day” relevant. Dies bedeutet auch, dass jeder Zeiteintrag einem Tag zugeordnet ist, es kann keine einzelnzen Zeiteinträge geben, die über mehrere Tage gehen (z.b. über Mitternacht).</p>
+<p>Manche relationale Daten sind zudem Denormalisiert (project_shortname und task_name).<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>Der Lesezugriff (GET) auf diese Daten liefert jeweils ein Array dieser Einträge. Mit GET-Parameter können die Resultate gefiltert werden:</p>
+<dl>
+<dt>date_to, date_from</dt>
+<dd>Liefert die Einträge mit “day” zwischen date_from und date_to (inklusive)
+</dd>
+<dt>employee_usernames</dt>
+<dd>Liefert nur die Einträge eines bestimmten Users
+</dd>
+<dt>project_shortnames</dt>
+<dd>Liefert nur die Einträge eines bestimmten Projektes
+</dd>
+<dt>states</dt>
+<dd>Liefert nur Einträge mit einem bestimmten state
+</dd>
+</dl>
+<h4 id="projekte"><span class="header-section-number">2.3.1.2</span> Projekte</h4>
+<p>Projekte können über die Schnittstellen von Listing  abgerufen werden und liefern ein Array von Projekten wie im Schema </p>
+<pre caption="Controllr REST API für Projekte" label="lstControllrProjects"><code>GET      /api/projects(.:format)                         
+GET      /api/projects/:id(.:format)   </code></pre>
+<pre caption="Schema von /api/projects" label="lstcontrollrProjectsResult"><code>{
+    &quot;id&quot;: 1234,
+    &quot;shortname&quot;: &quot;abc-001&quot;,
+    &quot;description&quot;: &quot;Beispiel Projekt&quot;,
+    &quot;start&quot;: &quot;2014-03-21&quot;,
+    &quot;end&quot;: &quot;2014-11-13&quot;,
+    &quot;created_at&quot;: &quot;2014-04-07T10:15:11.000Z&quot;,
+    &quot;updated_at&quot;: &quot;2015-02-06T17:50:39.000Z&quot;,
+    &quot;project_state_id&quot;: 6,
+    &quot;probability&quot;: &quot;1.0&quot;,
+    &quot;deleted_at&quot;: null,
+    &quot;external&quot;: true,
+    &quot;note&quot;: &quot;Dies ist ein Beispielprojekt&quot;,
+    &quot;worktime_budget&quot;: &quot;1302.0&quot;,
+    &quot;cached_expected_profitability&quot;: 0.581247,
+    &quot;cached_expected_return&quot;: 685.5,
+    &quot;company_id&quot;: 111,
+    &quot;active&quot;: true,
+    &quot;leader_id&quot;: 62,
+    &quot;business_unit_id&quot;: 1,
+    &quot;cached_budget&quot;: &quot;112236.0&quot;,
+    &quot;budget_notification_sent&quot;: false,
+    &quot;mwst&quot;: true,
+    &quot;daily_rate&quot;: &quot;1200.0&quot;,
+    &quot;hours_per_day&quot;: &quot;8.0&quot;,
+    &quot;google_id&quot;: &quot;Gyqrt64o8AOywyeBGyqrt64o8AOywyeB&quot;,
+    &quot;planning_note&quot;: &quot;&quot;,
+    &quot;time_billable&quot;: &quot;1255:43&quot;,
+    &quot;burned_time&quot;: &quot;1301:47&quot;
+}</code></pre>
+<h4 id="tasks"><span class="header-section-number">2.3.1.3</span> Tasks</h4>
+<p>Die Tasks-Schnittstelle wird in Listings  und  beschrieben.</p>
+<p>Es existieren noch weitere Schnittstellen, welche aber für die Arbeit weniger relevant sind.</p>
+<pre caption="Controllr REST API für Tasks" label="lstControllrTasks"><code>GET      /api/tasks(.:format)                            
+GET      /api/tasks/:id(.:format)   </code></pre>
+<pre caption="Schema von /api/tasks" label="lstcontrollrTasksResult"><code>{
+    &quot;id&quot;: 6711,
+    &quot;name&quot;: &quot;Freelance vor Ort&quot;,
+    &quot;project_id&quot;: 3330,
+    &quot;created_at&quot;: &quot;2011-11-24T19:02:08.000Z&quot;,
+    &quot;updated_at&quot;: &quot;2011-11-24T19:07:23.000Z&quot;,
+    &quot;active&quot;: true,
+    &quot;deleted_at&quot;: null,
+    &quot;billable_by_default&quot;: true,
+    &quot;worktime_budget&quot;: null,
+    &quot;global_task_id&quot;: null,
+    &quot;daily_rate&quot;: null
+}</code></pre>
+<h4 id="authentifizierung"><span class="header-section-number">2.3.1.4</span> Authentifizierung</h4>
+<p>Für die Authenfizierung des Users muss ein Token (user_token) an die Schnittstellen mitgegeben werden. Der Token kann auf der Profil-Seite im Controllr abgefragt werden, nachdem man sich eingeloggt hat.</p>
+<h3 id="google-apps"><span class="header-section-number">2.3.2</span> Google Apps</h3>
+<p>Für Email, Kalender und Dateien wird Googles Business Angebot “Google Apps” verwendet. Der Service kann über verschiedene REST-APIs abgefragt und bedient werden. Da Implementationen dieser Schnitstellen in vielen Sprachen bereits existieren, bietet es sich an, manche dieser Schnittstellen zu verwenden.</p>
+<h4 id="email"><span class="header-section-number">2.3.2.1</span> Email</h4>
+<p>Business-Variante von Googles Mail-Lösung GMail. Die Anwendung wird im Browser bedient und kann zudem über eine REST-API abgefragt werden. Es können insbesondere Nachrichten, Threads (Zusammengehörende Nachrichten) und Labels abgefragt werden. Siehe <span class="citation">(“Google Apps Email API”)</span>.</p>
+<p>Möglich wäre beispielsweise, Nachrichten nach Projekt-Namen aus “Controllr” zu durchsuchen und diese als Quelle zu verwenden.</p>
+<h4 id="kalender"><span class="header-section-number">2.3.2.2</span> Kalender</h4>
+<p>Kalender-Anwendung von Google. Wird in der Firma häufig verwendet und kann ebenfalls über eine REST-API abgerufen weren. Kalendereinträge bieten sich insbesondere an, da diese bereits über ein ähnliches Format verfügen wie die Zeiteinträge; sie haben u.a. eine Start- und Endzeit, sowie eine Beschreibung. <span class="citation">(“Google Kalender API”)</span>.</p>
+<h4 id="authentifizierung-1"><span class="header-section-number">2.3.2.3</span> Authentifizierung</h4>
+<p>Die Authentifizierung wird OAuth 2.0 verwendet. Es existieren zahlreiche Implementierungen dieses Standards, was die Verwendung dieser Schnittstellen vereinfacht. <span class="citation">(“Google OAuth2”)</span></p>
+<h3 id="redmine"><span class="header-section-number">2.3.3</span> Redmine</h3>
+<p>Projektverwaltungs-Anwendung, welche von der Firma für viele Projekte verwendet wird. Die Projekte werden stets in einem agilen Prozess entwickelt, welcher meistens SCRUM ist. In Redmine befinden sich daher Stories und zugehörige Tasks, sowie deren Stand. Mitarbeiter, welche an externen Projekten beim Kunden arbeiten, verwenden allerdings häufig nicht Redmine, sondern jeweilige Firmen-Interne Anwendungen.</p>
+<p>Redmine bildet nicht direkt typische SCRUM-Artefakte wie Stories und Tasks ab, sondern es werden üblicherweise “Issues” erfasst. Über Erweiterungen können aber Stories und Tasks ebenfalls erfasst werden, diese werden dann als unterschiedliche “Issue”-Typen erfasst.</p>
+<p>Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. <span class="citation">(“Redmine REST API”)</span></p>
+<h4 id="authentifizierung-2"><span class="header-section-number">2.3.3.1</span> Authentifizierung</h4>
+<p>Für die Authentifizierung muss ein fester Token mitgegeben werden, welcher User-spezifisch ist und auf der Profil-Seite von Redmine abgefragt werden kann.</p>
+<h3 id="github"><span class="header-section-number">2.3.4</span> Github</h3>
+<p>Verwaltungsoberfläche und Hosting-Dienst für Software-Projekte, welche die namensgebende Quellcode-Versionsverwaltungs-Software git verwendet. Nicht alle Projekte verwenden Github für die Quellcode-Versionisierung. Insbesondere externe Projekte beim Kunden verfügen über eigene Versionisierungstools.</p>
+<p>Github verfügt ebenfalls über reichhaltige REST-APIs; die Beschreibung dieser APIs kann in der Quellenangabe eingesehen werden. Es bietet sich an, die Schnittstelle “Events” zu verwenden, welche beispielsweise Aktivitäten eines Benutzers aufzeigt. Damit kann die Tätigkeit eines Users auf Github an einem Tag abgefragt werden. Die Art der Aktivität und das Repository sind dabei zweitrangig. (https://developer.github.com/v3/)</p>
+<p>Ein solches Event verfügt über einen Typ, eine Beschreibung, eine Identifizerung des Repositories und einen Zeitpunkt, an dem dieses Ereignis oder Aktivität stattgefunden hat.</p>
+<h4 id="authentifizierung-3"><span class="header-section-number">2.3.4.1</span> Authentifizierung</h4>
+<p>Github unterstützt verschiedene Authentifizierungsverfahren: Basic Authentication mit Username / Password, OAuth2 mit Token oder OAuth2 mit Key/Secret , siehe <span class="citation">(“Github Authentifizierung”)</span>.</p>
+<h3 id="timetunnel"><span class="header-section-number">2.3.5</span> Timetunnel</h3>
+<p>Der Timetunnel ist eine von Panter entwickelte Software, welche es ermöglicht, Zeiteinträge direkt über den Kalender zu tätigen. Die Software besteht im wesentlichen aus einem Script. welches Kalendereinträge mit definierten Stichworten im Titel sucht und als Zeiteinträge für die Zeiterfassung in Controllr erfasst. Das bedeutet, Zeiteinträge können direkt im Kalender erfasst, statt im Web-GUI. Die Anwendung wird nach erster Abklärung kaum genutzt, allerdings können Ideen davon, wie z.b. das Tagging der Einträge wiederverwendet werden.</p>
+<h3 id="strms.io-vormals-storyline.li"><span class="header-section-number">2.3.6</span> strms.io (vormals storyline.li)</h3>
+<p>Sich in Entwicklung befindende Software, welche von Panter entwickelt wird. Die Anwendung konsolidiert verschiedene Google-Dienste wie Email, Kalender und Google Drive und stellt die Aktivitäten eines Benutzers auf diesen Diensten chronologisch dar. Ziel ist es, Emails, Kalendereinträge und Dateien in einen Zusammenhang zu bringen. Die Anwendung bietet sich als Datenquelle an, weil sie bereits mehrere Quellen vorkonsolidiert und chronologisch ordnet. Das Projekt befindet sich zum Zeitpunkt dieser Arbeit in Entwicklung. Eine Zusammenarbeit, sowie Wissensaustausch ist möglich. Es existieren allerdings zum Zeitpunkt der Entwicklung dieser Arbeit keine Schnittstellen, welche einen programmatischen Zugriff erlauben.</p>
+<h3 id="systemübersicht"><span class="header-section-number">2.3.7</span> Systemübersicht</h3>
+<p>Abbildung  zeigt eine Übersicht der Syteme und eine mögliche Integration der zu erstellenden Applikation.</p>
+<div class="figure">
+<img src="../img/systems.png" alt="Systemübersicht" />
+<p class="caption">Systemübersicht</p>
+</div>
+<p></p>
+<h1 id="anforderungsanalyse"><span class="header-section-number">3</span> Anforderungsanalyse</h1>
+<p>Um das Nutzungsverhalten der verschiedenen Systeme zu erruieren, wurde eine Umfrage unter den Mitarbeitern gemacht.</p>
+<p>Es ging darum, einen Einblick in folgende Fragestellungen zu erhalten:</p>
+<ul>
+<li>Welche Systeme werden wie oft verwendet?</li>
+<li>Welche Systeme protokollieren die Arbeit der Mitarbeiter am besten?</li>
+<li>Gibt es Unterschiede zwischen verschiedenen Rollen oder Mitarbeiter im internen und Mitarbeiter im externen Einsatz?</li>
+<li>Wird die Zeiterfassung regelmässig gemacht oder unregelmässig?</li>
+<li>Wo liegen die Probleme der bestehenden Lösung?</li>
+<li>Welche Smartphone-Betriebsysteme werden verwendet?</li>
+<li>Würde eine Smartphone-App auf Anklang stossen?</li>
+</ul>
+<h2 id="resultate"><span class="header-section-number">3.1</span> Resultate</h2>
+<p>In der Auswertung der Umfrage wurden folgende Beobachtungen gemacht: - Google Kalender und Email wird von jedem Mitarbeiter häufig verwendet, egal ob im externen Einsatz oder nicht. - Github und Redmine werden ebenfalls sehr häufig verwendet, einen signifikanten Unterschied zwischen internen oder externen Einsatz wurde nicht festgestellt, allerdings waren nur sehr wenige Beantwortungen von externen Mitarbeitern eingegangen. - Die Mitarbeiter schätzen, dass Redmine, Github, Email und Kalender ihre tägliche Arbeit am besten protokollieren, wobei der Kalender leicht vorne liegt. - Die Zeiterfassung wird häufig am Abend nach einem Arbeitstag gemacht. - Die Zeiteinträge werden generell nicht allzu detailiert kommentiert. - Viele Mitarbeiter arbeiten an mehreren Projekten täglich, manche aber auch nur an einem pro Tag. Bei dieser Frage, die mit einer Bewertung von 1-5 beantwortet werden musste, gab es zwei Häufungen mit wenig Beantwortungen im Mittelfeld. Offenbar gibt es zwei Gruppen von Mitarbeiter: Mitarbeiter die häufig nur an einem Projekt arbeiten und Mitarbeiter, welche häufig die Projekte wechseln. - Der Frage, ob eine Mobile-App von den Mitarbeitern genutzt werden würde, wurde von einer Mehrheit mit Ja beantwortet, allerdings haben immerhin 30% der Mitarbeitern die Frage verneint. In den Kommentaren hat sich dann gezeigt, dass diese eine Lösung bevorzugen würden, die auch am Computer funktioniert und nicht an ein Smartphone gebunden ist. - Android und IOS wird von ähnlich vielen Mitarbeitern genutzt, wobei Android etwas vorne liegt. Andere Systeme kommen nicht zum Einsatz</p>
+<p></p>
+<h1 id="konzept"><span class="header-section-number">4</span> Konzept</h1>
+<h2 id="begriffe"><span class="header-section-number">4.1</span> Begriffe</h2>
+<dl>
+<dt>Event</dt>
+<dd>Als “Event” wird in der Arbeit ein Ereignis mit einem bestimmten Zeitpunkt, sowie Beschreibung und anderen Daten angesehen. Die “Events” der zu verwendenen Quellen, haben in der Regel keine Zeitdauer und damit keine Start- und Endzeit, mit Ausnahme der Daten aus dem Kalender. Ein Event kann im einfachen Fall ein Kalendereintrag sein. Es kann aber auch ein Commit auf Github sein, ein abgeschlossener Task auf Redmine oder ähnliches. Ein Event kann man damit auch als “Spur” (engl. “Trace”) verstehen, die die tägliche Arbeit hinterlässt.
+</dd>
+<dt>Timeentry</dt>
+<dd>Unter “Timeentry”<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> wird ein zu erstellender Zeiteintrag auf der Zeiterfassungsapplikation (Controllr) verstanden. Im Gegensatz zu einem “Event”, verfügt ein “Timeentry” immer über eine Start- und eine Endzeit. Zudem wird einem “Timeentry” einem Projekt, einem Task und einem Datum zugewiesen und mit Beschreibung und weiteren Metadaten versehen. Ein “Timeentry” entspricht also dem Modell eines geleisteten Stücks Arbeit, welches es zu protokollieren gilt.
+</dd>
+</dl>
+<h2 id="vom-event-zum-timeentry"><span class="header-section-number">4.2</span> Vom Event zum Timeentry</h2>
+<p>Listet man alle gesammelten “Events” eines Tages nacheinander auf, erhält man ein erstes Protokoll. Um daraus konkrete Zeiteinträge zu erstellen, müssen die Events noch umgeformt und mit weiteren Daten versehen werden:</p>
+<h3 id="projekt-und-task-zuweisung"><span class="header-section-number">4.2.1</span> Projekt und Task-zuweisung</h3>
+<p>Jedem Timeentry auf dem Controllr muss ein Projekt und ein Task zugewiesen werden. Die Liste der Projekte und Tasks können von einer Schnittstelle abgerufen werden. Jedes Projekt und jeder Task verfügt über einen Namen und eine Beschreibung. Um für ein Event ein Task und ein Projekt zu bestimmen, ergeben sich folgende Möglichkeiten:</p>
+<ul>
+<li>Der Beschreibungstext und andere Metadaten des Events werden nach Projektnamen durchsucht und das entsprechende Projekt bei einem Treffer dem Event zugewiesen</li>
+<li>Github-Events entsprechen i.d.R. einem “Development”-Task</li>
+<li>Kalendereinträge entsprechen einem “Meeting”-Task</li>
+<li>Der Enduser kann selbst Regeln bestimmen, beispielsweise indem er Schlüsselwörter definiert, welche ein bestimmtes Projekt oder einen bestimmten Task forcieren.</li>
+</ul>
+<h3 id="fehlende-start--und-endzeit"><span class="header-section-number">4.2.2</span> Fehlende Start- und Endzeit</h3>
+<p>Die Events aus den meisten Quellen besitzen aber nur einen Zeitpunkt, keinen Start- und Endzeitpunkt. Es müssen also gewisse Annahmen getroffen werden, um Start- und Endpunkt zu bestimmen. Folgende Annahmen ergeben sich:</p>
+<ul>
+<li>Der Zeitpunkt jedes Events entspricht dem Zeitpunkt, an dem eine Arbeit <strong>beendet wurde</strong>.
+<ul>
+<li>In Hinblick auf Github-Commits trifft dies zu, da man i.d.R. nach einer Programmieraufgabe diese Änderungen in die Versionskontrolle speichert.</li>
+<li>Bei Redmine wird man häufig nach getaner Arbeit einen Task als Erledigt markieren oder den Progress des Tasks ändern</li>
+</ul></li>
+<li>Nach einem abgeschlossenen Task wendet man sich dem nächsten Task zu. Die <strong>Startzeit eines Events</strong> entspricht daher der <strong>Endzeit des letzten Events</strong></li>
+<li>Die <strong>Startzeit des ersten Events an einem Tag</strong> ist der übliche Arbeitsbeginn eines Mitarbeiters.</li>
+</ul>
+<h4 id="probleme"><span class="header-section-number">4.2.2.1</span> Probleme:</h4>
+<p>Kalendereinträge verfügen immer über eine Startzeit, wenn es sich nicht um Tagesevents handelt. Sie können sich daher mit Einzel-Events aus anderen Quellen überlappen. Ebenfalls ist es möglich in Kalendern überlappende Einträge zu erstellen.</p>
+<p>Mehrere Events können sehr nahe aneinander liegen. Ein mögliches Szenario wäre, wenn ein Benutzer einen Github-Commit erstellt und danach den entsprechenden Task in Redmine aktualisiert. In diesem Falle würden beide Events sogar die gleiche Arbeit protokollieren.</p>
+<p>Um diese Probleme zu umgehen, können mehrere Events miteinander kombiniert (“Merging”) werden.</p>
+<h3 id="merging---kombinieren-von-events"><span class="header-section-number">4.2.3</span> “Merging” - Kombinieren von Events</h3>
+<p>Nah aneinanderliegende Events oder überlappende Events können miteinander kombiniert werden und als ein Event gezählt werden. Dies vereinfacht die Handhabung und die Darstellung von Events. Events dürfen aber nur kombiniert werden, wenn sie auch zum gleichen Projekt gehören. Es ergeben sich daher folgende mögliche Regeln:</p>
+<ul>
+<li>Zwei Events können kombiniert werden, wenn sie mutasslich zum gleichen Projekt gehören.</li>
+<li>Das Ende des zweiten Events (d.h. mit späterer End-Zeit) liegt nahe am Ende des ersten Events (Es ist ein Grenzwert zu definieren)</li>
+<li>Die Gesamtlänge der kombinierten Events sollte einen weiteren Grenzwert nicht überschreiten</li>
+<li>Die Startzeit des zweiten Events liegt vor der Endzeit des ersten Events (Überlappung)</li>
+</ul>
+<h2 id="mögliche-darstellungen"><span class="header-section-number">4.3</span> Mögliche Darstellungen</h2>
+<h3 id="kalender-darstellung"><span class="header-section-number">4.3.1</span> Kalender-Darstellung</h3>
+<p>Abbildung  zeigt eine übliche Darstellung einer Kalender-Applikationen. Dabei wird jeder Tag als Spalte dargestellt mit dem Begin des Tages oben und das Ende unten.</p>
+<div class="figure">
+<img src="../img/calendar.jpg" alt="Beispiel Kalender Applikation(“Our 10 Favorite Calendar Apps to Keep Your Schedule in Check”)" />
+<p class="caption">Beispiel Kalender Applikation<span class="citation">(“Our 10 Favorite Calendar Apps to Keep Your Schedule in Check”)</span></p>
+</div>
+<p>Diese Darstellung eignet sich auch für die geplante Zeiterfassungsanwendung. &quot;Events&quot; eines Tages können wie die Ereignisse in einem normalen Kalender dargestellt werden.</p>
+<p><strong>Vorteile:</strong></p>
+<ul>
+<li>Sie zeigt die relativen Unterschiede der Zeiten durch proportional unterschiedliche Höhen der einzelnen Blöcke</li>
+<li>Sie kann je nach Spaltenbreite mehrere Tage gleichzeitig darstellen</li>
+<li>Sie ermöglicht dem Betrachter qualitativ festzustellen, wieviel Aktivität an einem Tag stattfand</li>
+</ul>
+<p><strong>Nachteile:</strong></p>
+<ul>
+<li>Kurze Events können sehr klein werden - und dadurch auch schwer klickbar</li>
+<li>Je nach Breite ist nur sehr wenig Platz vorhanden für Beschriftungen oder Details auf den einzelnen Einträgen, bei kurzen Events ist dies noch akuter.</li>
+<li>Die Umsetzung einer solchen Darstellung ist vergleichsweise aufwendig</li>
+</ul>
+<h3 id="listen-darstellung"><span class="header-section-number">4.3.2</span> Listen-Darstellung</h3>
+<p>TODO:</p>
+<h2 id="datenquellen-für-den-prototyp"><span class="header-section-number">4.4</span> Datenquellen für den Prototyp</h2>
+<p>Für den Prototyp wurde folgende Systeme zur Anbindung gewählt:</p>
+<p>Google Kalender, Redmine (Issues), Github (Events). Obwohl nach der Umfrage Emails ebenfalls sehr häufig genutzt werden, wurde auf die Abfrage von Emails verzichtet, da diese schwieriger auszuwerten sind.</p>
+<p></p>
+<h1 id="umsetzung-prototyp"><span class="header-section-number">5</span> Umsetzung Prototyp</h1>
+<h2 id="technologie-wahl"><span class="header-section-number">5.1</span> Technologie-Wahl</h2>
+<p>Für die Umsetzung wurde zwischen nativer Entwicklung auf einer mobilen Plattform wie IOS, Android oder Windows Phone und zwischen einer Webapplikation entschieden, welche plattformunabhängig läuft.</p>
+<p>Da die Umfrage unter den Mitarbeitern ergeben hat, dass beide Plattformen signifikant vertreten sind, fiel die Wahl auf eine Webapplikation. Da manche Mitarbeiter eine dedizierte Smartphone-Applikation in der Umfrage abgelehnt haben, ist eine Webapplikation ebenfalls zu bevorzugen, da sie auch am Desktop-Computer, Notebook, Tablet oder ähnlichem benutzt werden kann.</p>
+<h2 id="meteor"><span class="header-section-number">5.2</span> Meteor</h2>
+<p>Die Webapplikation wurde unter Meteor entwickelt, einem “Full-Stack”-Webframework<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> in Javascript. Meteor basiert auf einem reaktiven Programmierparadigma und löst Client-Server-Kommunikation und Data-Binding<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> auf eine einfache Weise, was den Code sehr expressiv macht und der Fokus auf die Umsetzung des zu lösenden Problem gesetzt werden kann. Für eine Konzeptarbeitet hat dies entscheidende Vorteile.</p>
+<p>Im September 2014 wurde das Build-Tool von Meteor erweitert, sodass auf eine einfache Weise Phonegap/Cordova-Container-Applikationen erstellt werden können. Diese Art von Applikation bündelt eine Webapplikation in einer nativen Applikation und kann in den Apple App Store, im Google Play-Store oder den Windows Store gestellt werden. Auf der jeweiligen Plattform erscheint sie als normale Anwendung. In Anbetracht des Themas “Entwicklung für Handheld” ein zusätzlicher, sinnvoller Exkurs. <span class="citation">(“Building IOS and Android Mobile Apps with PhoneGap”)</span></p>
+<h2 id="sprache"><span class="header-section-number">5.3</span> Sprache</h2>
+<p>Meteor wird in JavaScript geschrieben, unterstützt aber auch diverse JavaScript-Dialekte, wovon CoffeeScript für die Umsetzung gewählt wurde. Ausschlaggebend dafür war die schlankere Syntax, die bessere Lesbarkeit, sowie syntaktische Erweiterungen und Abkürzungen (&quot;Syntactic sugar&quot;). <span class="citation">(“Meteor Coffeescript”; “CoffeeScript (Offizielle Seite)”)</span></p>
+<h2 id="authentifizierung-4"><span class="header-section-number">5.4</span> Authentifizierung</h2>
+<p>Meteor stellt ein einfaches Login-System über OAuth zur Verfügung, es können Google, Facebook, Github und weitere als Login-Provider definiert werden. Es wurde Google als Login-Provider gewählt, damit können auch die Firmen-Logins verwendet werden. Ist die Authentifizierung auf Google erfolgt, können verschiedene Google-APIs abgerufen werden, im Speziellen die Kalender-API, welche hier verwendet wurde.</p>
+<p>Für die Authentifizierung gegenüber Github, Redmine und der Controllr-Applikation muss allerdings ein “Access-Token” in der jeweiligen Anwendung erstellt und einmalig in der Anwendung dieser Arbeit gespeichert werden. Für diesen Zweck und weitere Einstellungen wurde eine Einstellungs-Seite erstellt, wo der User diese Tokens und weitere Einstellungen abspeichern kann. Siehe Abbildung </p>
+<div class="figure">
+<img src="../img/settingsscreen.png" alt="Einstellungs-Bildschrim der umgesetzten Anwendung" />
+<p class="caption">Einstellungs-Bildschrim der umgesetzten Anwendung</p>
+</div>
+<h2 id="reactive-programming-und-rest-schnittstellen-reactive-rest-mapping"><span class="header-section-number">5.5</span> Reactive-Programming und REST-Schnittstellen: &quot;Reactive REST-Mapping&quot;</h2>
+<p>Meteor implementiert das Programmierparadigma der &quot;Reaktiven Programmierung&quot;, dabei werden Änderungen der Datenquellen, welche die Applikation nutzt, automatisch propagiert und beispielsweise Darstellungen dieser Datenquellen aktualisiert. <span class="citation">(“Reactive Programming - Wikipedia”; “Meteor Manual - Transparent Reactive Programming”)</span></p>
+<p>Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet und dadurch das &quot;Reactive Programming&quot;-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a> <code>panter:publish-array</code>, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. <span class="citation">(“Panter:publish-Array Github Repository”)</span></p>
+<p>Dieses Verfahren wird nachfolgend &quot;Reactive REST-Mapping&quot; genannt.</p>
+<p><code>panter:publish-array</code> “publiziert” ein beliebiges Javascript-Array aus Objekten auf dem Server als Meteor-Collection auf dem Client. Dabei muss eine Funktion angegeben werden, welches dieses Array zurückgibt. In dieser Funktion kann beispielsweise eine REST-API aufgerufen werden, welche dieses Array zurückgibt. Es kann eine Intervall-Zeit angegeben werden, wodurch die definierte Funktion periodisch aufgerufen wird, solange der Client sich auf dieses Publikation eingeschrieben (“subscribed”) hat.</p>
+<p>Durch dieses Verfahren können die Daten aus den verschiedenen Quellen auf dem Server der Anwendung vorkonsolidiert und vorbearbeitet werden. Die Daten der verschiedenen “Event”-Quellen werden beispielsweise in eine Collection “Events” auf dem Client publiziert. Auf dem Client kann so das normale Data-Binding von Meteor verwendet werden, die Quellen der Events sind dabei bereits abstrahiert und transparent. Neue Quellen können somit einfach implementiert werden, der Code für das Client-UI muss nicht angepasst werden.</p>
+<h2 id="verwendete-event-quellen"><span class="header-section-number">5.6</span> Verwendete Event-Quellen</h2>
+<h3 id="google-kalendar"><span class="header-section-number">5.6.1</span> Google Kalendar</h3>
+<p>Meteor verfügt über ein Login-System, welche es ermöglicht, sich gegenüber Google, Facebook oder weiteren Login-Providern zu authentifizieren. Wählt man Google als Login-Provider, können auch deren Schnittstellen abgefragt werden, sofern der Benutzer sein Einverständnis gibt. <span class="citation">(“Meteor Accounts”)</span></p>
+<p>Für Meteor existiert ein Paket <code>percolate:google-api</code>, welches den Zugriff auf die REST-APIs von Google erleichtert. Mit Hilfe dieses Paketes wurden einerseits die Liste der abonnierten Kalender abgefragt, sowie die Events der gewählten Kalender. <span class="citation">(“Meteor Google API”)</span></p>
+<h3 id="beispiel-für-panterpublish-array-anhand-von-google-kalender"><span class="header-section-number">5.6.2</span> Beispiel für <code>panter:publish-array</code> anhand von Google Kalender</h3>
+<p>Listing  zeigt ein Beispiel, wie mit dem erstellen Paket <code>panter:publish-array</code>, sowie <code>percolate:google-api</code> die Liste der abonnierten Kalender abgefragt und an den Client publiziert wird. (<code>handleIds</code> benennt die Feldnamen der IDs um, sodass Meteor-kompatible ID-Felder zurückgegeben werden (<code>_id</code>))</p>
+<pre caption="Publizieren der Google Kalender mit Hilfe von `panter:publish-array` in CoffeeScript" label="lstGetCalendarList"><code>Meteor.publishArray 
+    name: &quot;calendarList&quot;
+    collection: &quot;Calendars&quot;
+    refreshTime: 10000
+    data: (params) -&gt;
+        user =  Meteor.users.findOne _id: @userId
+        if user?
+            url = &quot;calendar/v3/users/me/calendarList&quot;
+            result = GoogleApi.get url, user: user
+            return handleIds result.items
+</code></pre>
+<p>Abonniert der Client nun dieses Topic <code>calendarList</code> mit <code>Meteor.subscribe(&quot;calendarList&quot;)</code>, so steht dem Client eine Collection <code>Calendars</code> zur Verfügung, wo alle vom User abonierten Kalender enthalten sind. Die Collection aktualisiert sich alle 10 Sekunden, solange der User dieses Topic abonniert hat. Abbildung  zeigt ein Beispiel, wie es nun möglich, diese Collection an ein Template zu binden um eine Liste aller Kalender anzuzeigen. Diese Ansicht wird genutzt, um die Kalender auszuwählen, welche als Datenquellen verwendet werden sollen.</p>
+<div class="figure">
+<img src="../img/calendarSettings.png" alt="Kalender-Wahl-Bildschrim der umgesetzten Anwendung" />
+<p class="caption">Kalender-Wahl-Bildschrim der umgesetzten Anwendung</p>
+</div>
+<p>Listing  zeigt das Spacebars<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>-Template des Einstellung-Bildschirms. Dabei wurde das Paket <code>aldeed:autoform</code> verwendet, welches es ermöglicht ausgehend von Schema-Definitionen automatisch Formulare zu erzeugen. <span class="citation">(“AutoForm Github”)</span></p>
+<pre caption="Spacebars-Template zur Abbildung \ref{figCalendarSettings}" label="calendarSettingsTemplate"><code>{{#autoForm collection=&quot;UserSettingsStore&quot; doc=settings id=&quot;settingForm&quot; type=&quot;update&quot; autosave=true}}
+  (...)
+  {{&gt; afQuickField name=&#39;calendars&#39; options=calendars noselect=true}}
+  (...)
+{{/autoForm}}</code></pre>
+<p>In Listing  wird ein Teil der Routen-Konfiguration des Einstellungsbildschirms gezeigt. Die Daten-Funktion <code>data</code> gibt dabei unter anderem ein <code>calendars</code>-Feld zurück, welches im Template als Optionen für das Formularfeld verwendet wird.</p>
+<pre caption="Routen-Konfiguration für den Einstellungsbildschirm auf Abbildung \ref{figCalendarSettings} in CoffeeScript" label="claendarSettingsRoute"><code>Router.route &#39;settings&#39;, 
+    waitOn: share.defaultSubscriptions
+    data: -&gt;
+           (...)
+        calendars: -&gt; Calendars.find().map (calendar) -&gt;
+            label: calendar.summary
+            value: calendar._id
+        (...)</code></pre>
+<p>Abbonniert nun ein Benutzer einen neuen Kalender auf Google Apps, so wird innerhalb des Aktualisierungs-Intervals von <code>panter:publish-array</code> der neue Kalender geladen und an den Client publiziert. Auf dem Client wird nun der Einstellungsbildschirm automatisch um den neuen Kalender ergänzt.</p>
+<p>Auf eine ähnliche Art werden die Ereignisse vom Kalender abgefragt und als &quot;Events&quot; publiziert.</p>
+<h3 id="redmine-1"><span class="header-section-number">5.6.3</span> Redmine</h3>
+<p>Von Redmine wird die Liste der Projekte geladen, von welchen analog zur Kalenderliste bestimmte Projekte gewählt werden können, von denen die Stories und Tasks geladen werden.</p>
+<p>Über die issues-Schnittstelle werden die Stories und Tasks geladen, an denen der Benutzer gearbeitet hat.</p>
+<h3 id="github-1"><span class="header-section-number">5.6.4</span> Github</h3>
+<p>Über die &quot;Events&quot;-Schnittstelle von Github wurden die Aktivitäten des Users auf Github geladen und als &quot;Events&quot; publiziert.</p>
+<h2 id="vorteile-von-reactive-rest-mapping"><span class="header-section-number">5.7</span> Vorteile von &quot;Reactive REST-Mapping&quot;</h2>
+<p>Das Verfahren des &quot;Reactive REST-Mapping&quot; wurde über die ganze Anwendung hinweg gebraucht und erleichterte den Umgang mit den REST-Schnittstellen sehr. So werden Projekte aus Redmine, &quot;Issues&quot; aus Redmine, &quot;Events&quot; aus Github, sowie &quot;Events&quot; aus dem Google Kalender und &quot;TimeEntries&quot; aus &quot;Controllr&quot; periodisch geladen und alle Ansichten, welche diese Daten nutzen automatisch aktualisiert.</p>
+<p>Ein weiterer Vorteil dieses Verfahren ist, dass die Datenquelle für den Client völlig transparent ist, der Client &quot;sieht&quot; nur gewöhnliche Meteor-Collections. So lässt sich die Datenquelle oder die Anbindungs-Technologie einfach austauschen um beispielsweise von einem &quot;Polling&quot;<a href="#fn8" class="footnoteRef" id="fnref8"><sup>8</sup></a> auf ein Nachrichten-basiertes System zu wechseln, wie es bereits zwischen Client und Server existiert. Damit entfällt die Verzögerung, die durch das Polling-Interval entsteht.</p>
+<h2 id="event-darstellung"><span class="header-section-number">5.8</span> Event-Darstellung</h2>
+<h2 id="schwierigkeiten"><span class="header-section-number">5.9</span> Schwierigkeiten</h2>
+<p></p>
+<div class="references">
+<h1 id="quellenangaben" class="unnumbered">Quellenangaben</h1>
+<p>“AutoForm Github.” <a href="https://github.com/aldeed/meteor-autoform" class="uri">https://github.com/aldeed/meteor-autoform</a>.</p>
+<p>“Building IOS and Android Mobile Apps with PhoneGap.” <a href="https://www.meteor.com/blog/2014/09/15/meteor-092-iOS-Android-mobile-apps-phonegap-cordova" class="uri">https://www.meteor.com/blog/2014/09/15/meteor-092-iOS-Android-mobile-apps-phonegap-cordova</a>.</p>
+<p>“CoffeeScript (Offizielle Seite).” <a href="http://coffeescript.org/" class="uri">http://coffeescript.org/</a>.</p>
+<p>“Github Authentifizierung.” <a href="https://developer.github.com/v3/#authentication" class="uri">https://developer.github.com/v3/#authentication</a>.</p>
+<p>“Google Apps Email API.” <a href="https://developers.google.com/gmail/api/v1/reference/" class="uri">https://developers.google.com/gmail/api/v1/reference/</a>.</p>
+<p>“Google Kalender API.” <a href="https://developers.google.com/google-apps/calendar/v3/reference/events#resource" class="uri">https://developers.google.com/google-apps/calendar/v3/reference/events#resource</a>.</p>
+<p>“Google OAuth2.” <a href="https://developers.google.com/accounts/docs/OAuth2" class="uri">https://developers.google.com/accounts/docs/OAuth2</a>.</p>
+<p>“Meteor Accounts.” <a href="https://www.meteor.com/accounts" class="uri">https://www.meteor.com/accounts</a>.</p>
+<p>“Meteor Coffeescript.” <a href="http://docs.meteor.com/#/full/coffeescript" class="uri">http://docs.meteor.com/#/full/coffeescript</a>.</p>
+<p>“Meteor Google API.” <a href="https://github.com/percolatestudio/meteor-google-api" class="uri">https://github.com/percolatestudio/meteor-google-api</a>.</p>
+<p>“Meteor Manual - Transparent Reactive Programming.” <a href="http://manual.meteor.com/#deps-transparentreactiveprogramming" class="uri">http://manual.meteor.com/#deps-transparentreactiveprogramming</a>.</p>
+<p>“Our 10 Favorite Calendar Apps to Keep Your Schedule in Check.” <a href="http://www.brit.co/10-mobile-calendar-apps/" class="uri">http://www.brit.co/10-mobile-calendar-apps/</a>.</p>
+<p>“Panter:publish-Array Github Repository.” <a href="https://github.com/panter/meteor-publish-array" class="uri">https://github.com/panter/meteor-publish-array</a>.</p>
+<p>“Reactive Programming - Wikipedia.” <a href="http://en.wikipedia.org/wiki/Reactive_programming" class="uri">http://en.wikipedia.org/wiki/Reactive_programming</a>.</p>
+<p>“Redmine REST API.” <a href="http://www.redmine.org/projects/redmine/wiki/Rest_api" class="uri">http://www.redmine.org/projects/redmine/wiki/Rest_api</a>.</p>
+<p>“Responsive Webdesign - Wikipedia.” <a href="http://de.wikipedia.org/wiki/Responsive_Webdesign" class="uri">http://de.wikipedia.org/wiki/Responsive_Webdesign</a>.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Prinzipell werden beim Responsive Webdesign Elemente auf einer Webseite so angeordnet und allenfalls in ihrer Grösse angepasst, sodass sie auf verschiedenen Bildschirmgrössen und -formate sinnvoll Platz haben. <span class="citation">(“Responsive Webdesign - Wikipedia”)</span><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Als Denormalisierung bezeichnet man das bewusste Einfügen redundanter Informationen einer relationalen Datenbank zu Gunsten eines besseren Laufzeitverhaltens oder einfacherem Zugriff. Im obigen Beispiel, wird neben der project_id auch der project_shortname mitgegeben, welcher direkt abhängig von der project_id ist. Das Denormalisieren entspricht der Umkehrung der Normalisierung.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Einfache transkription aus dem Englischen von “Zeiteintrag” in Anlehnung an “Entry”, dem Datenmodel, welches in der Zeiterfassungsapplikation “Controllr” verwendet wird<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>“Full-Stack”-Frameworks decken alle Schichten einer typischen Webapplikation ab, d.h. vom Client bis zum Server. Häufig können sie dadurch die Datenverbindung vom Client zum Server abstrahieren.<a href="#fnref4">↩</a></p></li>
+<li id="fn5"><p>Data-Binding bezeichnet das Verfahren, das User Interface (UI) einer Applikation derart an deren Business Logic (BL) zu koppeln, das Änderungen an der BL auf das UI reflektiert werden und umgekehrt<a href="#fnref5">↩</a></p></li>
+<li id="fn6"><p>So werden Pakete von Meteor genannt. Pakete können von einer zentralen Registrierungsstelle referenziert werden und Abhängkeiten werden automatisch aufgelöst.<a href="#fnref6">↩</a></p></li>
+<li id="fn7"><p>Standard-Template-Sprache von Meteor, angelehnt an &quot;Handlebars&quot; (http://handlebarsjs.com/)<a href="#fnref7">↩</a></p></li>
+<li id="fn8"><p>Die Datenquelle wird periodisch abgefragt.<a href="#fnref8">↩</a></p></li>
+</ol>
+</div>
+</body>
+</html>

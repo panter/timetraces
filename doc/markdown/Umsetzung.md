@@ -27,14 +27,14 @@ Meteor stellt ein einfaches Login-System über OAuth zur Verfügung, es können 
 
 Für die Authentifizierung gegenüber Github, Redmine und der Controllr-Applikation muss allerdings ein “Access-Token” in der jeweiligen Anwendung erstellt und einmalig in der Anwendung dieser Arbeit gespeichert werden. Für diesen Zweck und weitere Einstellungen wurde eine Einstellungs-Seite erstellt, wo der User diese Tokens und weitere Einstellungen abspeichern kann. Siehe Abbildung \ref{figSettingsScreen}
 
-![Einstellungs-Bildschrim der umgesetzten Anwendung\label{figSettingsScreen}](../img/settingsscreen.png)
+![Einstellungs-Bildschrim der umgesetzten Anwendung. Auf kleineren Bildschirmen werden alle Felder untereinander dargestellt.\label{figSettingsScreen}](../img/settingsscreen.png)
 
 
 ## Reactive-Programming und REST-Schnittstellen: "Reactive REST-Mapping"
 
 Meteor implementiert das Programmierparadigma der "Reaktiven Programmierung", dabei werden Änderungen der Datenquellen, welche die Applikation nutzt, automatisch propagiert und beispielsweise Darstellungen dieser Datenquellen aktualisiert. [@reactiveProgrammingWiki;@meteorReactive]
 
-Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. (TODO: add github source)
+Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. [@gitPanterPublishArray]
 
 Dieses Verfahren wird nachfolgend "Reactive REST-Mapping" genannt.
 
@@ -129,12 +129,34 @@ Ein weiterer Vorteil dieses Verfahren ist, dass die Datenquelle für den Client 
 [^fnPolling]: Die Datenquelle wird periodisch abgefragt.
 
 
+## Event-Darstellung und Zeiterfassung
+
+Die Ereignisse eines Tages wurden mit einer Kalender-ähnlichen Darstellung aufgelistet. Da der Fokus auf die *letzen* Aktivitäten eines Benutzer gelegt ist, beginnt die Liste mit dem letzten Tag und dem letzten Event, wobei die Ereignisse eines Tages von unten nach oben geordnet sind, im Gegensatz zu klassischen Kalender-Darstellungen, bei denen der Tag oben beginnt und unten endet.
+
+Bereits erfasste Zeiteinträge ("TimeEntries") wurden ebenfalls in die gleiche Darstellung übernommen. Abbildung \ref{figEventsApp} zeigt die Auflistung eines Tages, vor (link) und nach dem Erfassen der Zeiteinträge (rechts).
+
+![Umgesetzte Darstellung der Event-Liste eines Tages\label{figEventsApp}](../img/screenshotapp.png)
+
+Klickt der Benutzer auf einen rotes Ereignis, so erhält er eine Eingabemaske für den Zeiteintrag. Dabei werden alle Felder vorausgefüllt:
+
+Project ID
+:	Derr Beschreibungstext des Ereignisses wird nach Projekt-Kürzel durchsucht. Falls ein passendes Projekt gefunden wird, wird es ausgewöhlt.
+
+Task ID
+:	Ereignisse aus Github oder Redmine werden standardmässig als "Development" gesetzt.
+
+Billable
+:	Manche Tasks sind als "Billable" vordefiniert. Diese Information kann aus "Controllr" abgefragt werden
+
+Date, Start, End
+:	Datum, sowie Start- und Endzeit. Die Startzeit wird, wie im Abschnitt \ref{secEventTimeEntry} beschrieben, ergänzt, falls sie nicht gesetzt ist.
+
+User ID
+:	Wird aus den Einstellungen des Benutzers übernommen.
 
 
-## Event-Darstellung
+![Eingabemaske für einen Zeiteintrag. Alle Felder werden vorausgefüllt\label{figEventsApp}](../img/screenshotForm.png)
 
-
-## Schwierigkeiten
 
 
 

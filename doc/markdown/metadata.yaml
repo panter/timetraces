@@ -3,6 +3,12 @@ title:  Timetraces Seminararbeit Handheld
 author: Marco Wettstein
 geometry: margin=3cm
 references:
+- 	id: googleNow
+	title: Google Now
+	URL: https://www.google.com/landing/now/
+-	id: responsiveWD
+	title: Responsive Webdesign - Wikipedia
+	URL: http://de.wikipedia.org/wiki/Responsive_Webdesign
 -	id: gmailApi
 	title: Google Apps Email API
 	URL: https://developers.google.com/gmail/api/v1/reference/
@@ -45,6 +51,9 @@ references:
 -	id: autoform
 	title: AutoForm Github
 	URL: https://github.com/aldeed/meteor-autoform
+-	id: gitPanterPublishArray
+	title: panter:publish-array Github Repository
+	URL: https://github.com/panter/meteor-publish-array
 ---
 
 

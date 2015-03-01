@@ -3,10 +3,32 @@
 
 #Ist-Analyse
 
-Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen vielleicht Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar. 
+## Ausgangslage
 
+Jeder Mitarbeiter muss regelmässig seine gearbeitete Zeit in der Anwendung "Controllr" eintragen. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben.
+
+Diese Tasks müssen am Ende eines Monats bestätigt werden, damit eine Auswertung stattfinden kann.
+
+Die Anwendung ist als Webbasierte Lösung implementiert und ist für die Benutzung am Computer ausgerichtet, funktioniert prinzipiell aber auch auf kleineren Smartphones und Tablet-Computer. Dabei wurden die Elemente bei wenig Platz untereinander angeordnet. Die Eingabe-Elemente bleiben unangetastet.
+
+Die Erfassung eines Zeiteintrages erfordert folgende Interaktionen:
+
+- Auswahl eines Tages durch klick auf einen kleinen Kalender.
+- Auswahl eines Projektes durch ein *Select*-Element
+- Auswahl eines Tasks durch ein *Select*-Element
+- Eingabe der Startzeit im Format hh:mm
+- Eingabe der Endzeit im Format hh:mm
+- Eingabe eines Beschreibungstextest
+- Bestätigung durch Klick auf "Create Entry" 
+
+Weitere Einzelheiten sind unter Abschnitt \ref{secControllr} zu finden.
+
+Jedem Mitarbeiter stehen weitere Systeme zur Verfügung, welche er in seiner täglichen Arbeit benutzen kann (Siehe Abschnitt \ref{secSysteme}). Vieler dieser Systeme können über Schnittstellen ausgewertet werden um beispielsweise die Aktivität eines Benutzers auszuwerten
 
 ##Rollen
+
+Ein zentraler Aspekt der Arbeit sind die erwähnten Kontext-Daten der Benutzer, doch nicht jeder Mitarbeiter hat die gleiche Art von Kontext. Ein Entwickler “dokumentiert” seine Arbeit häufig in einer Code-Versionisierungs-Software, für einen Projektleiter jedoch stehen Meetings und entsprechende Kalender-Einträge im Vordergrund. Eine vorgängige Analyse der Rollen und verfügbaren Systemen ist daher unabdingbar. 
+
 
 Nachfolgend eine Liste der Rollen, welche bei Panter vertreten sind. Manche Mitarbeiter nehmen mehrere Rollen ein. Manche Mitarbeiter arbeiten zudem häufig extern bei Kunden und nutzen teilweise andere Systeme.
 Software-Engineer
@@ -16,7 +38,7 @@ Scrum-Master
 :	Leitet und überwacht den Scrumprozess. Er plant und moderiert häufig die Scrum-Meetings, wie Planning-Meeting und Daily Scrum-Meetings, sowie andere Scrum-Aktivitäten.
 
 Product Owner-Assistent
-:	Der Product Owner-Assistent (PO-Assistant) wird dem häufig externen Product Owner zur Seite gestellt und unterstützt diesen beim Erstellen und Abnehmen der User Stories. Er
+:	Der Product Owner-Assistent (PO-Assistant) wird dem häufig externen Product Owner zur Seite gestellt und unterstützt diesen beim Erstellen und Abnehmen der User Stories. 
 
 Sales
 :	Sales-Mitarbeiter beraten bestehende Kunden und potentielle neue Kunden über neue Projekte und nehmen an Pitches teil.
@@ -32,11 +54,12 @@ Community-Manager
 
 \pagebreak
 
-##Systeme
+##Systeme\label{secSysteme}
 
-Den Mitarbeitern stehen in der Regel folgende Systeme zur Verfügung, sofern sie nicht im externen Einsatz eingschränkt sind:
+Den Mitarbeitern stehen in der Regel folgende Systeme und Anwendungen zur Verfügung, sofern sie nicht im externen Einsatz eingschränkt sind:
 
-###Controllr
+
+###Controllr\label{secControllr}
 
 Von Panter erstellte Software für das Finanz-Controlling, Zeiterfassung und Resourcenplanung. Es ist das zentrale System, welches die Anwendung anbinden soll. Zugriff erfolgt über ein Webinterface oder über eine REST-Schnittstelle.
 
