@@ -11,7 +11,9 @@ Da die Umfrage unter den Mitarbeitern ergeben hat, dass beide Plattformen signif
 ## Meteor 
 Die Webapplikation wurde unter Meteor entwickelt, einem “Full-Stack”-Webframework[^fnFullStack] in Javascript. Meteor basiert auf einem reaktiven Programmierparadigma und löst Client-Server-Kommunikation und Data-Binding[^fnDataBinding] auf eine einfache Weise, was den Code sehr expressiv macht und der Fokus auf die Umsetzung des zu lösenden Problem gesetzt werden kann. Für eine Konzeptarbeitet hat dies entscheidende Vorteile.
 
-Im September 2014 wurde das Build-Tool von Meteor erweitert, sodass auf eine einfache Weise Phonegap/Cordova-Container-Applikationen erstellt werden können. Diese Art von Applikation bündelt eine Webapplikation in einer nativen Applikation und kann in den Apple App Store, im Google Play-Store oder den Windows Store gestellt werden. Auf der jeweiligen Plattform erscheint sie als normale Anwendung. In Anbetracht des Themas “Entwicklung für Handheld” ein zusätzlicher, sinnvoller Exkurs. [@meteorCordova]
+Im September 2014 wurde das Build-Tool von Meteor erweitert, sodass auf eine einfache Weise Phonegap/Cordova-Container-Applikationen erstellt werden können. Diese Art von Applikation bündelt eine Webapplikation in einer nativen Applikation und kann in den Apple App Store, im Google Play-Store oder den Windows Store gestellt werden. Auf der jeweiligen Plattform erscheint sie als normale Anwendung. In Anbetracht des Themas “Entwicklung für Handheld” ein zusätzlicher, sinnvoller Exkurs. [^fnCordova]
+
+[^fnCordova]: Siehe [@meteorCordova]
 
 [^fnFullStack]: “Full-Stack”-Frameworks decken alle Schichten einer typischen Webapplikation ab, d.h. vom Client bis zum Server. Häufig können sie dadurch die Datenverbindung vom Client zum Server abstrahieren.
 
@@ -19,7 +21,9 @@ Im September 2014 wurde das Build-Tool von Meteor erweitert, sodass auf eine ein
 
 ## Sprache
 
-Meteor wird in JavaScript geschrieben, unterstützt aber auch diverse JavaScript-Dialekte, wovon CoffeeScript für die Umsetzung gewählt wurde. Ausschlaggebend dafür war die schlankere Syntax, die bessere Lesbarkeit, sowie syntaktische Erweiterungen und Abkürzungen ("Syntactic sugar"). [@meteorCoffee;@coffeescript]
+Meteor wird in JavaScript geschrieben, unterstützt aber auch diverse JavaScript-Dialekte, wovon CoffeeScript für die Umsetzung gewählt wurde. Ausschlaggebend dafür war die schlankere Syntax, die bessere Lesbarkeit, sowie syntaktische Erweiterungen und Abkürzungen ("Syntactic sugar"). [^fnCoffee]
+
+[^fnCoffee]: Siehe [@meteorCoffee], sowie [@coffeescript]
 
 ## Authentifizierung
 
@@ -32,9 +36,13 @@ Für die Authentifizierung gegenüber Github, Redmine und der Controllr-Applikat
 
 ## Reactive-Programming und REST-Schnittstellen: "Reactive REST-Mapping"
 
-Meteor implementiert das Programmierparadigma der "Reaktiven Programmierung", dabei werden Änderungen der Datenquellen, welche die Applikation nutzt, automatisch propagiert und beispielsweise Darstellungen dieser Datenquellen aktualisiert. [@reactiveProgrammingWiki;@meteorReactive]
+Meteor implementiert das Programmierparadigma der "Reaktiven Programmierung", dabei werden Änderungen der Datenquellen, welche die Applikation nutzt, automatisch propagiert und beispielsweise Darstellungen dieser Datenquellen aktualisiert. [^fnReactive] 
 
-Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. [@gitPanterPublishArray]
+[^fnReactive]: Siehe Quellen [@reactiveProgrammingWiki;@meteorReactive]
+
+Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. [^fnPublishArray]
+
+[^fnPublishArray]: Source-Code in der Quellenangabe [@gitPanterPublishArray]
 
 Dieses Verfahren wird nachfolgend "Reactive REST-Mapping" genannt.
 
@@ -49,9 +57,13 @@ Durch dieses Verfahren können die Daten aus den verschiedenen Quellen auf dem S
 
 ### Google Kalendar
 
-Meteor verfügt über ein Login-System, welche es ermöglicht, sich gegenüber Google, Facebook oder weiteren Login-Providern zu authentifizieren. Wählt man Google als Login-Provider, können auch deren Schnittstellen abgefragt werden, sofern der Benutzer sein Einverständnis gibt. [@meteorAccounts]
+Meteor verfügt über ein Login-System, welche es ermöglicht, sich gegenüber Google, Facebook oder weiteren Login-Providern zu authentifizieren. Wählt man Google als Login-Provider, können auch deren Schnittstellen abgefragt werden, sofern der Benutzer sein Einverständnis gibt. [^fnGoogleAccounts]
 
-Für Meteor existiert ein Paket `percolate:google-api`, welches den Zugriff auf die REST-APIs von Google erleichtert. Mit Hilfe dieses Paketes wurden einerseits die Liste der abonnierten Kalender abgefragt, sowie die Events der gewählten Kalender. [@meteorGoogleApi]
+[^fnGoogleAccounts]: Siehe [@meteorAccounts]
+
+Für Meteor existiert ein Paket `percolate:google-api`, welches den Zugriff auf die REST-APIs von Google erleichtert. Mit Hilfe dieses Paketes wurden einerseits die Liste der abonnierten Kalender abgefragt, sowie die Events der gewählten Kalender. [^fnmeteorGoogleApi]
+
+[fnmeteorGoogleApi]: Github-Repository unter Quelle [@meteorGoogleApi]
 
 ### Beispiel für `panter:publish-array` anhand von Google Kalender
 
@@ -78,7 +90,9 @@ Abonniert der Client nun dieses Topic `calendarList` mit `Meteor.subscribe("cale
 
 ![Kalender-Wahl-Bildschrim der umgesetzten Anwendung\label{figCalendarSettings}](../img/calendarSettings.png)
 
-Listing \ref{calendarSettingsTemplate} zeigt das Spacebars[^fnSpacebars]-Template des Einstellung-Bildschirms. Dabei wurde das Paket `aldeed:autoform` verwendet, welches es ermöglicht ausgehend von Schema-Definitionen automatisch Formulare zu erzeugen. [@autoform]
+Listing \ref{calendarSettingsTemplate} zeigt das Spacebars[^fnSpacebars]-Template des Einstellung-Bildschirms. Dabei wurde das Paket `aldeed:autoform` verwendet, welches es ermöglicht ausgehend von Schema-Definitionen automatisch Formulare zu erzeugen. [^fnAutoform]
+
+[^fnAutoform]: Github-Repository ist unter Quelle [@autoform] zu finden.
 
 
 [^fnSpacebars]: Standard-Template-Sprache von Meteor, angelehnt an "Handlebars" (http://handlebarsjs.com/)
@@ -137,7 +151,7 @@ Bereits erfasste Zeiteinträge ("TimeEntries") wurden ebenfalls in die gleiche D
 
 ![Umgesetzte Darstellung der Event-Liste eines Tages\label{figEventsApp}](../img/screenshotapp.png)
 
-Klickt der Benutzer auf einen rotes Ereignis, so erhält er eine Eingabemaske für den Zeiteintrag. Dabei werden alle Felder vorausgefüllt:
+Klickt der Benutzer auf einen rotes Ereignis, so erhält er eine Eingabemaske für den Zeiteintrag (Abbildung \ref{figForm}). Dabei werden alle Felder vorausgefüllt:
 
 Project ID
 :	Derr Beschreibungstext des Ereignisses wird nach Projekt-Kürzel durchsucht. Falls ein passendes Projekt gefunden wird, wird es ausgewöhlt.
@@ -155,7 +169,9 @@ User ID
 :	Wird aus den Einstellungen des Benutzers übernommen.
 
 
-![Eingabemaske für einen Zeiteintrag. Alle Felder werden vorausgefüllt\label{figEventsApp}](../img/screenshotForm.png)
+![Eingabemaske für einen Zeiteintrag. Alle Felder werden vorausgefüllt\label{figForm}](../img/screenshotForm.png)
+
+
 
 
 

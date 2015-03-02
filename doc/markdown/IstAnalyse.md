@@ -210,17 +210,23 @@ Für die Authenfizierung des Users muss ein Token (user_token) an die Schnittste
 Für Email, Kalender und Dateien wird Googles Business Angebot “Google Apps” verwendet. Der Service kann über verschiedene REST-APIs abgefragt und bedient werden. Da Implementationen dieser Schnitstellen in vielen Sprachen bereits existieren, bietet es sich an, manche dieser Schnittstellen zu verwenden.
 
 #### Email
-Business-Variante von Googles Mail-Lösung GMail. Die Anwendung wird im Browser bedient und kann zudem über eine REST-API abgefragt werden. Es können insbesondere Nachrichten, Threads (Zusammengehörende Nachrichten) und Labels abgefragt werden. Siehe [@gmailApi].
+Business-Variante von Googles Mail-Lösung GMail. Die Anwendung wird im Browser bedient und kann zudem über eine REST-API abgefragt werden. Es können insbesondere Nachrichten, Threads (Zusammengehörende Nachrichten) und Labels abgefragt werden. [^fnEmail]
+
+[^fnEmail]: Siehe Quelle [@gmailApi].
 
 Möglich wäre beispielsweise, Nachrichten nach Projekt-Namen aus “Controllr” zu durchsuchen und diese als Quelle zu verwenden. 
 
 #### Kalender
 
-Kalender-Anwendung von Google. Wird in der Firma häufig verwendet und kann ebenfalls über eine REST-API abgerufen weren. Kalendereinträge bieten sich insbesondere an, da diese bereits über ein ähnliches Format verfügen wie die Zeiteinträge; sie haben u.a. eine Start- und Endzeit, sowie eine Beschreibung. [@calendarApi].
+Kalender-Anwendung von Google. Wird in der Firma häufig verwendet und kann ebenfalls über eine REST-API abgerufen weren. Kalendereinträge bieten sich insbesondere an, da diese bereits über ein ähnliches Format verfügen wie die Zeiteinträge; sie haben u.a. eine Start- und Endzeit, sowie eine Beschreibung. [^fnGoogleCalendar]
+
+[^fnGoogleCalendar]: Quelle [@calendarApi]
 
 #### Authentifizierung
 
-Die Authentifizierung wird OAuth 2.0 verwendet. Es existieren zahlreiche Implementierungen dieses Standards, was die Verwendung dieser Schnittstellen vereinfacht. [@googleOAuth2]
+Die Authentifizierung wird OAuth 2.0 verwendet. Es existieren zahlreiche Implementierungen dieses Standards, was die Verwendung dieser Schnittstellen vereinfacht. [^fnOauth]
+
+[^fnOauth]: Quelle [@googleOAuth2]
 
 ### Redmine
 
@@ -229,7 +235,9 @@ Projektverwaltungs-Anwendung, welche von der Firma für viele Projekte verwendet
 
 Redmine bildet nicht direkt typische SCRUM-Artefakte wie Stories und Tasks ab, sondern es werden üblicherweise “Issues” erfasst. Über Erweiterungen können aber Stories und Tasks ebenfalls erfasst werden, diese werden dann als unterschiedliche “Issue”-Typen erfasst.
 
-Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [@redmineApi]
+Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [fnredmineApi]
+
+[^fnredmineApi]: Quelle [@redmineApi]
 
 #### Authentifizierung
 
@@ -246,7 +254,9 @@ Ein solches Event verfügt über einen Typ, eine Beschreibung, eine Identifizeru
 
 #### Authentifizierung
 
-Github unterstützt verschiedene Authentifizierungsverfahren: Basic Authentication mit Username / Password, OAuth2 mit Token oder OAuth2 mit Key/Secret , siehe [@githubAuth].
+Github unterstützt verschiedene Authentifizierungsverfahren: Basic Authentication mit Username / Password, OAuth2 mit Token oder OAuth2 mit Key/Secret. [^fnGithubLogin]
+
+[^fnGithubLogin]: Siehe [@githubAuth].
 
 
 ### Timetunnel

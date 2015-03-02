@@ -1,7 +1,10 @@
 ---
-title:  Timetraces Seminararbeit Handheld
+title:  TimeTraces 
+subtitle: Seminararbeit "Entwickeln von Anwendungen für Hand Held"
 author: Marco Wettstein
 geometry: margin=3cm
+date: 2015-03-02
+language: de-CH
 references:
 - 	id: googleNow
 	title: Google Now

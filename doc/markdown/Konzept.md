@@ -3,7 +3,14 @@
 
 # Konzept
 
-## Begriffe
+## Grundlegende Idee
+
+Ausgehend von verschiedene Datenquellen soll eine Art "Protokoll" über die Aktivität eines Users erstellt werden. Ein einzelner Eintrag dieses Protokol (ein "Event", wie im Abschnitt \ref{secBegriffe} erwähnt) soll dabei einem zu erfassenden Zeiteintrag entsprechen.
+
+Der Benutzer kann einen solchen Eintrag auswählen um aus diesem einen Zeiteintrag zu erstellen, dabei sollen möglichst viele der Felder, wie Start-, Endzeit, Projekt, Task und Beschreibung vorausgefüllt werden.
+
+
+## Begriffe \label{secBegriffe}
 
 Event
 : 	Als “Event” wird in der Arbeit ein Ereignis mit einem bestimmten Zeitpunkt, sowie Beschreibung und anderen Daten angesehen. Die “Events” der zu verwendenen Quellen, haben in der Regel keine Zeitdauer und damit keine Start- und Endzeit, mit Ausnahme der Daten aus dem Kalender.
@@ -63,7 +70,7 @@ Nah aneinanderliegende Events oder überlappende Events können miteinander komb
 
 Abbildung \ref{figCalendar} zeigt eine übliche Darstellung einer Kalender-Applikationen. Dabei wird jeder Tag als Spalte dargestellt mit dem Begin des Tages oben und das Ende unten.
 
-![Beispiel Kalender Applikation\label{figCalendar}[@businessCalendar]](../img/calendar.jpg)
+![Beispiel Kalender Applikation\label{figCalendar} Quelle: [@businessCalendar]](../img/calendar.jpg)
 
 
 Diese Darstellung eignet sich auch für die geplante Zeiterfassungsanwendung. "Events" eines Tages können wie die Ereignisse in einem normalen Kalender dargestellt werden.

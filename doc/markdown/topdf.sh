@@ -1,1 +1,1 @@
-pandoc metadata.yaml Intro.md Vorwort.md IstAnalyse.md Anforderungsanalyse.md Konzept.md Umsetzung.md Ausblick.md Anhang.md -H testsettings.tex -o out.pdf --table-of-contents --listing --filter pandoc-citeproc --number-sections -s && open out.pdf
+pandoc -V documentclass=article metadata.yaml Intro.md Vorwort.md IstAnalyse.md Anforderungsanalyse.md Konzept.md Umsetzung.md Ausblick.md Anhang.md -H zhawsettings.tex -o out.pdf --table-of-contents --listing --filter pandoc-citeproc --number-sections -s --template=template.latex && open out.pdf
