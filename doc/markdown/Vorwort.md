@@ -9,7 +9,7 @@ Smartphones und andere mobilen Geräte haben nicht nur durch ihre Mobilität uns
 
 [^fnGoogleNow]: Siehe Quelle [@googleNow]
 
-Mit dieser Vision versuchte ich die firmeninterne Anwendung zur Zeiterfassung ("controllr") für Smartphones neu zu konzipieren. 
+Mit dieser Vision versuchte ich die firmeninterne Anwendung zur Zeiterfassung ("controllr") der Firma Panter AG für Smartphones neu zu konzipieren. 
 
 Die bestehende Anwendung funktioniert prinzipiell auch auf mobilen Endgeräten mit kleinen Bildschirmen mittels einfachen Verfahren des Responsive Webdesign[^fnResponsiveDesign], doch reicht das reine Umordnen der Elemente in diesem Fall nicht, um den Prozess der Zeiterfassung sinnvoll auf ein Smartphone zu übertragen. Denn nicht nur die Grösse des Bildschirms hat einfluss auf die Bedienbarkeit, sondern auch die Eingabemöglichkeiten des Gerätes. Schaltflächen sind mit einem berührungssensitiven Bildschirms schwerer zu treffen und müssen entsprechend gestaltet werden, ebenso ist die Eingabe von Text auf einem Smartphone aufwendiger und daher langsamer im Vergleich zu einem klassischen Computer mit Maus und Tastatur.
 

@@ -17,4 +17,13 @@ Das ebenfalls umgesetze Package "panter:publish-array":
 
 ## Quellenangaben
 
-   
+**Titelbild**: 
+
+Github-Icon
+: 	© 2015 GitHub, Inc.
+
+Kalender und Gmail-Icon
+:	Google Inc.
+
+Redmine-Icon
+:	http://de.wikipedia.org/wiki/Redmine

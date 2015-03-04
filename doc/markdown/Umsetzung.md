@@ -40,18 +40,23 @@ Meteor implementiert das Programmierparadigma der "Reaktiven Programmierung", da
 
 [^fnReactive]: Siehe Quellen [@reactiveProgrammingWiki;@meteorReactive]
 
-Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-Collections und -Subscriptions gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. [^fnPublishArray]
+Bei der Umsetzung mussten diverse REST-Apis angesprochen werden. Es entstand das Bedürfnis, die Zugriffe auf diese REST-APis derart zu abstrahieren, dass auf dem Client mit normalen Meteor-"Collections" und -"Subscriptions" (Abonnements) gearbeitet  und dadurch das "Reactive Programming"-Modell von Meteor beibehalten werden kann. Dadurch entstand das “Smart-Package”[^fnSmartPackage] `panter:publish-array`, welches in einer initialen Version auf den Meteor-Paket-Manager gestellt wurde. [^fnPublishArray]
 
 [^fnPublishArray]: Source-Code in der Quellenangabe [@gitPanterPublishArray]
 
 Dieses Verfahren wird nachfolgend "Reactive REST-Mapping" genannt.
 
-`panter:publish-array` “publiziert” ein beliebiges Javascript-Array aus Objekten auf dem Server als Meteor-Collection auf dem Client. Dabei muss eine Funktion angegeben werden, welches dieses Array zurückgibt. In dieser Funktion kann beispielsweise eine REST-API aufgerufen werden, welche dieses Array zurückgibt. Es kann eine Intervall-Zeit angegeben werden, wodurch die definierte Funktion periodisch aufgerufen wird, solange der Client sich auf dieses Publikation eingeschrieben (“subscribed”) hat.
+### Funktionsweise
 
-Durch dieses Verfahren können die Daten aus den verschiedenen Quellen auf dem Server der Anwendung vorkonsolidiert und vorbearbeitet werden. Die Daten der verschiedenen “Event”-Quellen werden beispielsweise in eine Collection “Events” auf dem Client publiziert. Auf dem Client kann so das normale Data-Binding von Meteor verwendet werden, die Quellen der Events sind dabei bereits abstrahiert und transparent. Neue Quellen können somit einfach implementiert werden, der Code für das Client-UI muss nicht angepasst werden.
+`panter:publish-array` “publiziert” ein beliebiges Javascript-Array aus Objekten auf dem Server als Meteor-Collection auf dem Client. Dabei muss eine Funktion angegeben werden, welches dieses Array zurückgibt. In dieser Funktion kann beispielsweise eine REST-API aufgerufen werden, welche dieses Array zurückgibt. Es kann eine Intervall-Zeit angegeben werden, wodurch die definierte Funktion periodisch aufgerufen wird, solange der Client sich auf dieses Publikation eingeschrieben (“subscribed”) hat. Abbildung \ref{figSubscriptions} zeigt ein Sequenzdiagramm der Interaktion zwischen Client-Teil der App, Server-Teil der App, sowie zwei Datenquellen. Dargestellt sind zwei Poll-Intervalle, bevor der Client die Sitzung beendet. Typischerweise sind es mehr; umgesetzt wurden Intervalle von 10 Sekunden.
+
+![Sequenzdiagramm der Interaktion zwischen Client, Server und Datenquellen\label{figSubscriptions}](../img/subscription.png)
+
+Durch dieses Verfahren können die Daten aus den verschiedenen Quellen auf dem Server der Anwendung vorkonsolidiert und vorbearbeitet werden. Die Daten der verschiedenen “Event”-Quellen werden in eine Collection “Events” auf dem Client publiziert. Auf dem Client kann so das normale Data-Binding von Meteor verwendet werden, die Quellen der Events sind dabei bereits abstrahiert und transparent. Neue Quellen können somit einfach implementiert werden, der Code für das Client-UI muss nicht angepasst werden.
 
 [^fnSmartPackage]: So werden Pakete von Meteor genannt. Pakete können von einer zentralen Registrierungsstelle referenziert werden und Abhängkeiten werden automatisch aufgelöst.
 
+\pagebreak
 
 ## Verwendete Event-Quellen
 
@@ -63,7 +68,7 @@ Meteor verfügt über ein Login-System, welche es ermöglicht, sich gegenüber G
 
 Für Meteor existiert ein Paket `percolate:google-api`, welches den Zugriff auf die REST-APIs von Google erleichtert. Mit Hilfe dieses Paketes wurden einerseits die Liste der abonnierten Kalender abgefragt, sowie die Events der gewählten Kalender. [^fnmeteorGoogleApi]
 
-[fnmeteorGoogleApi]: Github-Repository unter Quelle [@meteorGoogleApi]
+[^fnmeteorGoogleApi]: Github-Repository unter Quelle [@meteorGoogleApi]
 
 ### Beispiel für `panter:publish-array` anhand von Google Kalender
 
@@ -127,21 +132,11 @@ Auf eine ähnliche Art werden die Ereignisse vom Kalender abgefragt und als "Eve
 
 Von Redmine wird die Liste der Projekte geladen, von welchen analog zur Kalenderliste bestimmte Projekte gewählt werden können, von denen die Stories und Tasks geladen werden.
 
-Über die issues-Schnittstelle werden die Stories und Tasks geladen, an denen der Benutzer gearbeitet hat.
+Über die issues-Schnittstelle werden die Stories und Tasks geladen, an denen der Benutzer gearbeitet hat und in die Collection "Events" publiziert. Falls der Projektname (Kürzel) im Redmine mit einem Projektnamen von "controllr" übereinstimmt, so wird dieses Projekt vorausgewählt. Der Zugehörige Task ist immer "Development"
 
 ### Github
 
-Über die "Events"-Schnittstelle von Github wurden die Aktivitäten des Users auf Github geladen und als "Events" publiziert.
-
-
-## Vorteile von "Reactive REST-Mapping"
-
-Das Verfahren des "Reactive REST-Mapping" wurde über die ganze Anwendung hinweg gebraucht und erleichterte den Umgang mit den REST-Schnittstellen sehr. So werden Projekte aus Redmine, "Issues" aus Redmine, "Events" aus Github, sowie "Events" aus dem Google Kalender und "TimeEntries" aus "Controllr" periodisch geladen und alle Ansichten, welche diese Daten nutzen automatisch aktualisiert. 
-
-Ein weiterer Vorteil dieses Verfahren ist, dass die Datenquelle für den Client völlig transparent ist, der Client "sieht" nur gewöhnliche Meteor-Collections. So lässt sich die Datenquelle oder die Anbindungs-Technologie einfach austauschen um beispielsweise von einem "Polling"[^fnPolling] auf ein Nachrichten-basiertes System zu wechseln, wie es bereits zwischen Client und Server existiert. Damit entfällt die Verzögerung, die durch das Polling-Interval entsteht.
-
-[^fnPolling]: Die Datenquelle wird periodisch abgefragt.
-
+Über die "Events"-Schnittstelle von Github wurden die Aktivitäten des Users auf Github geladen und ebenfalls als "Events" publiziert. Analog zu Redmine wird versucht, den Projektnamen zu finden und es wird der Task "Development" zugewiesen.
 
 ## Event-Darstellung und Zeiterfassung
 

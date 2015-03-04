@@ -5,9 +5,7 @@
 
 ## Ausgangslage
 
-Jeder Mitarbeiter der Firma panter AG trägt regelmässig seine gearbeitete Zeit in der Anwendung "Controllr" ein. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben.
-
-Diese Tasks müssen am Ende eines Monats bestätigt werden, damit eine Auswertung stattfinden kann.
+Jeder Mitarbeiter der Firma Panter AG trägt regelmässig seine gearbeitete Zeit in der Anwendung "Controllr" ein. Dabei wird unter anderem die gearbeitete Zeit, das zugehörige Projekt, ein Task-Typ und eine Beschreibung angegeben. Diese Tasks müssen am Ende eines Monats bestätigt werden, damit eine Auswertung stattfinden kann.
 
 Die Anwendung ist als Webbasierte Lösung implementiert und ist für die Benutzung am Computer ausgerichtet, funktioniert prinzipiell aber auch auf kleineren Smartphones und Tablet-Computer. Dabei wurden die Elemente bei wenig Platz untereinander angeordnet. Die Eingabe-Elemente bleiben unangetastet.
 
@@ -52,7 +50,7 @@ Marketing
 Community-Manager
 :	Kümmert sich um die Verwaltung des Cowork-Space “colab-zurich.ch”. Zur Zeit (Ende 2014) eine Praktikumsstelle.
 
-\pagebreak
+
 
 ##Systeme\label{secSysteme}
 
@@ -67,7 +65,7 @@ Von Panter erstellte Software für das Finanz-Controlling, Zeiterfassung und Res
 
 ####Zeiteinträge
 
-Die REST-Schnittstelle von Controllr ermöglicht unter anderem das Lesen und Manipulieren von Zeiteinträgen, Projekten und Tasks. Im Listing \ref{lstcontrollrentries} sind die Schnittstellen zu den Zeiteinträgen zu sehen. Diese Schnittstellen dienen zum Lesen (GET), Erstellen (POST), Bearbeiten (PUT / PATCH) und Löschen (DELETE) von Zeiteinträgen. Listing \ref{lstcontrollrentriesresult} zeigt das Schema eines solchen Zeiteintrages. 
+Die REST-Schnittstelle von Controllr ermöglicht unter anderem das Lesen und Manipulieren von Zeiteinträgen, Projekten und Tasks. Im Listing \ref{lstcontrollrentries} sind die Schnittstellen zu den Zeiteinträgen zu sehen. Diese Schnittstellen dienen zum Lesen (`GET`), Erstellen (`POST`), Bearbeiten (`PUT` / `PATCH`) und Löschen (`DELETE`) von Zeiteinträgen. Listing \ref{lstcontrollrentriesresult} zeigt das Schema eines solchen Zeiteintrages. 
 
 
 ~~~~{caption="Controllr REST API für Zeiteinträge" label=lstcontrollrentries}
@@ -107,7 +105,7 @@ DELETE   /api/entries/:id(.:format)
 
 Auffallend ist “start” und “end”, bei denen das Datum offenbar aus Formatgründen angefügt wird und ohne Relevanz ist. Lediglich die Zeit ist relevant. Für das Datum des Zeiteintrages ist “day” relevant. Dies bedeutet auch, dass jeder Zeiteintrag einem Tag zugeordnet ist, es kann keine einzelnzen Zeiteinträge geben, die über mehrere Tage gehen (z.b. über Mitternacht). 
 
-Manche relationale Daten sind zudem Denormalisiert (project_shortname und task_name).[^fnDenormalisiert]
+Manche relationale Daten sind zudem Denormalisiert (`project_shortname` und `task_name`).[^fnDenormalisiert]
 
 [^fnDenormalisiert]: Als Denormalisierung bezeichnet man das bewusste Einfügen redundanter Informationen einer relationalen Datenbank zu Gunsten eines besseren Laufzeitverhaltens oder einfacherem Zugriff. Im obigen Beispiel, wird neben der project_id auch der project_shortname mitgegeben, welcher direkt abhängig von der project_id ist. Das Denormalisieren entspricht der Umkehrung der Normalisierung. 
 
@@ -129,7 +127,7 @@ states
 
 #### Projekte
 
-Projekte können über die Schnittstellen von Listing \ref{lstControllrProjects} abgerufen werden und liefern ein Array von Projekten wie im Schema \ref{lstcontrollrProjectsResult}
+Projekte können über die Schnittstellen von Listing \ref{lstControllrProjects} abgerufen werden und liefern ein Array von Projekten wie im Schema \ref{lstcontrollrProjectsResult} beschrieben. Relevant sind `id` eines Projektes, das Kürzel (`shortname`), sowie der Beschreibungstext `description`.
 
 
 ~~~~{caption="Controllr REST API für Projekte" label=lstControllrProjects}
@@ -172,7 +170,7 @@ GET      /api/projects/:id(.:format)
 
 #### Tasks
 
-Die Tasks-Schnittstelle wird in Listings \ref{lstControllrTasks} und \ref{lstcontrollrTasksResult} beschrieben. 
+Die Tasks-Schnittstelle wird in Listings \ref{lstControllrTasks} und \ref{lstcontrollrTasksResult} beschrieben. Relevant sind hier die Felder `id`, `name`, `project_id`, welches auf ein zugehöriges Projekt verweist, sowie `billable_by_default`, welches angibt, ob ein Task standardmässig verrechenbar ist oder nicht.
 
 Es existieren noch weitere Schnittstellen, welche aber für die Arbeit weniger relevant sind.
 
@@ -218,7 +216,7 @@ Möglich wäre beispielsweise, Nachrichten nach Projekt-Namen aus “Controllr�
 
 #### Kalender
 
-Kalender-Anwendung von Google. Wird in der Firma häufig verwendet und kann ebenfalls über eine REST-API abgerufen weren. Kalendereinträge bieten sich insbesondere an, da diese bereits über ein ähnliches Format verfügen wie die Zeiteinträge; sie haben u.a. eine Start- und Endzeit, sowie eine Beschreibung. [^fnGoogleCalendar]
+Kalender-Anwendung von Google. Wird in der Firma Panter häufig verwendet und kann ebenfalls über eine REST-API abgerufen weren. Kalendereinträge bieten sich insbesondere an, da diese bereits über ein ähnliches Format verfügen wie die Zeiteinträge; sie haben u.a. eine Start- und Endzeit, sowie eine Beschreibung. [^fnGoogleCalendar]
 
 [^fnGoogleCalendar]: Quelle [@calendarApi]
 
@@ -230,12 +228,12 @@ Die Authentifizierung wird OAuth 2.0 verwendet. Es existieren zahlreiche Impleme
 
 ### Redmine
 
-Projektverwaltungs-Anwendung, welche von der Firma für viele Projekte verwendet wird. Die Projekte werden stets in einem agilen Prozess entwickelt, welcher meistens SCRUM ist. In Redmine befinden sich daher Stories und zugehörige Tasks, sowie deren Stand. Mitarbeiter, welche an externen Projekten beim Kunden arbeiten, verwenden allerdings häufig nicht Redmine, sondern jeweilige Firmen-Interne Anwendungen.
+Projektverwaltungs-Anwendung, welche von der Firma Panter für viele Projekte verwendet wird. Die Projekte werden stets in einem agilen Prozess entwickelt, welcher meistens SCRUM ist. In Redmine befinden sich daher Stories und zugehörige Tasks, sowie deren Stand. Mitarbeiter, welche an externen Projekten beim Kunden arbeiten, verwenden allerdings häufig nicht Redmine, sondern jeweilige Firmen-Interne Anwendungen.
 
 
 Redmine bildet nicht direkt typische SCRUM-Artefakte wie Stories und Tasks ab, sondern es werden üblicherweise “Issues” erfasst. Über Erweiterungen können aber Stories und Tasks ebenfalls erfasst werden, diese werden dann als unterschiedliche “Issue”-Typen erfasst.
 
-Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [fnredmineApi]
+Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [^fnredmineApi]
 
 [^fnredmineApi]: Quelle [@redmineApi]
 
@@ -244,19 +242,21 @@ Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Proje
 Für die Authentifizierung muss ein fester Token mitgegeben werden, welcher User-spezifisch ist und auf der Profil-Seite von Redmine abgefragt werden kann.
 
 
-### Github
+### GitHub
 
-Verwaltungsoberfläche und Hosting-Dienst für Software-Projekte, welche die namensgebende Quellcode-Versionsverwaltungs-Software git verwendet. Nicht alle Projekte verwenden Github für die Quellcode-Versionisierung. Insbesondere externe Projekte beim Kunden verfügen über eigene Versionisierungstools.
+Verwaltungsoberfläche und Hosting-Dienst für Software-Projekte, welche die namensgebende Quellcode-Versionsverwaltungs-Software git verwendet. Nicht alle Projekte verwenden GitHub für die Quellcode-Versionisierung. Insbesondere externe Projekte beim Kunden verfügen über eigene Versionisierungstools.
 
-Github verfügt ebenfalls über reichhaltige REST-APIs; die Beschreibung dieser APIs kann in der Quellenangabe eingesehen werden. Es bietet sich an, die Schnittstelle “Events” zu verwenden, welche beispielsweise Aktivitäten eines Benutzers aufzeigt. Damit kann die Tätigkeit eines Users auf Github an einem Tag abgefragt werden. Die Art der Aktivität und das Repository sind dabei zweitrangig. (https://developer.github.com/v3/)
+GitHub verfügt ebenfalls über reichhaltige REST-APIs; die Beschreibung dieser APIs kann in der Quellenangabe eingesehen werden. Es bietet sich an, die Schnittstelle “Events” zu verwenden, welche beispielsweise Aktivitäten eines Benutzers aufzeigt. Damit kann die Tätigkeit eines Users auf GitHub an einem Tag abgefragt werden. Die Art der Aktivität und das Repository sind dabei zweitrangig. [^fnGithubRest]
+
+[^fnGithubRest]: 	Siehe [@githubRest]
 
 Ein solches Event verfügt über einen Typ, eine Beschreibung, eine Identifizerung des Repositories und einen Zeitpunkt, an dem dieses Ereignis oder Aktivität stattgefunden hat.
 
 #### Authentifizierung
 
-Github unterstützt verschiedene Authentifizierungsverfahren: Basic Authentication mit Username / Password, OAuth2 mit Token oder OAuth2 mit Key/Secret. [^fnGithubLogin]
+GitHub unterstützt verschiedene Authentifizierungsverfahren: Basic Authentication mit Username / Password, OAuth2 mit Token oder OAuth2 mit Key/Secret. [^fnGitHubLogin]
 
-[^fnGithubLogin]: Siehe [@githubAuth].
+[^fnGitHubLogin]: Siehe [@githubAuth].
 
 
 ### Timetunnel

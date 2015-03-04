@@ -57,6 +57,9 @@ references:
 -	id: gitPanterPublishArray
 	title: panter:publish-array Github Repository
 	URL: https://github.com/panter/meteor-publish-array
+-	id: githubRest
+	title: GitHub API
+	URL: https://developer.github.com/v3/
 ---
 
 
