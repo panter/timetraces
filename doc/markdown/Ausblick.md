@@ -31,6 +31,8 @@ Wie in Abbildung \ref{figEventsApp} zu sehen, können nicht immer alle Infos fü
 
 Auch wurde die obige Abbildung auf einem relativ grossen Bildschirm gemacht. Auf kleinen Smartphone-Bildschirmen ist die Übersicht noch etwas eingeschränkter.
 
+\pagebreak
+
 Mögliche Lösungen sind:
 
 - Infos reduzieren (z.b. Beschreibungstext entfernen)

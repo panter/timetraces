@@ -29,8 +29,9 @@ Ein zentraler Aspekt der Arbeit sind die erwähnten Protokoll-Daten der Benutzer
 
 
 Nachfolgend eine Liste der Rollen, welche bei Panter vertreten sind. Manche Mitarbeiter nehmen mehrere Rollen ein. Manche Mitarbeiter arbeiten zudem häufig extern bei Kunden und nutzen teilweise andere Systeme.
+
 Software-Engineer
-Konzipiert, erstellt, testet und wartet Anwendungen und Systeme. Arbeitet häufig im Team in einem agilen Entwicklungsprozess (häufig Scrum).
+:	konzipiert, erstellt, testet und wartet Anwendungen und Systeme. Arbeitet häufig im Team in einem agilen Entwicklungsprozess (häufig Scrum).
 
 Scrum-Master
 :	Leitet und überwacht den Scrumprozess. Er plant und moderiert häufig die Scrum-Meetings, wie Planning-Meeting und Daily Scrum-Meetings, sowie andere Scrum-Aktivitäten.
@@ -210,7 +211,7 @@ Für Email, Kalender und Dateien wird Googles Business Angebot “Google Apps”
 #### Email
 Business-Variante von Googles Mail-Lösung GMail. Die Anwendung wird im Browser bedient und kann zudem über eine REST-API abgefragt werden. Es können insbesondere Nachrichten, Threads (Zusammengehörende Nachrichten) und Labels abgefragt werden. [^fnEmail]
 
-[^fnEmail]: Siehe Quelle [@gmailApi].
+[^fnEmail]: Quelle [@gmailApi].
 
 Möglich wäre beispielsweise, Nachrichten nach Projekt-Namen aus “Controllr” zu durchsuchen und diese als Quelle zu verwenden. 
 
@@ -228,12 +229,9 @@ Die Authentifizierung wird OAuth 2.0 verwendet. Es existieren zahlreiche Impleme
 
 ### Redmine
 
-Projektverwaltungs-Anwendung, welche von der Firma Panter für viele Projekte verwendet wird. Die Projekte werden stets in einem agilen Prozess entwickelt, welcher meistens SCRUM ist. In Redmine befinden sich daher Stories und zugehörige Tasks, sowie deren Stand. Mitarbeiter, welche an externen Projekten beim Kunden arbeiten, verwenden allerdings häufig nicht Redmine, sondern jeweilige Firmen-Interne Anwendungen.
+Projektverwaltungs-Anwendung, welche von der Firma Panter für viele Projekte verwendet wird. Die Projekte werden stets in einem agilen Prozess entwickelt, welcher meistens SCRUM ist. In Redmine befinden sich daher Stories und zugehörige Tasks, sowie deren Stand. Mitarbeiter, welche an externen Projekten beim Kunden arbeiten, verwenden allerdings häufig nicht Redmine, sondern jeweilige Firmen-interne Anwendungen.
 
-
-Redmine bildet nicht direkt typische SCRUM-Artefakte wie Stories und Tasks ab, sondern es werden üblicherweise “Issues” erfasst. Über Erweiterungen können aber Stories und Tasks ebenfalls erfasst werden, diese werden dann als unterschiedliche “Issue”-Typen erfasst.
-
-Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [^fnredmineApi]
+Redmine bildet nicht direkt typische SCRUM-Artefakte wie Stories und Tasks ab, sondern es werden üblicherweise “Issues” erfasst. Über Erweiterungen können aber Stories und Tasks ebenfalls erfasst werden, diese werden dann als unterschiedliche “Issue”-Typen erfasst. Redmine bietet ebenfalls eine REST-API, welche es u.a. erlaubt, Issues und Projekte abzufragen. [^fnredmineApi]
 
 [^fnredmineApi]: Quelle [@redmineApi]
 
@@ -248,7 +246,7 @@ Verwaltungsoberfläche und Hosting-Dienst für Software-Projekte, welche die nam
 
 GitHub verfügt ebenfalls über reichhaltige REST-APIs; die Beschreibung dieser APIs kann in der Quellenangabe eingesehen werden. Es bietet sich an, die Schnittstelle “Events” zu verwenden, welche beispielsweise Aktivitäten eines Benutzers aufzeigt. Damit kann die Tätigkeit eines Users auf GitHub an einem Tag abgefragt werden. Die Art der Aktivität und das Repository sind dabei zweitrangig. [^fnGithubRest]
 
-[^fnGithubRest]: 	Siehe [@githubRest]
+[^fnGithubRest]: 	Quelle [@githubRest]
 
 Ein solches Event verfügt über einen Typ, eine Beschreibung, eine Identifizerung des Repositories und einen Zeitpunkt, an dem dieses Ereignis oder Aktivität stattgefunden hat.
 

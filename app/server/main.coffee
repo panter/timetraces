@@ -2,6 +2,10 @@
 timeEntriesHandle = {}
 
 Meteor.methods
+	testLocation: ->
+		user =  Meteor.users.findOne _id: @userId
+		GoogleApi.get "plus/v1/people/me", user: user
+	
 	createOrUpdateEntry: (data, modifier, _id) ->
 	
 		userToken = UserSettings.get "controllrApiKey", null, @userId

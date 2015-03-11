@@ -142,7 +142,7 @@ Von Redmine wird die Liste der Projekte geladen, von welchen analog zur Kalender
 
 Die Ereignisse eines Tages wurden mit einer Kalender-ähnlichen Darstellung aufgelistet. Da der Fokus auf die *letzen* Aktivitäten eines Benutzer gelegt ist, beginnt die Liste mit dem letzten Tag und dem letzten Event, wobei die Ereignisse eines Tages von unten nach oben geordnet sind, im Gegensatz zu klassischen Kalender-Darstellungen, bei denen der Tag oben beginnt und unten endet.
 
-Bereits erfasste Zeiteinträge ("TimeEntries") wurden ebenfalls in die gleiche Darstellung übernommen. Abbildung \ref{figEventsApp} zeigt die Auflistung eines Tages, vor (link) und nach dem Erfassen der Zeiteinträge (rechts).
+Bereits erfasste Zeiteinträge ("TimeEntries") wurden ebenfalls in die gleiche Darstellung übernommen. Abbildung \ref{figEventsApp} zeigt die Auflistung eines Tages, vor (links) und nach dem Erfassen der Zeiteinträge (rechts).
 
 ![Umgesetzte Darstellung der Event-Liste eines Tages\label{figEventsApp}](../img/screenshotapp.png)
 

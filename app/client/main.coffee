@@ -3,7 +3,7 @@ Accounts.ui.config
 	requestOfflineToken: google: true
   
 	requestPermissions: 
-		google: ['https://www.googleapis.com/auth/calendar']
+		google: ['https://www.googleapis.com/auth/calendar', "https://www.googleapis.com/auth/plus.me"]
 
 moment.locale "en", 
 	calendar:

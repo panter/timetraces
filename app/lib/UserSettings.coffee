@@ -15,6 +15,23 @@ store.attachSchema new SimpleSchema
 		type: Number
 		label: "Number of Days to show"
 		optional: true
+	projectMap:
+		type: [Object]
+	"projectMap.$.keyword":
+		label: "Keyword"
+		type: String
+	"projectMap.$.projectId":
+		label: "Project"
+		type: String
+		autoform:
+			type: "select2"
+			options: ->
+				Projects.find().map (doc) -> 
+					label: "#{doc.shortname} #{doc.description}"
+					value: doc._id
+
+
+
 	calendars:
 		type: [String]
 		label: "Calendars"

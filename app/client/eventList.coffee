@@ -58,7 +58,7 @@ findTaskID = (event) ->
 	sourceTaskMap = 
 		redmine: "Development"
 		github: "Development"
-		calendar: "Customer Meeting"
+		calendar: "Internal Meeting"
 
 
 	for keyword, taskName of sourceTaskMap
@@ -141,6 +141,14 @@ findProject = (event) ->
 	traces = traces.concat event?.bulletPoints
 	
 	for trace in traces
+		# first: take the mapping from the settings
+		projectMap = UserSettings.get("projectMap")
+		if projectMap?
+			for {keyword, projectId} in projectMap
+				if trace.indexOf(keyword) > -1
+					project = Projects.findOne projectId
+					return project if project?
+		# second: check if a project shortname is in the traces
 		for word in trace.split /[\s/]+/
 			project = Projects.findOne shortname: word
 			return project if project?
@@ -162,7 +170,9 @@ getSanitizedEvents = (dayMoment)->
 		
 
 		shouldMerge = ->
+
 			return no unless lastEvent?
+			return no unless lastEvent.project? or doc.project?
 			return no unless lastEvent.project?._id is doc.project?._id
 			return yes if minMinutes? and moment(doc.end).diff(doc.start, "minutes") < minMinutes
 			return yes if lastEvent.end.getTime() > start.getTime() # overlapping
@@ -225,12 +235,12 @@ Template.eventList_oneDay.helpers
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 			count = Math.max @dayEvents.length, @timeEntries.length
-		
 
-			if count > 0 then count * listHeight else "auto" 
+
+			if count > 0 then count * listHeight else "auto"
 		else
 			if @shortestEvent?
-				
+
 				shortestDuration = @shortestEvent.end?.getTime() - @shortestEvent.start?.getTime()
 			if @firstMoment? and @lastMoment?
 				duration = @lastMoment.toDate().getTime() - @firstMoment.toDate().getTime()
