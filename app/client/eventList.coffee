@@ -142,11 +142,12 @@ findProject = (event) ->
 	
 	for trace in traces
 		# first: take the mapping from the settings
+		trace = trace.toLowerCase()
 		projectMap = UserSettings.get("projectMap")
 		if projectMap?
-			for {keyword, projectId} in projectMap
-				if trace.indexOf(keyword) > -1
-					project = Projects.findOne projectId
+			for map in projectMap
+				if trace.indexOf(map?.keyword?.toLowerCase()) > -1
+					project = Projects.findOne map?.projectId
 					return project if project?
 		# second: check if a project shortname is in the traces
 		for word in trace.split /[\s/]+/

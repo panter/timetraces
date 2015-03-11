@@ -7,10 +7,10 @@
 		<fieldset class="col-sm-6">
 			<legend>General Settings</legend>
 			{{> afQuickField name='startOfDay' type="time"}}
-			{{> afQuickField name='minimumMergeTime'}}
-			{{> afQuickField name='numberOfDays'}}
+			{{> afQuickField name='minimumMergeTime' defaultValue=15}}
+			{{> afQuickField name='numberOfDays' defaultValue=7}}
 			{{> afQuickField name='eventListViewMode'}}
-			{{> afQuickField name='projectMap'}}
+
 		</fieldset>
 		<fieldset class="col-sm-6">
 			<legend>Controllr Settings</legend>
@@ -19,6 +19,13 @@
 			{{> afQuickField name='controllrUsername'}}
 
 
+		</fieldset>
+
+	</div>
+	<div class="row">
+		<fieldset class="col-xs-12">
+		<legend>Project Mapping - Add keywords to map to specific projects</legend>
+			{{> afQuickField name='projectMap'}}
 		</fieldset>
 	</div>
 	<div class="row">
@@ -40,11 +47,6 @@
 			{{> afQuickField name='githubUsername'}}
 
 		</fieldset>
-	</div>
-	<div class="row">
-
-
-
 		<fieldset class="col-sm-6">
 			<legend>Calendar Settings</legend>
 
@@ -53,6 +55,7 @@
 
 		</fieldset>
 	</div>
+	
 
 
 	{{/autoForm}}
