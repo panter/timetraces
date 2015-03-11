@@ -49,8 +49,8 @@ Router.route 'eventList',
 
 
 editTimeEntry = (timeEntry) ->
+	console.log "edit timeEntry", timeEntry
 	Session.set "timeEntryToEdit", timeEntry
-	
 	$("#eventList_editDialog").modal "show"
 
 findTaskID = (event) ->
@@ -145,7 +145,7 @@ findProject = (event) ->
 		trace = trace.toLowerCase()
 		projectMap = UserSettings.get("projectMap")
 		if projectMap?
-			for map in projectMap
+			for index, map of projectMap
 				if trace.indexOf(map?.keyword?.toLowerCase()) > -1
 					project = Projects.findOne map?.projectId
 					return project if project?

@@ -1,6 +1,7 @@
 Template.modal.rendered = ->
 	$modal = @$(".modal").modal show: no
 	$modal.on "show.bs.modal", ->
+		console.log "show modal"
 		hash = @id
 		window.location.hash = hash
 		closeOnHash = ->

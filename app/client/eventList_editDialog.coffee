@@ -3,10 +3,11 @@
 AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
 
-		after: createOrUpdateEntry: (doc)->
-			$("##{@formId}").closest ".modal"
-			.modal "hide"
-			return doc # success
+		after: method: (doc)->
+			if @formAttributes.meteormethod is "createOrUpdateEntry"
+				$("##{@formId}").closest ".modal"
+				.modal "hide"
+				return doc # success
 
 
 getCurrentTimeEntry = ->
