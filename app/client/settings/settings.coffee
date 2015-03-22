@@ -11,5 +11,3 @@ Router.route 'settings',
 		settings: -> 
 			if Meteor.user()?
 				doc = UserSettingsStore.findOne()
-				
-

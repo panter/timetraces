@@ -2,25 +2,26 @@
 timeEntriesHandle = {}
 
 Meteor.methods
-	testLocation: ->
-		user =  Meteor.users.findOne _id: @userId
-		GoogleApi.get "plus/v1/people/me", user: user
 	
-	createOrUpdateEntry: (data, modifier, _id) ->
 	
+	createTimeEntry: (data) ->
+		userToken = UserSettings.get "controllrApiKey", null, @userId
+
+		url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
+
+		HTTP.call "POST", url,
+			data: data
+		
+		timeEntriesHandle?.refresh()
+	updateTimeEntry: (modifier, _id) ->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
 		
-		if _id?
-			_id= parseInt _id, 10
-			
-			url = "http://controllr.panter.biz/api/entries/#{_id}.json?user_token=#{userToken}"
-			HTTP.call "PUT", url,
-				data: data
-		else 
-			url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
-
-			HTTP.call "POST", url,
-				data: data
+		_id= parseInt _id, 10
+		
+		url = "http://controllr.panter.biz/api/entries/#{_id}.json?user_token=#{userToken}"
+		HTTP.call "PUT", url,
+			data: modifier.$set
+		
 		
 		timeEntriesHandle?.refresh()
 
@@ -238,6 +239,6 @@ Meteor.startup ->
 			
 			result = HTTP.get "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
 			if result.data?
-				handleIds result.data
+				handleIds _.filter result.data, (task) -> task.active
 
 

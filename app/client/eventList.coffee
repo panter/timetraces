@@ -49,7 +49,7 @@ Router.route 'eventList',
 
 
 editTimeEntry = (timeEntry) ->
-	console.log "edit timeEntry", timeEntry
+
 	Session.set "timeEntryToEdit", timeEntry
 	$("#eventList_editDialog").modal "show"
 

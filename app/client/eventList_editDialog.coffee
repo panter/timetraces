@@ -2,12 +2,17 @@
 
 AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
-
-		after: method: (doc)->
-			if @formAttributes.meteormethod is "createOrUpdateEntry"
-				$("##{@formId}").closest ".modal"
-				.modal "hide"
-				return doc # success
+		after: 
+			method: (error, result)->
+				if @formAttributes.meteormethod is "createTimeEntry"
+					$("##{@formId}").closest ".modal"
+					.modal "hide"
+					return result # success
+			"method-update": (error, result)->
+				if @formAttributes.meteormethod is "updateTimeEntry"
+					$("##{@formId}").closest ".modal"
+					.modal "hide"
+					return result # success
 
 
 getCurrentTimeEntry = ->
@@ -18,6 +23,11 @@ getCurrentTimeEntry = ->
 	timeEntry
 
 Template.eventList_editDialog.helpers
+	formType: ->
+		if getCurrentTimeEntry()?.new then "method" else "method-update"
+	method: ->
+		if getCurrentTimeEntry()?.new then "createTimeEntry" else "updateTimeEntry"
+
 	footerButtons: ->
 		timeEntry = getCurrentTimeEntry()
 		if not timeEntry? or timeEntry.new
@@ -62,13 +72,13 @@ Template.eventList_editDialog.helpers
 			label: project.shortname+" "+project.description
 	
 	taskIdOptions: -> 
-		Tasks.find project_id: Session.get("currentProjectId") ? @timeEntry?.project_id
+		timeEntry = getCurrentTimeEntry()
+		Tasks.find project_id: Session.get("currentProjectId") ? timeEntry?.project_id
 		.map (task) ->
 			label: task.name, 
 			value: parseInt task._id,10
 
 	schema: -> 
-		
 		
 		new SimpleSchema
 			_id: 
