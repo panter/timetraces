@@ -34,9 +34,12 @@ Meteor.methods
 
 Meteor.startup ->
 
-	handleIds = (data) ->
+	handleIds = (data, toString =true) ->
 		_.map data, (item) ->
-			item._id = item.id.toString()
+			if toString
+				item._id = item.id.toString()
+			else
+				item._id = item.id
 			delete item.id
 			item
 
@@ -169,7 +172,7 @@ Meteor.startup ->
 				if result.data?
 					filtered = _(result.data).filter (project) ->
 						project.active
-					handleIds filtered
+					handleIds filtered, false
 
 	Meteor.publishArray 
 		refreshHandle: timeEntriesHandle
@@ -239,6 +242,7 @@ Meteor.startup ->
 			
 			result = HTTP.get "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
 			if result.data?
-				handleIds _.filter result.data, (task) -> task.active
+				filtered = _.filter result.data, (task) -> task.active
+				handleIds filtered, false
 
 

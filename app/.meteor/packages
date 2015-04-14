@@ -21,9 +21,10 @@ panter:publish-array
 aldeed:autoform-bs-datepicker
 markdown
 natestrauser:font-awesome
-natestrauser:select2
 zimme:select2-bootstrap3-css
 aldeed:autoform-select2
 accounts-ui
 fastclick
 ground:db
+natestrauser:select2
+fourseven:scss

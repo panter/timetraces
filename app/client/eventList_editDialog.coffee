@@ -17,6 +17,7 @@ AutoForm.hooks
 
 getCurrentTimeEntry = ->
 	timeEntry = Session.get "timeEntryToEdit"
+	
 	if timeEntry?
 		Session.set "currentProjectId", timeEntry.project_id
 		Session.set "currentTaskId", timeEntry.task_id
@@ -54,7 +55,7 @@ Template.eventList_editDialog.helpers
 		if @timeEntry?.billable?
 			@timeEntry.billable
 		else
-			taskId = Session.get("currentTaskId")?.toString()
+			taskId = Session.get("currentTaskId")
 			projectId = Session.get("currentProjectId")
 
 			billable_by_default = Tasks.findOne({_id: taskId, project_id: projectId})?.billable_by_default ? false
@@ -68,15 +69,16 @@ Template.eventList_editDialog.helpers
 
 	projects: -> 
 		Projects.find({}, sort: shortname: 1).map (project) ->
-			value: parseInt project._id, 10
+			value: parseInt project._id,10
 			label: project.shortname+" "+project.description
 	
 	taskIdOptions: -> 
 		timeEntry = getCurrentTimeEntry()
 		Tasks.find project_id: Session.get("currentProjectId") ? timeEntry?.project_id
 		.map (task) ->
-			label: task.name, 
+			label: task.name
 			value: parseInt task._id,10
+
 
 	schema: -> 
 		
@@ -121,8 +123,10 @@ Template.eventList_editDialog.events
 		projectId =  parseInt $(event.currentTarget).val(),10
 		Session.set "currentProjectId", projectId
 	'change [name="task_id"]': (event) ->
-		taskId =  parseInt $(event.currentTarget).val(),10
-		Session.set "currentTaskId", taskId
+		
+		if $(event.currentTarget).val()?.length > 0
+			taskId =  parseInt $(event.currentTarget).val(),10
+			Session.set "currentTaskId", taskId
 	'click .btn-delete': (event, template) ->
 		Meteor.call "deleteTimeEntry", template.data.timeEntry
 
