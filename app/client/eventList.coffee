@@ -51,6 +51,10 @@ Router.route 'eventList',
 editTimeEntry = (timeEntry) ->
 	
 	Session.set "timeEntryToEdit", timeEntry
+	if timeEntry?.project_id?
+		Session.set "currentProjectId", timeEntry.project_id
+	if timeEntry?.task_id?
+		Session.set "currentTaskId", timeEntry.task_id
 	$("#eventList_editDialog").modal "show"
 
 findTaskID = (event) ->
@@ -64,7 +68,7 @@ findTaskID = (event) ->
 	for keyword, taskName of sourceTaskMap
 		if event?.sources?.join(" ").toLowerCase().indexOf(keyword) >= 0
 			task = Tasks.findOne project_id: Session.get("currentProjectId"), name: taskName
-			return parseInt task._id, 10 if task?
+			return task._id if task?
 
 
 
@@ -313,7 +317,7 @@ transformEventToTimeEntry = (event)->
 	
 
 	if event.project?._id?
-		Session.set "currentProjectId", parseInt event.project._id, 10
+		Session.set "currentProjectId", event.project._id.toString()
 	taskId = findTaskID event
 
 

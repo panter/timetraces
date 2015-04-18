@@ -4,24 +4,25 @@ AutoForm.hooks
 	createOrUpdateTimeEntryForm: 
 		after: 
 			method: (error, result)->
-				if @formAttributes.meteormethod is "createTimeEntry"
+				if error?
+					alert error
+				else if @formAttributes.meteormethod is "createTimeEntry"
 					$("##{@formId}").closest ".modal"
 					.modal "hide"
 					return result # success
 			"method-update": (error, result)->
-				if @formAttributes.meteormethod is "updateTimeEntry"
+				if error?
+					alert error
+
+				else if @formAttributes.meteormethod is "updateTimeEntry"
 					$("##{@formId}").closest ".modal"
 					.modal "hide"
 					return result # success
 
 
 getCurrentTimeEntry = ->
-	timeEntry = Session.get "timeEntryToEdit"
-	
-	if timeEntry?
-		Session.set "currentProjectId", timeEntry.project_id
-		Session.set "currentTaskId", timeEntry.task_id
-	timeEntry
+	Session.get "timeEntryToEdit"
+
 
 Template.eventList_editDialog.helpers
 	formType: ->
@@ -69,16 +70,18 @@ Template.eventList_editDialog.helpers
 
 	projects: -> 
 		Projects.find({}, sort: shortname: 1).map (project) ->
-			value: parseInt project._id,10
+			value: project._id
 			label: project.shortname+" "+project.description
 	
 	taskIdOptions: -> 
 		timeEntry = getCurrentTimeEntry()
-		Tasks.find project_id: Session.get("currentProjectId") ? timeEntry?.project_id
+
+		options = Tasks.find project_id: Session.get("currentProjectId") ? timeEntry?.project_id
 		.map (task) ->
 			label: task.name
-			value: parseInt task._id,10
-
+			value: task._id
+	
+		return options
 
 	schema: -> 
 		
@@ -120,21 +123,17 @@ Template.eventList_editDialog.helpers
 
 Template.eventList_editDialog.events
 	'change .projectId': (event, template) ->
-		projectId =  parseInt $(event.currentTarget).val(),10
-		Session.set "currentProjectId", projectId
+		projectId =  $(event.currentTarget).val()
+		if projectId? and projectId.length > 0
+			Session.set "currentProjectId", projectId
 	'change [name="task_id"]': (event) ->
 		
 		if $(event.currentTarget).val()?.length > 0
-			taskId =  parseInt $(event.currentTarget).val(),10
+			taskId =  $(event.currentTarget).val()
 			Session.set "currentTaskId", taskId
 	'click .btn-delete': (event, template) ->
 		Meteor.call "deleteTimeEntry", template.data.timeEntry
 
-Template.projectsSelect.events
-	'click .project-state': (event, template)->
-		values = []
-		template.$(".project-state:checked").each (index, input) ->
-			values.push parseInt $(input).val(),10
-		Session.set "selectedProjectStates", values
+
 
 

@@ -22,7 +22,7 @@ store.attachSchema new SimpleSchema
 		type: String
 	"projectMap.$.projectId":
 		label: "Project"
-		type: Number
+		type: String
 		autoform:
 			type: "select2"
 			options: ->

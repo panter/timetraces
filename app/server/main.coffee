@@ -6,25 +6,24 @@ Meteor.methods
 	
 	createTimeEntry: (data) ->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
-
 		url = "http://controllr.panter.biz/api/entries.json?user_token=#{userToken}"
+		try 
+			HTTP.call "POST", url, data: data
+			timeEntriesHandle?.refresh()
+		catch e
 
-		HTTP.call "POST", url,
-			data: data
-		
-		timeEntriesHandle?.refresh()
+			throw new Meteor.Error e.message
 	updateTimeEntry: (modifier, _id) ->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
 		
 		_id= parseInt _id, 10
 		
 		url = "http://controllr.panter.biz/api/entries/#{_id}.json?user_token=#{userToken}"
-		HTTP.call "PUT", url,
-			data: modifier.$set
-		
-		
-		timeEntriesHandle?.refresh()
-
+		try
+			HTTP.call "PUT", url, data: modifier.$set
+			timeEntriesHandle?.refresh()
+		catch e
+			throw new Meteor.Error e.message
 
 	deleteTimeEntry: (data) ->
 		userToken = UserSettings.get "controllrApiKey", null, @userId
@@ -34,12 +33,11 @@ Meteor.methods
 
 Meteor.startup ->
 
-	handleIds = (data, toString =true) ->
+	handleIds = (data) ->
 		_.map data, (item) ->
-			if toString
-				item._id = item.id.toString()
-			else
-				item._id = item.id
+			
+			item._id = item.id.toString()
+
 			delete item.id
 			item
 
@@ -172,7 +170,7 @@ Meteor.startup ->
 				if result.data?
 					filtered = _(result.data).filter (project) ->
 						project.active
-					handleIds filtered, false
+					handleIds filtered
 
 	Meteor.publishArray 
 		refreshHandle: timeEntriesHandle
@@ -219,7 +217,9 @@ Meteor.startup ->
 					delete entry.id
 					entry.start = startMoment.toDate()
 					entry.end = endMoment.toDate()
-					
+					entry.project_id = entry.project_id.toString()
+
+					entry.task_id = entry.task_id.toString()
 
 					entry
 
@@ -243,6 +243,10 @@ Meteor.startup ->
 			result = HTTP.get "http://controllr.panter.biz/api/tasks.json?user_token=#{userToken}"
 			if result.data?
 				filtered = _.filter result.data, (task) -> task.active
-				handleIds filtered, false
+				_.map filtered, (item) ->
+					item._id = item.id.toString()
+					item.project_id = item.project_id.toString()
+					delete item.id
+					item
 
 
