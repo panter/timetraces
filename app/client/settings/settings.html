@@ -20,8 +20,17 @@
 
 
 		</fieldset>
+		
 
 	</div>
+	<div class="row">
+	<fieldset class="col-sm-6">
+			<legend>Location Settings</legend>
+			{{>settings_locationService}}
+			
+
+		</fieldset>
+		</div>
 	<div class="row">
 		<fieldset class="col-xs-12">
 		<legend>Project Mapping - Add keywords to map to specific projects</legend>
@@ -64,6 +73,21 @@
 </template>
 
 
+<template name="settings_locationService">
+
+{{#if loggedIn}}
+	Logged in, expires: {{expires}}
+	<button class="btn btn-logout btn-danger">Logout</button>
+{{else}}
+	<p>Create an account on <a href="location.macrozone.ch">location.macrozone.ch</a> and login here:</p>
+	
+	<label>Email: <input type="text" name="email" /></label>
+	<label>Password: <input type="password" name="password" /></label>
+	<button class="btn btn-primary btn-login">Login</button>
+
+{{/if}}
+
+</template>
 
 <template name="settings_controllr">
 	<h2>Controllr</h2>
