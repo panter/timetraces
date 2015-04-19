@@ -30,6 +30,7 @@ Router.route 'eventList',
 				dayMoment = moment newestMoment
 				
 				events = getSanitizedEvents dayMoment
+				
 				timeEntries = getSanitizedTimeEntries dayMoment
 				both = events.concat timeEntries
 				first = _.min both, (entry) -> entry.start.getTime()
@@ -46,7 +47,33 @@ Router.route 'eventList',
 				newestMoment.subtract 1, "d"
 			days
 
+mixinLocations = (start, end, events) ->
 
+	MIN_DISTANCE = UserSettings.get "locationServiceMinDistance", 0
+	lastLocation = null
+	addToEvents = (location) ->
+		if location.geo? 
+				text = "#{location.geo.city}, #{location.geo.streetName} #{location.geo.streetNumber}"
+		else
+			text = "#{location.lat}, #{location.lon}" 
+		events.push 
+			_id: "location_#{location.tst.getTime()}"
+			end: location.tst
+			sources: ["Location"]
+			bulletPoints: [text]
+
+	for location in LocationService.fetchFor start, end
+		unless lastLocation?
+			addToEvents location
+		else
+			a = {longitude: location.lon, latitude: location.lat}
+			b = {longitude: lastLocation.lon, latitude: lastLocation.lat}
+			distance =  geolib.getDistance a, b
+			addToEvents location if distance >= MIN_DISTANCE
+		lastLocation = location
+	events = _.sortBy events, (event) -> - event.end.getTime()
+
+	events
 
 editTimeEntry = (timeEntry) ->
 	
@@ -85,41 +112,34 @@ getPreferedStartOfDay = (dayMoment) ->
 	return newMoment.startOf "day"
 
 
-getLastEventDate = (eventDate) ->
-	previousEvent = Events.findOne {end: $lt: eventDate}, sort: "end": -1
-	previousTimeEntry = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), end: $lt: eventDate}, sort: "end": -1
+getLastEventDate = (events, eventDate) ->
+	day = moment(eventDate).format("YYYY-MM-DD")
+	endTime = (event) ->
+		event.end.getTime()
+	eventsFiltered = _(events).filter((event) -> endTime(event) < eventDate.getTime())
+	candidates = [
+		_.max(eventsFiltered, endTime)?.end
+		TimeEntries.findOne({day: day, end: $lt: eventDate}, sort: "end": -1)?.end
+		TimeEntries.findOne({day: day, start: $lt: eventDate}, sort: "start": -1)?.end
+	]
 
-	if previousTimeEntry? and previousEvent?
-		# get closer one
-		if previousTimeEntry.end.getTime() > previousEvent.end.getTime()
-			lastEventDate = previousTimeEntry.end
-		else
-			lastEventDate = previousEvent.end
-	else if previousTimeEntry?
-		lastEventDate = previousTimeEntry.end
-	else if previousEvent?
-		lastEventDate = previousEvent.end
-	else 
-		return 
+	lastDate = _.max candidates, (date) ->
+		if date? then date.getTime() else 0
 
-getStartOfEvent = (event) ->
+	return lastDate
 
+getStartOfEvent = (events, event) ->
 	eventDate = event.end
 	eventMoment = moment eventDate
 	if event.start?
 		event.start
 	else
-		lastEventDate = getLastEventDate eventDate
-		lastTimeEntryByStart = TimeEntries.findOne {day: moment(eventDate).format("YYYY-MM-DD"), start: $lt: eventDate}, sort: "start": -1
-
-		if lastTimeEntryByStart? and (not lastEventDate? or lastTimeEntryByStart.start.getTime() > lastEventDate.getTime())
-			lastEventDate = lastTimeEntryByStart.start
+		lastEventDate = getLastEventDate events, eventDate
 		lastEventMoment = moment lastEventDate
 		# do not go befor start of the day
 		if moment(lastEventMoment).startOf("day").isSame(moment(eventMoment).startOf("day"))
 			lastEventMoment.toDate()
 		else
-
 
 			preferedStartOfDay = getPreferedStartOfDay(eventMoment).toDate()
 			# check if this date is before the end of the day
@@ -167,8 +187,11 @@ getSanitizedEvents = (dayMoment)->
 	events = []
 	
 	lastEvent = null
-	Events.find({end: {$gte: start, $lt: end}}, sort: "end": 1).forEach (doc) =>
-		start = getStartOfEvent doc
+	originalEvents = Events.find({end: {$gte: start, $lt: end}}, sort: "end": 1).fetch()
+	originalEvents = mixinLocations start, end, originalEvents
+
+	for doc in originalEvents
+		start = getStartOfEvent originalEvents, doc
 		doc.start = start
 		doc.project = findProject doc
 		minMinutes = UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
@@ -187,7 +210,7 @@ getSanitizedEvents = (dayMoment)->
 			mergeEvents lastEvent, doc
 		else 
 			
-			lastEventDate = getLastEventDate doc.end
+			lastEventDate = getLastEventDate originalEvents, doc.end
 
 
 			if start? and events.length > 0 and lastEventDate? and start.getTime() > lastEventDate.getTime() and start.getTime() > preferedStartTime.getTime()
@@ -283,14 +306,14 @@ bottomHelper = ->
 	else
 		
 		dayData = Template.parentData(1)
-		mnt = moment getStartOfEvent @
+		mnt = moment @start
 		mnt.diff(dayData.firstMoment, "minutes") * pixelPerMinute
 	
 heightHelper = ->
 	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		listHeight
 	else
-		duration = (new Date @end).getTime() - (new Date getStartOfEvent @).getTime()
+		duration = (new Date @end).getTime() - (new Date @start).getTime()
 		duration/60000 * pixelPerMinute
 
 

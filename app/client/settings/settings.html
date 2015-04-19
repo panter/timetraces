@@ -78,6 +78,7 @@
 {{#if loggedIn}}
 	Logged in, expires: {{expires}}
 	<button class="btn btn-logout btn-danger">Logout</button>
+	{{>afQuickField name="locationServiceMinDistance"}}
 {{else}}
 	<p>Create an account on <a href="location.macrozone.ch">location.macrozone.ch</a> and login here:</p>
 	
@@ -86,6 +87,7 @@
 	<button class="btn btn-primary btn-login">Login</button>
 
 {{/if}}
+
 
 </template>
 
@@ -127,6 +129,7 @@
 		</li>
 		{{/each}}
 	</ul>
+
 
 </template>
 

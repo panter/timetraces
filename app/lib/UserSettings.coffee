@@ -84,7 +84,10 @@ store.attachSchema new SimpleSchema
 
 	locationServiceUser:
 		type: Object
-		blackbox: true
+		blackbox: yes
+		optional: yes
+	locationServiceMinDistance:
+		type: Number
 		optional: yes
 
 	

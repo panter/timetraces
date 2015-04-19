@@ -30,3 +30,5 @@ Meteor.startup ->
 		UserSettings.set "locationServiceUser", null
 		console.log "login out"
 		loggedIn = no
+	fetchFor: (from, to) ->
+		@Locations.find({tst: {$gte:from, $lte: to }}, {sort: tst: -1}).fetch()
