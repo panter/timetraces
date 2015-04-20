@@ -122,7 +122,7 @@ getLastEventDate = (events, eventDate) ->
 		TimeEntries.findOne({day: day, end: $lt: eventDate}, sort: "end": -1)?.end
 		TimeEntries.findOne({day: day, start: $lt: eventDate}, sort: "start": -1)?.end
 	]
-
+	
 	lastDate = _.max candidates, (date) ->
 		if date? then date.getTime() else 0
 
@@ -134,6 +134,7 @@ getStartOfEvent = (events, event) ->
 	if event.start?
 		event.start
 	else
+
 		lastEventDate = getLastEventDate events, eventDate
 		lastEventMoment = moment lastEventDate
 		# do not go befor start of the day
@@ -307,14 +308,14 @@ bottomHelper = ->
 		
 		dayData = Template.parentData(1)
 		mnt = moment @start
-		mnt.diff(dayData.firstMoment, "minutes") * pixelPerMinute
+		Math.ceil mnt.diff(dayData.firstMoment, "minutes") * pixelPerMinute
 	
 heightHelper = ->
 	if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 		listHeight
 	else
 		duration = (new Date @end).getTime() - (new Date @start).getTime()
-		duration/60000 * pixelPerMinute
+		Math.floor  duration/60000 * pixelPerMinute
 
 
 Template.eventList_oneEvent.helpers	
