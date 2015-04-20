@@ -82,6 +82,16 @@ store.attachSchema new SimpleSchema
 		label: "Github Username"
 		optional: true
 
+	locationServiceUser:
+		type: Object
+		blackbox: yes
+		optional: yes
+	locationServiceMinDistance:
+		type: Number
+		optional: yes
+
+	
+
 if Meteor.isClient
 	Meteor.subscribe "userPreferences"
 if Meteor.isServer
@@ -128,6 +138,12 @@ if Meteor.isServer
 			store.insert _id: Meteor.userId()
 		store.update Meteor.userId(), {$set: $set}
 
+	observeChanges: (property, callbacks) ->
+		selector = {}
+		selector[property] = $exists: yes
+		fields = {}
+		fields[property] = 1
+		store.find(selector, fields: fields).observeChanges callbacks
 
 
 
