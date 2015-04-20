@@ -36,6 +36,14 @@ store.attachSchema new SimpleSchema
 		type: [String]
 		label: "Calendars"
 		optional: true
+	calendarEventsEnabled:
+		type: Boolean
+		label: "Calendar events enabled"
+		defaultValue: yes
+	redmineEventsEnabled:
+		type: Boolean
+		label: "Redmine enabled"
+		defaultValue: yes
 	redmineProjects:
 		type: [String]
 		label: "RedmineProjects"
@@ -72,7 +80,10 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Controllr Api Key"
 		optional: true
-
+	githubEventsEnabled:
+		type: Boolean
+		label: "Github enabled"
+		defaultValue: yes
 	githubAccessToken:
 		type: String
 		label: "Github Access Token"
@@ -81,7 +92,10 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Github Username"
 		optional: true
-
+	locationEventsEnabled:
+		type: Boolean
+		label: "Locations enabled"
+		defaultValue: yes
 	locationServiceUser:
 		type: Object
 		blackbox: yes

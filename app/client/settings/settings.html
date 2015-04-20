@@ -40,6 +40,7 @@
 	<div class="row">
 		<fieldset class="col-sm-6">
 			<legend>Redmine Settings</legend>
+			{{> afQuickField name='redmineEventsEnabled'}}
 			{{#if redmineProjects}}
 			{{> afQuickField name='redmineProjects' options=redmineProjects noselect=true}}
 			{{/if}}
@@ -51,14 +52,14 @@
 		</fieldset>
 		<fieldset class="col-sm-6">
 			<legend>Github Settings</legend>
-
+			{{> afQuickField name='githubEventsEnabled'}}
 			{{> afQuickField name='githubAccessToken'}}
 			{{> afQuickField name='githubUsername'}}
 
 		</fieldset>
 		<fieldset class="col-sm-6">
 			<legend>Calendar Settings</legend>
-
+			{{> afQuickField name='calendarEventsEnabled'}}
 			{{> afQuickField name='calendars' options=calendars noselect=true}}
 
 
@@ -74,19 +75,19 @@
 
 
 <template name="settings_locationService">
+	{{> afQuickField name='locationEventsEnabled'}}
+	{{#if loggedIn}}
+		Logged in, expires: {{expires}}
+		<button class="btn btn-logout btn-danger">Logout</button>
+		{{>afQuickField name="locationServiceMinDistance"}}
+	{{else}}
+		<p>Create an account on <a href="location.macrozone.ch">location.macrozone.ch</a> and login here:</p>
+		
+		<label>Email: <input type="text" name="email" /></label>
+		<label>Password: <input type="password" name="password" /></label>
+		<button class="btn btn-primary btn-login">Login</button>
 
-{{#if loggedIn}}
-	Logged in, expires: {{expires}}
-	<button class="btn btn-logout btn-danger">Logout</button>
-	{{>afQuickField name="locationServiceMinDistance"}}
-{{else}}
-	<p>Create an account on <a href="location.macrozone.ch">location.macrozone.ch</a> and login here:</p>
-	
-	<label>Email: <input type="text" name="email" /></label>
-	<label>Password: <input type="password" name="password" /></label>
-	<button class="btn btn-primary btn-login">Login</button>
-
-{{/if}}
+	{{/if}}
 
 
 </template>
