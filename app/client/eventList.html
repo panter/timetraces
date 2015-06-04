@@ -1,27 +1,18 @@
 
 
 <template name="eventList">
-
 	<div class="eventList {{viewMode}}">
-
 		{{#each days}}
-
-		{{>eventList_oneDay}}
-
+			{{>eventList_oneDay}}
 		{{/each}}
 	</div>
-
-
 	{{>eventList_editDialog}}
-
-
-
-
-
 </template>
 
-
-
+<template name="eventList_navigation">
+	{{>toggleSources}}
+	{{>defaultHeaderNavigation}}
+</template>
 
 <template name="eventList_oneDay">
 	
@@ -34,16 +25,15 @@
 				{{>eventList_oneDay_timeGrid}}
 
 				{{#each dayEvents}}
-				{{>eventList_oneEvent}}
+					{{>eventList_oneEvent}}
 				{{else}}
-				<p class="no-events">No events... No events... No events... </p>
+					<p class="no-events">No events... No events... No events... </p>
 				{{/each}}
 
 				{{#each timeEntries}}
-				{{>eventList_oneTimeEntry}}
-
+					{{>eventList_oneTimeEntry}}
 				{{else}}
-				<p class="no-time-entries">No time Entries... No time Entries... No time Entries...</p>
+					<p class="no-time-entries">No time Entries... No time Entries... No time Entries...</p>
 				{{/each}}
 			</div>
 		</div>
@@ -53,7 +43,7 @@
 <template name="eventList_oneDay_timeGrid">
 	<div class="timeGrid" style="bottom:{{offset}}px">
 		{{#each entries}}
-		<div class="line" style="bottom:{{bottom}}px"><div class="label">{{label}}</div></div>
+			<div class="line" style="bottom:{{bottom}}px"><div class="label">{{label}}</div></div>
 		{{/each}}
 	</div>
 </template>
@@ -70,7 +60,7 @@
 			</div>
 			<ul>
 				{{#each bulletPoints}}
-				<li>{{this}}</li>
+					<li>{{this}}</li>
 				{{/each}}
 			</ul>
 		</div>

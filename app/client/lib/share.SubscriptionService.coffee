@@ -1,7 +1,5 @@
 
 
-
-
 share.SubscriptionService = 
 	defaults: ->
 		subscriptions = [] 
@@ -15,15 +13,15 @@ share.SubscriptionService =
 		return subscriptions
 	events: (firstMoment, lastMoment) ->
 		subscriptions = []
-		if UserSettings.get "githubEventsEnabled"
+		if UserSettings.get "sourceEnabled_github"
 			subscriptions.push Meteor.subscribe "githubEvents" # todo: add from-to
 		subscriptions.push Meteor.subscribe "time_entries", 
 			employee_usernames: UserSettings.get "controllrUsername"
 			date_from: firstMoment.format()
-		console.log UserSettings.get "locationEventsEnabled"
-		if UserSettings.get "locationEventsEnabled"
+		
+		if UserSettings.get "sourceEnabled_location"
 			subscriptions.push LocationService.subscribe "myLocations", from: firstMoment.toDate(), to: lastMoment.toDate()
-		if UserSettings.get "calendarEventsEnabled"
+		if UserSettings.get "sourceEnabled_calendar"
 			for calendarId in UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)
 				subscriptions.push Meteor.subscribe "latestCalendarEvents", 
 					calendarId: calendarId
@@ -31,7 +29,7 @@ share.SubscriptionService =
 					timeMax: lastMoment.format()
 					timeMin: firstMoment.format()
 					orderBy: "startTime"
-		if UserSettings.get "redmineEventsEnabled"
+		if UserSettings.get "sourceEnabled_redmine"
 			for projectId in UserSettings.getListSetting("redmineProjects")
 				subscriptions.push Meteor.subscribe "redmineIssues", 
 					project_id: projectId

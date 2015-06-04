@@ -31,8 +31,8 @@ Router.configure
 	loadingTemplate: 'loading'
 
 	yieldTemplates: 
-			defaultHeaderNavigation: to: "headerNavigation"
-			#experimentHeaderNavigationRight: to: "headerNavigationRight"
+		defaultHeaderNavigation: to: "headerNavigation"
+
 	
 
 Template.registerHelper "equals", (a, b) ->

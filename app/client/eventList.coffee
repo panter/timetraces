@@ -6,7 +6,9 @@ listHeight = 120
 
 Router.route 'eventList',
 	path: "/" 
-	waitOn: ->
+	yieldRegions: 
+		eventList_navigation: to: "headerNavigation"
+	subscriptions: ->
 		subscriptions = share.SubscriptionService.defaults()
 		firstMoment = moment().startOf("day").subtract(UserSettings.get("numberOfDays", 7), "days")
 		lastMoment = moment().endOf("day")
@@ -90,6 +92,7 @@ getRawEventsOfDay = (dayMoment) ->
 	end = dayMoment.toDate()
 	start = moment(dayMoment).startOf("day").toDate()
 	events = Events.find({end: {$gte: start, $lt: end}}, sort: "end": 1).fetch()
+
 	appendLocationEvents events, start, end
 	return _.sortBy events, (event) -> - event.end.getTime()
 
@@ -106,6 +109,7 @@ appendLocationEvents = (events, start, end) ->
 			_id: "location_#{location.tst.getTime()}"
 			end: location.tst
 			sources: ["Location"]
+			types: ["location"]
 			bulletPoints: [text]
 
 	for location in LocationService.fetchFor start, end
