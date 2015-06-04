@@ -52,10 +52,10 @@
 	<div class="event" style="position: absolute; bottom: {{bottom}}px; height: {{height}}px">
 		<div class="content">
 			<div class="meta">
-				<span class="project">{{#if project.shortname}}{{project.shortname}}{{else}}?{{/if}}: </span>
-
-				<span class="sources">{{#each sources}}{{this}} {{/each}}</span>
+				<span class="sources">{{#each sources}}{{>icon_source}} {{label}} {{/each}}</span>
 				<br />
+				<span class="project"><i class="glyphicon glyphicon-tag"></i> : {{#if project.shortname}}{{project.shortname}}{{else}}?{{/if}}</span><br />
+				
 				<span class="duration"><i class="fa fa-clock-o"></i> {{duration start end}}, {{calendarFormat start end}}</span> 
 			</div>
 			<ul>

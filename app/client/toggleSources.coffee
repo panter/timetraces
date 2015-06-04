@@ -1,20 +1,20 @@
 
-getSetting = (key) -> UserSettings.get "sourceEnabled_#{key}"
-setSetting = (key, enabled) -> UserSettings.set "sourceEnabled_#{key}", enabled
+getSetting = (type) -> UserSettings.get "sourceEnabled_#{type}"
+setSetting = (type, enabled) -> UserSettings.set "sourceEnabled_#{type}", enabled
 Template.toggleSources.helpers
 	sources: ->
 		[
-			(label: "Github", key: "github")
-			(label: "Redmine", key: "redmine")
-			(label: "Locations", key: "location")
-			(label: "Calendar", key: "calendar")
+			(label: "Github", type: "github")
+			(label: "Redmine", type: "redmine")
+			(label: "Locations", type: "location")
+			(label: "Calendar", type: "calendar")
 				
 		]
 Template.toggleSources_source.helpers
-	enabled: -> getSetting @key
+	enabled: -> getSetting @type
 
 
 Template.toggleSources_source.events
-	'click': -> setSetting @key, not getSetting @key
+	'click': -> setSetting @type, not getSetting @type
 
 
