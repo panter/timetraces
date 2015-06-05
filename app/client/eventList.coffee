@@ -42,8 +42,8 @@ Router.route 'eventList',
 				newestMoment.subtract 1, "d"
 			days
 
-
-
+isLocationEvent = (event) ->
+	event.type is "location" 
 getAllEventsOfDay = (dayMoment)->
 	originalEvents = getRawEventsOfDay dayMoment
 	events = []
@@ -60,8 +60,9 @@ getAllEventsOfDay = (dayMoment)->
 		shouldMerge = ->
 			minMinutes = UserSettings.get UserSettings.PROPERTY_MINIMUM_MERGE_TIME
 			return no unless lastEvent?
-			return no unless lastEvent.project? or event.project?
-			return no unless lastEvent.project?._id is event.project?._id
+			unless isLocationEvent(lastEvent)
+				return no unless (lastEvent.project? or event.project?) 
+				return no unless lastEvent.project?._id is event.project?._id
 			return yes if minMinutes? and moment(event.end).diff(event.start, "minutes") < minMinutes
 			return yes if lastEvent.end.getTime() > event.start.getTime() # overlapping
 			return no # everything else
@@ -102,12 +103,14 @@ appendLocationEvents = (events, start, end) ->
 	lastLocation = null
 	addToEvents = (location) ->
 		if location.geo? 
-				text = "#{location.geo.city ? ''}, #{location.geo.streetName ? ''} #{location.geo.streetNumber ? ''}"
+				text = "<span class='flag flag-#{location.geo.countryCode?.toLowerCase()}'></span> 
+					#{location.geo.city ? ''}, #{location.geo.streetName ? ''} #{location.geo.streetNumber ? ''}"
 		else
 			text = "#{location.lat}, #{location.lon}" 
 		events.push 
 			_id: "location_#{location.tst.getTime()}"
 			end: location.tst
+			type: "location"
 			sources: [type: "location"]
 			bulletPoints: [text]
 
@@ -122,8 +125,9 @@ appendLocationEvents = (events, start, end) ->
 		lastLocation = location
 
 mergeEvents = (event, toMerge) ->
-	event.sources = _.unique (event.sources.concat toMerge.sources), (item) -> JSON.stringify item
-	event.bulletPoints = _.unique event.bulletPoints.concat toMerge.bulletPoints
+	event.type = "merged"
+	event.sources = _.unique (toMerge.sources.concat event.sources), (item) -> JSON.stringify item
+	event.bulletPoints = _.unique toMerge.bulletPoints.concat event.bulletPoints
 	if toMerge.start.getTime() < event.start.getTime()
 		event.start = toMerge.start
 	if toMerge.end.getTime() > event.end.getTime()

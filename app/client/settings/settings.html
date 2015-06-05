@@ -40,7 +40,7 @@
 	<div class="row">
 		<fieldset class="col-sm-6">
 			<legend>Redmine Settings</legend>
-			{{> afQuickField name='redmineEventsEnabled'}}
+			{{> afQuickField name='sourceEnabled_redmine'}}
 			{{#if redmineProjects}}
 			{{> afQuickField name='redmineProjects' options=redmineProjects noselect=true}}
 			{{/if}}
@@ -52,14 +52,15 @@
 		</fieldset>
 		<fieldset class="col-sm-6">
 			<legend>Github Settings</legend>
-			{{> afQuickField name='githubEventsEnabled'}}
+			{{> afQuickField name='sourceEnabled_github'}}
 			{{> afQuickField name='githubAccessToken'}}
 			{{> afQuickField name='githubUsername'}}
 
 		</fieldset>
 		<fieldset class="col-sm-6">
 			<legend>Calendar Settings</legend>
-			{{> afQuickField name='calendarEventsEnabled'}}
+			
+			{{> afQuickField name='sourceEnabled_calendar'}}
 			{{> afQuickField name='calendars' options=calendars noselect=true}}
 
 
@@ -75,7 +76,7 @@
 
 
 <template name="settings_locationService">
-	{{> afQuickField name='locationEventsEnabled'}}
+	{{> afQuickField name='sourceEnabled_location'}}
 	{{#if loggedIn}}
 		Logged in, expires: {{expires}}
 		<button class="btn btn-logout btn-danger">Logout</button>

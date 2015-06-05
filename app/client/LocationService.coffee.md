@@ -26,8 +26,8 @@ Expose the LocationService with its methods globally (singleton):
 		login: (email, password, callback) ->
 			console.log "login in"
 			params =
-					user: email: email
-					password: password
+				user: email: email
+				password: password
 			connection?.call "login", params, (error, user) ->
 				loggedIn = yes
 				UserSettings.set "locationServiceUser", user

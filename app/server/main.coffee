@@ -52,6 +52,7 @@ Meteor.startup ->
 			end: end
 			bulletPoints: [item.summary]
 			sources: [type: "calendar"]
+			type: "calendar"
 
 	transformRedmineIssues = (data) ->
 	
@@ -62,7 +63,7 @@ Meteor.startup ->
 			end: end
 			bulletPoints: [item.subject]
 			sources: [type: "redmine", label:"#{item.project.name}"]
-		
+			type: "redmine"
 
 	Meteor.publishArray 
 		name: "calendarList"
@@ -154,6 +155,7 @@ Meteor.startup ->
 							_id: item.id.toString()
 							end: new Date item.created_at
 							bulletPoints: bulletPoints
+							type: "github"
 							sources: [type: "github", label:"#{item.repo.name}"]
 			events
 

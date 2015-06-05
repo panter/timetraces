@@ -33,16 +33,15 @@ Router.configure
 	yieldTemplates: 
 		defaultHeaderNavigation: to: "headerNavigation"
 
-	
-
 Template.registerHelper "equals", (a, b) ->
 	a == b
+
 Template.registerHelper "duration", (date1, date2, value="minutes") ->
 	value = "minutes"
 	moment(date1).twix(date2).humanizeLength()
+
 Template.registerHelper "calendarFormat", (date, date2) -> 
-	
 	if date2?
-		moment(date).twix(date2).format()
+		moment(date).twix(date2).format twentyFourHour: yes
 	else
 		moment(date).calendar()
