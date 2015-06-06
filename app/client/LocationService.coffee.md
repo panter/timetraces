@@ -8,7 +8,7 @@ First, startup the connection to the server and initialize an empty collection:
 	connection = null
 	loggedIn = no		
 	Meteor.startup ->
-		connection = DDP.connect "location.macrozone.ch"
+		connection = DDP.connect "https://location.macrozone.ch"
 		LocationService.Locations = new Meteor.Collection "Locations", connection
 
 Wherever the saved locationServiceUser changes (or is initially set), refresh the login to the service:

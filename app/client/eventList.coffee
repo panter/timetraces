@@ -54,7 +54,8 @@ getAllEventsOfDay = (dayMoment)->
 		# sanitize start date
 		event.start = getStartOfEvent originalEvents, event
 		# find a possible project for the event
-		event.project = findProject event
+		unless isLocationEvent event
+			event.project = findProject event
 		
 		# check if event should be merged with lastEvent (if any)
 		shouldMerge = ->
@@ -63,11 +64,14 @@ getAllEventsOfDay = (dayMoment)->
 			unless isLocationEvent(lastEvent)
 				return no unless (lastEvent.project? or event.project?) 
 				return no unless lastEvent.project?._id is event.project?._id
+			
 			return yes if minMinutes? and moment(event.end).diff(event.start, "minutes") < minMinutes
-			return yes if lastEvent.end.getTime() > event.start.getTime() # overlapping
+			unless isLocationEvent(lastEvent)
+				return yes if lastEvent.end.getTime() > event.start.getTime() # overlapping
 			return no # everything else
 		
 		if shouldMerge()
+			#console.log "merging", lastEvent, event
 			mergeEvents lastEvent, event
 		else 
 			lastEventDate = getLastEventOrTimeEntryEndTime originalEvents, event.end
@@ -125,8 +129,8 @@ appendLocationEvents = (events, start, end) ->
 
 mergeEvents = (event, toMerge) ->
 	event.type = "merged"
-	event.sources = _.unique (toMerge.sources.concat event.sources), (item) -> JSON.stringify item
-	event.bulletPoints = _.unique toMerge.bulletPoints.concat event.bulletPoints
+	event.sources = _.unique (event.sources.concat toMerge.sources), (item) -> JSON.stringify item
+	event.bulletPoints = _.unique event.bulletPoints.concat toMerge.bulletPoints
 	if toMerge.start.getTime() < event.start.getTime()
 		event.start = toMerge.start
 	if toMerge.end.getTime() > event.end.getTime()
@@ -236,7 +240,7 @@ Template.eventList_oneDay.helpers
 		, 0
 		trackedMoment = moment.duration minutes, "minutes"
 		"#{trackedMoment.hours()}:#{trackedMoment.minutes()}"
-
+	isEnabled: -> @type is "merged" or UserSettings.get "sourceEnabled_#{@type}"
 	height: ->
 		if "list" is UserSettings.get UserSettings.PROPERTY_EVENT_VIEW_MODE
 			count = Math.max @dayEvents.length, @timeEntries.length

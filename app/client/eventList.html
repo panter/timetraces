@@ -25,7 +25,9 @@
 				{{>eventList_oneDay_timeGrid}}
 
 				{{#each dayEvents}}
-					{{>eventList_oneEvent}}
+					{{#if isEnabled}}
+						{{>eventList_oneEvent}}
+					{{/if}}
 				{{else}}
 					<p class="no-events">No events... No events... No events... </p>
 				{{/each}}
