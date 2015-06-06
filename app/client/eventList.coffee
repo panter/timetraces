@@ -103,8 +103,7 @@ appendLocationEvents = (events, start, end) ->
 	lastLocation = null
 	addToEvents = (location) ->
 		if location.geo? 
-				text = "<span class='flag flag-#{location.geo.countryCode?.toLowerCase()}'></span> 
-					#{location.geo.city ? ''}, #{location.geo.streetName ? ''} #{location.geo.streetNumber ? ''}"
+				text = "#{location.geo.countryCode}, #{location.geo.city ? ''}, #{location.geo.streetName ? ''} #{location.geo.streetNumber ? ''}"
 		else
 			text = "#{location.lat}, #{location.lon}" 
 		events.push 
@@ -254,6 +253,7 @@ Template.eventList_oneDay.helpers
 			else
 				0
 
+
 	
 
 Template.eventList_oneDay_timeGrid.helpers
@@ -296,6 +296,9 @@ heightHelper = ->
 Template.eventList_oneEvent.helpers	
 	bottom: bottomHelper
 	height: heightHelper
+	handleBulletPoint: ->
+		@.replace /^([A-Z]{2})/, (countryCode) ->"<span class='flag flag-#{countryCode?.toLowerCase()}'></span> "
+		
 
 Template.eventList_oneEvent.events
 	'click': (event, template)->
