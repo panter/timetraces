@@ -36,6 +36,14 @@ store.attachSchema new SimpleSchema
 		type: [String]
 		label: "Calendars"
 		optional: true
+	sourceEnabled_calendar:
+		type: Boolean
+		label: "Calendar events enabled"
+		defaultValue: yes
+	sourceEnabled_redmine:
+		type: Boolean
+		label: "Redmine enabled"
+		defaultValue: yes
 	redmineProjects:
 		type: [String]
 		label: "RedmineProjects"
@@ -72,7 +80,10 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Controllr Api Key"
 		optional: true
-
+	sourceEnabled_github:
+		type: Boolean
+		label: "Github enabled"
+		defaultValue: yes
 	githubAccessToken:
 		type: String
 		label: "Github Access Token"
@@ -81,6 +92,19 @@ store.attachSchema new SimpleSchema
 		type: String
 		label: "Github Username"
 		optional: true
+	sourceEnabled_location:
+		type: Boolean
+		label: "Locations enabled"
+		defaultValue: yes
+	locationServiceUser:
+		type: Object
+		blackbox: yes
+		optional: yes
+	locationServiceMinDistance:
+		type: Number
+		optional: yes
+
+	
 
 if Meteor.isClient
 	Meteor.subscribe "userPreferences"
@@ -128,6 +152,12 @@ if Meteor.isServer
 			store.insert _id: Meteor.userId()
 		store.update Meteor.userId(), {$set: $set}
 
+	observeChanges: (property, callbacks) ->
+		selector = {}
+		selector[property] = $exists: yes
+		fields = {}
+		fields[property] = 1
+		store.find(selector, fields: fields).observeChanges callbacks
 
 
 

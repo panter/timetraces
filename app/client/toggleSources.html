@@ -1,0 +1,13 @@
+<template name="toggleSources">
+	{{#each sources}}
+		{{>toggleSources_source}}
+	{{/each}}
+</template>
+
+<template name="toggleSources_source">
+	<li >
+		<form>
+			<a class="btn navbar-btn btn-toggle-source btn-default {{#if enabled}}btn-primary{{/if}}">{{>icon_source}} {{label}}</a>
+		</form>
+	</li>
+</template>
