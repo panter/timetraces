@@ -72,6 +72,7 @@ ordered-dict@1.0.3
 outatime:geolib@2.0.15
 panter:publish-array@1.0.0
 percolate:google-api@1.0.1
+praxie:flag-sprites@1.0.1
 raix:eventemitter@0.1.2
 raix:onetimeout@1.0.3
 raix:stubfence@1.0.1
