@@ -18,9 +18,8 @@ share.SubscriptionService =
 		subscriptions.push Meteor.subscribe "time_entries", 
 			employee_usernames: UserSettings.get "controllrUsername"
 			date_from: firstMoment.format()
-		
 		if UserSettings.get "sourceEnabled_location"
-			subscriptions.push LocationService.subscribe "myLocations", from: firstMoment.toDate(), to: lastMoment.toDate()
+			subscriptions.push LocationService.subscribe from: firstMoment.toDate(), to: lastMoment.toDate()
 		if UserSettings.get "sourceEnabled_calendar"
 			for calendarId in UserSettings.getListSetting(UserSettings.PROPERTY_CALENDARS)
 				subscriptions.push Meteor.subscribe "latestCalendarEvents", 

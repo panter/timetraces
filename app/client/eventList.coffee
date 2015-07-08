@@ -53,6 +53,8 @@ getAllEventsOfDay = (dayMoment)->
 	for event in originalEvents
 		# sanitize start date
 		event.start = getStartOfEvent originalEvents, event
+		if event.start.getTime() > event.end.getTime()
+			throw new Error "error endtime before start!"
 		# find a possible project for the event
 		unless isLocationEvent event
 			event.project = findProject event
@@ -75,7 +77,7 @@ getAllEventsOfDay = (dayMoment)->
 			mergeEvents lastEvent, event
 		else 
 			lastEventDate = getLastEventOrTimeEntryEndTime originalEvents, event.end
-			preferedStartTime = getPreferedStartOfDay(dayMoment).toDate()
+			preferedStartTime = Tools.getPreferedStartOfDay(dayMoment).toDate()
 
 			if events.length > 0 and lastEventDate? and event.start.getTime() > lastEventDate.getTime() and event.start.getTime() > preferedStartTime.getTime()
 				# gap, add a fake event
@@ -165,14 +167,7 @@ findTaskID = (event) ->
 			task = Tasks.findOne project_id: Session.get("currentProjectId"), name: taskName
 			return task._id if task?
 
-getPreferedStartOfDay = (dayMoment) ->
-	newMoment = moment dayMoment
-	preference = UserSettings.get UserSettings.PROPERTY_START_OF_DAY
-	if preference?
-		[hour, minute] = preference.split ":"
-		if hour? and minute?
-			return newMoment.set("hour", hour).set("minute", minute)
-	return newMoment.startOf "day"
+
 
 getStartOfEvent = (events, event) ->
 	eventDate = event.end
@@ -188,7 +183,7 @@ getStartOfEvent = (events, event) ->
 			lastEventDate
 		else
 			# seems to be first event, 
-			preferedStartOfDay = getPreferedStartOfDay(eventMoment).toDate()
+			preferedStartOfDay = Tools.getPreferedStartOfDay(eventMoment).toDate()
 			# check if this date is before the end of the day
 			if preferedStartOfDay.getTime() > event.end.getTime()
 				startMoment = moment eventMoment
@@ -206,7 +201,7 @@ getLastEventOrTimeEntryEndTime = (events, eventDate) ->
 	candidates = [
 		_.max(eventsFiltered, endTime)?.end
 		TimeEntries.findOne({day: day, end: $lt: eventDate}, sort: "end": -1)?.end
-		TimeEntries.findOne({day: day, start: $lt: eventDate}, sort: "start": -1)?.end
+		TimeEntries.findOne({day: day, start: $lt: eventDate}, sort: "start": -1)?.start
 	]
 	
 	lastDate = _.max candidates, (date) ->
@@ -229,7 +224,7 @@ Template.eventList_oneDay.events
 			new: yes
 			day: template.data.dayMoment.toDate()
 			user_id: UserSettings.get "controllrUserId"
-			start: getPreferedStartOfDay(template.data.dayMoment).format "HH:mm"
+			start: Tools.getPreferedStartOfDay(template.data.dayMoment).format "HH:mm"
 
 
 
@@ -274,7 +269,7 @@ Template.eventList_oneDay_timeGrid.helpers
 			bottom: pixelPerMinute*intervalInHours*60*i
 
 		# add entry for the prefered start of day
-		#startOfDay = getPreferedStartOfDay()
+		#startOfDay = Tools.getPreferedStartOfDay()
 		#entries.push 
 		#	aMoment: startOfDay
 		#	label: "Start of Day"

@@ -21,8 +21,8 @@ Wherever the saved locationServiceUser changes (or is initially set), refresh th
 Expose the LocationService with its methods globally (singleton):
 
 	@LocationService = 
-		subscribe: (name, params) ->
-			connection.subscribe name, params
+		subscribe: (params) ->
+			connection.subscribe "myLocations", params
 		login: (email, password, callback) ->
 			console.log "login in"
 			params =

@@ -193,11 +193,11 @@ Meteor.startup ->
 
 			result = HTTP.get url
 			if result.data?
-				_(result.data).map (entry) ->
+				_(result.data).map (entry) =>
 					dayMoment = moment entry.day
 
 					# start and end have only time on the controller
-					createMoment = (dateString) ->
+					createMoment = (dateString) =>
 						[garbage, time] = dateString.split "T"
 						[h,m,sWithTimeZone] = time.split ":" 
 						aMoment = moment dayMoment
@@ -208,11 +208,11 @@ Meteor.startup ->
 					if entry.start?
 						startMoment = createMoment entry.start
 					else 
-						startMoment = dayMoment
+						startMoment = Tools.getPreferedStartOfDay dayMoment, @userId
 					if entry.end?
 						endMoment = createMoment entry.end
 					else
-						endMoment = moment(dayMoment).add entry.duration, "minutes"
+						endMoment = moment(startMoment).add entry.duration, "minutes"
 
 
 					entry._id = entry.id.toString()
